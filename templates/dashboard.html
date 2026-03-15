@@ -2,126 +2,104 @@
 <html lang="en">
 
 <head>
-<meta charset="UTF-8">
-<title>SmartBus Passenger Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="/static/dashboard.css">
+    <meta charset="UTF-8">
+    <title>SmartBus Passenger Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/static/dashboard.css">
+
 </head>
 
 <body>
+    <header class="top-nav">
+        <div class="brand">
+            <div class="brand-text">SmartBus</div>
+            <div class="brand-text-sub">Tap • Travel • Secure</div>
+        </div>
+        <nav class="nav-links">
+            <a class="link" href="/">Home</a>
+            <a class="link" href="/dashboard">Passenger</a>
+            <a class="link" href="/recharge">Recharge</a>
+            <a class="link" href="/admin">Admin</a>
+        </nav>
+    </header>
+    <main class="container">
+        <h1>Passenger Dashboard</h1>
+        <p class="subtitle">
+            Check your SmartBus card balance, view ride history, and manage recharges.
+        </p>
 
-<header class="top-nav">
-<div class="brand">
-<div class="brand-text">SmartBus</div>
-<div class="brand-text-sub">Tap • Travel • Secure</div>
-</div>
-
-<nav class="nav-links">
-<a class="link" href="/">Home</a>
-<a class="link" href="/dashboard">Passenger</a>
-<a class="link" href="/recharge">Recharge</a>
-<a class="link" href="/admin">Admin</a>
-</nav>
-</header>
-
-
-<main class="container">
-
-<h1>Passenger Dashboard</h1>
-<p class="subtitle">
-Check your SmartBus card balance, view ride history, and manage recharges.
-</p>
-
-<div class="grid">
-
-<!-- CARD LOOKUP -->
-
-<div class="card">
-
-<h3>Card Lookup</h3>
-
-<label>Card ID</label>
-
-<form action="/dashboard" method="get" class="search">
-<input type="text" name="card_id" placeholder="Enter Card ID (SB1001)">
-<button type="submit">Fetch</button>
-</form>
-
-<div class="balance">
-Balance ₹ {{ balance if balance else "0.00" }}
-</div>
-
-<div class="info-grid">
-
-<div class="info">
-<p>Last Ride</p>
-<span>{{ last_ride if last_ride else "—" }}</span>
-</div>
-
-<div class="info">
-<p>Fare Deducted</p>
-<span>₹ {{ last_fare if last_fare else "0.00" }}</span>
-</div>
-
-<div class="info">
-<p>Total Rides</p>
-<span>{{ total_rides if total_rides else "0" }}</span>
-</div>
-
-<div class="info">
-<p>Status</p>
-<span>{{ status if status else "Active" }}</span>
-</div>
-
-</div>
-
-</div>
-
-
-<!-- RIDE HISTORY -->
-
-<div class="card">
-
-<h3>Ride History</h3>
-
-<table>
-
-<tr>
-<th>Date & Time</th>
-<th>From</th>
-<th>To</th>
-<th>Fare</th>
-</tr>
-
-{% if rides %}
-{% for ride in rides %}
-<tr>
-<td>{{ ride.transaction_time }}</td>
-<td>{{ ride.description.split(" → ")[0] }}</td>
-<td>{{ ride.description.split(" → ")[1] }}</td>
-<td>₹ {{ ride.amount }}</td>
-</tr>
-{% endfor %}
-{% else %}
-<tr>
-<td colspan="4" class="empty">
-Enter a valid Card ID to view ride history
-</td>
-</tr>
-{% endif %}
-
-</table>
-
-</div>
-
-</div>
-
-</main>
-
-
-<footer>
-SmartBus – Tap • Travel • Secure • IoT Smart Bus Fare System
-</footer>
-
+        <div class="grid">
+            <!-- LEFT CARD -->
+            <div class="card">
+                <h3>Card Lookup</h3>
+                <!-- <label>Card ID</label> -->
+                <form action="/tap_card" method="post" class="tap-form">
+                    <input type="text" name="card_id" placeholder="Enter your Card ID"
+                        value="{{ card_id if card_id else '' }}" required>
+                    <input type="number" name="fare" placeholder="Fare" required>
+                    <button type="submit" onclick="this.disabled=true; this.form.submit();">
+                        Tap Card
+                    </button>
+                </form>
+                <div class="balance">
+                    Balance ₹ {{ "%.2f"|format(balance) if balance is not none else "0.00" }}
+                </div>
+                <div class="info-grid">
+                    <div class="info">
+                        <p>Last Ride</p>
+                        <span>{{ last_ride if last_ride else "—" }}</span>
+                    </div>
+                    <div class="info">
+                        <p>Fare Deducted</p>
+                        <span>₹ {{ last_fare if last_fare else "0.00" }}</span>
+                    </div>
+                    <div class="info">
+                        <p>Total Rides</p>
+                        <span>{{ total_rides if total_rides else "0" }}</span>
+                    </div>
+                    <div class="info">
+                        <p>Status</p>
+                        <span>{{ status if status else "Active" }}</span>
+                    </div>
+                </div>
+            </div>
+            <!-- RIDE HISTORY -->
+            <div class="card">
+                <h3>Ride History</h3>
+                <div class="ride-history-scroll">
+                    <table>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Fare</th>
+                        </tr>
+                        {% if rides %}
+                        {% for ride in rides %}
+                        <tr>
+                            <td>{{ ride.transaction_time }}</td>
+                            {% set route = ride.description.split(" → ") %}
+                            <td>{{ route[0] }}</td>
+                            <td>{{ route[1] if route|length > 1 else "-" }}</td>
+                            <td>₹ {{ ride.amount }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="empty">
+                                Enter a valid Card ID to view ride history
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        SmartBus – Tap • Travel • Secure • IoT Smart Bus Fare System
+    </footer>
 </body>
+
 </html>

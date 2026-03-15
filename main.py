@@ -2,6 +2,7 @@ from fastapi import Request, FastAPI ,Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import RedirectResponse
 import pymysql
 
 app = FastAPI()
@@ -72,57 +73,108 @@ def scan_card(card_id: str, from_stop: str, to_stop: str):
         return {"status": "new card registered", "card_id": card_id, "balance": 100}
 
 
+@app.post("/tap_card")
+def tap_card(card_id: str = Form(...), fare: float = Form(...)):
+
+    db = get_db()
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+
+    # check balance
+    cursor.execute("SELECT balance FROM cards WHERE card_id=%s", (card_id,))
+    card = cursor.fetchone()
+
+    if not card:
+        cursor.close()
+        db.close()
+        return {"status": "Card not found"}
+
+    balance = card["balance"]
+
+    if balance < fare:
+        cursor.close()
+        db.close()
+        return {"status": "Insufficient balance"}
+
+    # deduct fare
+    cursor.execute(
+        "UPDATE cards SET balance = balance - %s WHERE card_id=%s",
+        (fare, card_id)
+    )
+
+    # save transaction
+    # cursor.execute(
+    #     """
+    #     INSERT INTO transactions (card_id, description, amount)
+    #     VALUES (%s,%s,%s)
+    #     """,
+    #     (card_id, "Bus Ride", fare)
+    # )
+
+    db.commit()
+
+    cursor.close()
+    db.close()
+    return RedirectResponse(url=f"/dashboard?card_id={card_id}", status_code=303)
+
+
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard(request: Request, card_id: str = None):
+
+    db = get_db()
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+
+    balance = None
     rides = []
     last_ride = None
     last_fare = None
-    balance = None
     total_rides = 0
     status = "Active"
 
     if card_id:
-        db = get_db()
-        cursor = db.cursor(pymysql.cursors.DictCursor)
 
-        # get balance
-        cursor.execute("SELECT balance FROM cards WHERE card_id=%s", (card_id,))
+        # get balance + status
+        cursor.execute(
+            "SELECT balance, status FROM cards WHERE card_id=%s",
+            (card_id,)
+        )
         card = cursor.fetchone()
 
         if card:
             balance = card["balance"]
+            status = card["status"]
 
-        # get ride history
-        cursor.execute(
-            """
-            SELECT transaction_time, description, amount
-            FROM transactions
-            WHERE card_id=%s
-            ORDER BY transaction_time DESC
-            """,
-            (card_id,),
-        )
+        # get all rides
+        cursor.execute("""
+        SELECT transaction_time, description, amount
+        FROM transactions
+        WHERE card_id=%s
+        ORDER BY transaction_time DESC
+        """, (card_id,))
 
         rides = cursor.fetchall()
+
         total_rides = len(rides)
 
         if rides:
             last_ride = rides[0]["description"]
             last_fare = rides[0]["amount"]
-            balance = balance - last_fare if balance is not None else None
+
+    cursor.close()
+    db.close()
+
     return templates.TemplateResponse(
         "dashboard.html",
         {
             "request": request,
-            "rides": rides,
+            "card_id": card_id,
             "balance": balance,
+            "rides": rides,
             "last_ride": last_ride,
             "last_fare": last_fare,
             "total_rides": total_rides,
-            "status": status,
-        },
+            "status": status
+        }
     )
-
 
 @app.post("/rides")
 def create_ride(card_id: str, from_stop: str, to_stop: str, fare: float):
