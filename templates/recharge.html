@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SmartBus Recharge</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/recharge.css">
+</head>
+
+<body>
+
+    <header class="top-nav">
+        <div class="brand">
+            <div class="brand-text">SmartBus</div>
+            <div class="brand-text-sub">Tap • Travel • Secure</div>
+        </div>
+
+        <nav class="nav-links">
+            <a class="link" href="/">Home</a>
+            <a class="link" href="/dashboard">Passenger</a>
+            <a class="link" href="/recharge">Recharge</a>
+            <a class="link" href="/admin">Admin</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <div class="page">
+
+            <h1>Recharge Card</h1>
+            <p>Add balance to your SmartBus card.</p>
+
+            <div class="card">
+
+                <h3>Secure Recharge</h3>
+
+                <form action="/recharge" method="post">
+
+                    <label>Card ID</label>
+                    <input type="text" name="card_id" placeholder="Enter SmartBus Card ID (SB1001)" required>
+
+                    <label>Recharge Amount (₹)</label>
+                    <input type="number" name="amount" placeholder="Minimum amount 50" required>
+
+                    <button class="btn" type="submit">Recharge</button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer>
+        SmartBus – Tap • Travel • Secure • IoT Smart Bus Fare System
+    </footer>
+
+</body>
+
+</html>
