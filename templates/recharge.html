@@ -37,16 +37,24 @@
 
                 <form action="/recharge" method="post">
 
-                    <label>Card ID</label>
-                    <input type="text" name="card_id" placeholder="Enter SmartBus Card ID (SB1001)" required>
+                    <label for="card_id">Card ID</label>
+                    <input type="text" id="card_id" name="card_id" placeholder="Enter SmartBus Card ID (SB1001)"
+                        required>
 
-                    <label>Recharge Amount (₹)</label>
-                    <input type="number" name="amount" placeholder="Minimum amount 50" required>
+                    <label for="amount">Recharge Amount (₹)</label>
+                    <input type="number" id="amount" name="amount" placeholder="Minimum amount 50" min="50" required>
 
                     <button class="btn" type="submit">Recharge</button>
 
                 </form>
 
+                {% if card_id %}
+                <p><strong>Card ID:</strong> {{ card_id }}</p>
+                {% endif %}
+
+                {% if balance %}
+                <p><strong>Updated Balance:</strong> ₹{{ balance }}</p>
+                {% endif %}
             </div>
 
         </div>

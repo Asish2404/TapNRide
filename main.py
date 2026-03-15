@@ -1,4 +1,4 @@
-from fastapi import Request, FastAPI
+from fastapi import Request, FastAPI ,Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -156,10 +156,8 @@ def create_ride(card_id: str, from_stop: str, to_stop: str, fare: float):
 
 @app.get("/admin", response_class=HTMLResponse)
 def admin_dashboard(request: Request):
-
     db = get_db()
     cursor = db.cursor(pymysql.cursors.DictCursor)
-
     cursor.execute(
         """
         SELECT transaction_id, type, card_id, description, amount, transaction_time
@@ -167,9 +165,7 @@ def admin_dashboard(request: Request):
         ORDER BY transaction_time DESC
     """
     )
-
     rides = cursor.fetchall()
-
     cursor.execute(
         """
         SELECT COUNT(DISTINCT card_id) AS active_cards
@@ -177,9 +173,7 @@ def admin_dashboard(request: Request):
         WHERE status = 'active';
     """
     )
-
     active_cards = cursor.fetchone()["active_cards"]
-
     cursor.execute(
         """
         SELECT SUM(amount) AS TotalFareCollected
@@ -211,4 +205,38 @@ def admin_dashboard(request: Request):
             "total_fare": total_fare,
             "rides_today": rides_today,
         },
+    )
+
+
+@app.get("/recharge", response_class=HTMLResponse)
+def recharge_page(request: Request):
+    return templates.TemplateResponse(
+        "recharge.html",
+        {"request": request}
+    )
+
+
+@app.post("/recharge", response_class=HTMLResponse)
+def recharge(request: Request, card_id: str = Form(...), amount: float = Form(...)):
+    db = get_db()
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+    cursor.execute(
+        "UPDATE cards SET balance = balance + %s WHERE card_id = %s",
+        (amount, card_id)
+    )
+    db.commit()
+    cursor.execute(
+        "SELECT card_id, balance FROM cards WHERE card_id = %s",
+        (card_id,)
+    )
+    card = cursor.fetchone()
+    cursor.close()
+    db.close()
+    return templates.TemplateResponse(
+        "recharge.html",
+        {
+            "request": request,
+            "card_id": card["card_id"],
+            "balance": card["balance"]
+        }
     )
