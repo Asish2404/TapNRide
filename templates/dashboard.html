@@ -37,7 +37,9 @@
                 <form action="/tap_card" method="post" class="tap-form">
                     <input type="text" name="card_id" placeholder="Enter your Card ID"
                         value="{{ card_id if card_id else '' }}" required>
-                    <input type="number" name="fare" placeholder="Fare" required>
+                        <input type="text" name="Starting_place" placeholder="Starting Place" required>
+                        <input type="text" name="Ending_place" placeholder="Destination" required>
+                        <input type="number" name="fare" placeholder="Fare" required>
                     <button type="submit" onclick="this.disabled=true; this.form.submit();">
                         Tap Card
                     </button>
