@@ -3,6 +3,8 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
+from typing import Optional
+from datetime import datetime
 import pymysql
 
 app = FastAPI()
@@ -22,8 +24,58 @@ def get_db():
 
 
 @app.get("/index", response_class=HTMLResponse)
-def home():
-    return {"message": "SmartBus RFID API Running"}
+def home(request: Request, card_id: Optional[str] = None):
+
+    db = get_db()
+    cursor = db.cursor(pymysql.cursors.DictCursor)  # ✅ FIXED
+
+    card = None
+    trip = None
+
+    if card_id:
+        cursor.execute(
+            "SELECT card_id, balance FROM cards WHERE card_id=%s", (card_id,)
+        )
+        card = cursor.fetchone()
+
+        cursor.execute(
+            """
+            SELECT from_stop, to_stop, fare, timestamp
+            FROM rides
+            WHERE card_id=%s
+            ORDER BY id DESC LIMIT 1
+        """,
+            (card_id,),
+        )
+        trip = cursor.fetchone()
+
+    # ✅ Safe time formatting
+    if trip and trip.get("timestamp"):
+        ts = trip["timestamp"]
+        if isinstance(ts, str):
+            ts = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
+        time_str = ts.strftime("%I:%M %p")
+    else:
+        time_str = "N/A"
+
+    cursor.close()
+    db.close()
+
+    balance = card["balance"] if card else 0
+
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "balance": balance,
+            "card_id": card["card_id"] if card else "N/A",
+            "from_stop": trip["from_stop"] if trip else "N/A",
+            "to_stop": trip["to_stop"] if trip else "N/A",
+            "fare": trip["fare"] if trip else 0,
+            "updated_time": time_str,
+            "status": "Active" if balance > 0 else "Low Balance",
+        },
+    )
 
 
 @app.post("/scan", response_class=HTMLResponse)
@@ -73,7 +125,6 @@ def scan_card(card_id: str, from_stop: str, to_stop: str):
         return {"status": "new card registered", "card_id": card_id, "balance": 100}
 
 
-@app.post("/tap_card")
 @app.post("/tap_card")
 def tap_card(
     card_id: str = Form(...),
@@ -167,7 +218,7 @@ def dashboard(request: Request, card_id: str = None):
         """,
             (card_id,),
         )
-        
+
         rides = cursor.fetchall()
 
         total_rides = len(rides)

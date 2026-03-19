@@ -56,7 +56,7 @@
                 <div class="card-top">
 
                     <div>
-                        <h3>SMARTBUS METRO CARD</h3>
+                        <h3>SMARTBUS CARD</h3>
                         <p class="card-sub">RFID • CLOUD CONNECTED</p>
                     </div>
 
@@ -70,14 +70,14 @@
                     <div class="left">
 
                         <p class="label">CURRENT BALANCE</p>
-                        <h2>₹ 312.50</h2>
+                        <h2>₹ {{ "%.2f"|format(balance) }}</h2>
 
                         <p class="label">LAST TRIP</p>
-                        <p class="trip">Campus Gate → Tech Park</p>
+                        <p class="trip">{{ from_stop }} → {{ to_stop }}</p>
 
                         <div class="status">
                             <span class="dot"></span>
-                            Bus Node Online
+                            Bus Node {{ status }}
                         </div>
 
                     </div>
@@ -86,12 +86,14 @@
                     <div class="right">
 
                         <p class="label">CARD ID</p>
-                        <p class="value">SB1001</p>
+                        <p class="value">{{ card_id }}</p>
 
                         <p class="label">LAST FARE</p>
-                        <p class="value">₹ 18.00</p>
+                        <p class="value">₹ {{ "%.2f"|format(fare) }}</p>
 
-                        <p class="update">Updated: <b>just now</b></p>
+                        <p class="update">
+                            Updated: <b>{{ updated_time }}</b>
+                        </p>
 
                     </div>
 
