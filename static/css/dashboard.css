@@ -19,6 +19,29 @@ body {
     backdrop-filter: blur(12px);
 }
 
+.brand {
+    display: flex;
+    align-items: center;
+}
+
+.info_1 {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-img {
+    width: 65px;
+    height: 40px;
+    border-radius: 25px;
+    margin-right: 12px;
+}
+
+/* .logo-img img {
+    border-radius: 25px;
+    width: 65px;
+} */
+
+
 .top-nav {
     display: flex;
     justify-content: space-between;
@@ -41,11 +64,6 @@ body {
         0 0 18px rgba(34, 211, 238, 0.35),
         0 0 35px rgba(34, 211, 238, 0.15);
     border: 1px solid rgba(34, 211, 238, 0.5);
-}
-
-.brand {
-    display: flex;
-    flex-direction: column;
 }
 
 .brand-text {
@@ -260,57 +278,60 @@ tbody tr:hover {
     background: #0f2f45;
     transition: 0.2s;
 }
-.tap-form{
-    display:grid;
+
+.tap-form {
+    display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap:10px;
+    gap: 10px;
 }
 
-.tap-form input{
-    padding:10px;
-    border-radius:4px;
-    border:none;
+.tap-form input {
+    padding: 10px;
+    border-radius: 4px;
+    border: none;
 }
 
-.tap-form button{
-    grid-column:1 / -1;   /* button spans full width */
-    width:100px;
-    justify-self:center;  /* center the button */
-    background:#22c1dc;
-    color:white;
-    border:none;
-    padding:10px 18px;
-    border-radius:4px;
-    font-weight:600;
+.tap-form button {
+    grid-column: 1 / -1;
+    /* button spans full width */
+    width: 100px;
+    justify-self: center;
+    /* center the button */
+    background: #22c1dc;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 4px;
+    font-weight: 600;
     margin-bottom: 10px;
-    cursor:pointer;
+    cursor: pointer;
 }
 
-.tap-form input{
-    background:#e9e9e9;
+.tap-form input {
+    background: #e9e9e9;
 }
 
-.tap-form button:hover{
-    background:#1aa3bb;
+.tap-form button:hover {
+    background: #1aa3bb;
 }
 
-.info-grid{
-    display:grid;
-    grid-template-columns: repeat(2,1fr);
-    gap:25px;
-    margin-top:20px;
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    margin-top: 20px;
 }
 
-.ride-history-scroll{
-max-height:300px;
-overflow-y:auto;
+.ride-history-scroll {
+    max-height: 300px;
+    overflow-y: auto;
 }
 
-.ride-history-scroll::-webkit-scrollbar{
-width:6px;
+.ride-history-scroll::-webkit-scrollbar {
+    width: 6px;
 }
 
-.ride-history-scroll::-webkit-scrollbar-thumb{
-background:#2ec4d6;
-border-radius:6px;
+.ride-history-scroll::-webkit-scrollbar-thumb {
+    background: #2ec4d6;
+    border-radius: 6px;
 }

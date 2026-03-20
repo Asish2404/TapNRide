@@ -27,6 +27,28 @@ body {
     box-shadow: 0 0 10px rgba(34, 211, 238, 0.15);
 }
 
+.brand {
+    display: flex;
+    align-items: center;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-img {
+    width: 65px;
+    height: 40px;
+    border-radius: 25px;
+    margin-right: 12px;
+}
+
+/* .logo-img img {
+    border-radius: 25px;
+    width: 65px;
+} */
+
 /* Hover Effect */
 
 .top-nav:hover {
