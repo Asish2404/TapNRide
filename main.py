@@ -23,7 +23,7 @@ def get_db():
     )
 
 
-@app.get("/index", response_class=HTMLResponse)
+@app.get("/home", response_class=HTMLResponse)
 def home(request: Request, card_id: Optional[str] = None):
 
     db = get_db()
@@ -64,7 +64,7 @@ def home(request: Request, card_id: Optional[str] = None):
     balance = card["balance"] if card else 0
 
     return templates.TemplateResponse(
-        "index.html",
+        "home.html",
         {
             "request": request,
             "balance": balance,
