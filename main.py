@@ -27,7 +27,7 @@ def get_db():
 def home(request: Request, card_id: Optional[str] = None):
 
     db = get_db()
-    cursor = db.cursor(pymysql.cursors.DictCursor)  # ✅ FIXED
+    cursor = db.cursor(pymysql.cursors.DictCursor)
 
     card = None
     trip = None
@@ -49,7 +49,7 @@ def home(request: Request, card_id: Optional[str] = None):
         )
         trip = cursor.fetchone()
 
-    # ✅ Safe time formatting
+    # timing formatting
     if trip and trip.get("timestamp"):
         ts = trip["timestamp"]
         if isinstance(ts, str):
@@ -76,6 +76,8 @@ def home(request: Request, card_id: Optional[str] = None):
             "status": "Active" if balance > 0 else "Low Balance",
         },
     )
+
+    # return RedirectResponse(url=f"/?card_id={card_id}", status_code=303)
 
 
 @app.post("/scan", response_class=HTMLResponse)
