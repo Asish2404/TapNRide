@@ -31,7 +31,7 @@ Data-driven insights into ridership patterns, system performance, and operationa
 ## Technology Stack
 
 - **Frontend:** HTML, CSS, JavaScript
-- **Backend:** Python/FastAPI or Node.js
+- **Backend:** Python/FastAPI
 - **Database:** MySQL
 - **IoT Hardware:** ESP32, GPS modules, sensor arrays
 
@@ -42,10 +42,6 @@ Data-driven insights into ridership patterns, system performance, and operationa
 3. Web and mobile interfaces display live vehicle status and system information
 4. Ticketing subsystem manages payments and passenger records
 5. Analytics engine generates operational insights and performance reports
-
-## License
-
-MIT License
 
 ## Project Team
 
