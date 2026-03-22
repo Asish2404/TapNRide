@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SmartBus Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/admin.css">
+    <link rel="shortcut icon" href="../static/source/SB.jpeg" type="image/x-icon">
+</head>
+
+<body>
+
+    <header class="top-nav">
+        <!-- <div class="logo">
+    </div> -->
+        <div class="brand">
+            <img src="../static/source/SB.jpeg" alt="SmartBus Logo" class="logo-img">
+            <div class="info">
+                <div class="brand-text">SmartBus</div>
+                <div class="brand-text-sub">Tap • Travel • Secure</div>
+            </div>
+        </div>
+        <nav class="nav-links">
+            <a class="link" href="/home">Home</a>
+            <a class="link" href="/dashboard">Passenger</a>
+            <a class="link" href="/recharge">Recharge</a>
+            <a class="link" href="/admin">Admin</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="title">
+            <h1>Admin Panel</h1>
+            <p>Monitor total revenue, rides, and transaction logs.</p>
+        </div>
+        <div class="stats">
+            <div class="stat">
+                <p>Total Fare Collected</p>
+                <div class="stat-value" id="totalFare">
+                    ₹{{ total_fare }}
+                </div>
+                <!-- <span>All rides in system</span> -->
+            </div>
+            <div class="stat">
+                <!-- <span>Based on trip timestamps</span> -->
+                <p>Total Rides Today</p>
+                <div class="stat-value" id="ridesToday">
+                    {{ rides_today }}
+                </div>
+            </div>
+            <div class="stat">
+                <p>Registered SmartBus Active Cards</p>
+                <div class="stat-value" id="activeCards">
+                    {{ active_cards }}
+                </div>
+            </div>
+        </div>
+        <!-- TRANSACTIONS -->
+        <div class="transactions">
+            <h3>Recent Transactions</h3>
+            <p>Ride fares and recharge logs</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Card ID</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Date & Time</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for r in rides %}
+                    <tr>
+                        <td>{{ r.type }}</td>
+                        <td>{{ r.card_id }}</td>
+                        <td>{{ r.description }}</td>
+                        <td>₹{{ r.amount }}</td>
+                        <td>{{ r.transaction_time }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </main>
+
+    <footer>
+        SmartBus – Tap • Travel • Secure • IoT Smart Bus Fare System
+    </footer>
+
+</body>
+
+</html>

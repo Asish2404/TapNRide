@@ -1,0 +1,226 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: linear-gradient(120deg, #001028, #020617);
+    color: white;
+    min-height: 100vh;
+}
+
+/* NAVBAR */
+
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: var(--bg-elevated);
+    border-radius: 999px;
+    margin: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    backdrop-filter: blur(12px);
+    transition: 0.3s ease;
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.15);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-img {
+    width: 65px;
+    height: 40px;
+    border-radius: 25px;
+    margin-right: 12px;
+}
+
+/* .logo-img img {
+    border-radius: 25px;
+    width: 65px;
+} */
+
+/* Hover Effect */
+
+.top-nav:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 0 18px rgba(34, 211, 238, 0.35),
+        0 0 35px rgba(34, 211, 238, 0.15);
+    border: 1px solid rgba(34, 211, 238, 0.5);
+}
+
+.brand-text {
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 1px;
+}
+
+.brand-text-sub {
+    font-size: 11px;
+    color: #9ca3af;
+    letter-spacing: 2px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 8px;
+}
+
+.link {
+    background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+    color: #020617;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 14px;
+}
+
+.link:hover {
+    background: white;
+    color: black;
+}
+
+/* MAIN */
+
+.container {
+    padding: 40px 80px;
+}
+
+/* TITLE */
+
+.title {
+    margin-bottom: 30px;
+}
+
+.title h1 {
+    font-size: 28px;
+    margin-bottom: 6px;
+}
+
+.title p {
+    color: #9ca3af;
+}
+
+/* STATS */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat {
+    background: #071a2d;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #1e3a5f;
+    transition: 0.3s ease;
+    box-shadow: 0 0 8px rgba(34, 211, 238, 0.15);
+    cursor: pointer;
+}
+
+/* Hover */
+
+.stat:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.45);
+    border: 1px solid #22d3ee;
+}
+
+.stat-value {
+    font-size: 22px;
+    color: #22d3ee;
+    margin-top: 5px;
+}
+
+/* TRANSACTION CARD */
+
+.transactions {
+    background: #071a2d;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #1e3a5f;
+    transition: 0.3s ease;
+    box-shadow: 0 0 8px rgba(34, 211, 238, 0.15);
+}
+
+/* Hover */
+
+.transactions:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 22px rgba(34, 211, 238, 0.4);
+    border: 1px solid #22d3ee;
+}
+
+.transactions h3 {
+    margin-bottom: 5px;
+}
+
+.transactions p {
+    color: #9ca3af;
+    margin-bottom: 20px;
+}
+
+/* TABLE */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    padding: 12px;
+    color: #9ca3af;
+    font-size: 13px;
+    border-bottom: 1px solid #1e3a5f;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #1e3a5f;
+}
+
+/* TAGS */
+
+.tag {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.ride {
+    background: #052e1a;
+    color: #22c55e;
+}
+
+.recharge {
+    background: #102a54;
+    color: #60a5fa;
+}
+
+/* FOOTER */
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+tbody tr:hover {
+    background: #0f2f45;
+    transition: 0.2s;
+}
