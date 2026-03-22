@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SmartBus – Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="../static/source/SB.jpeg" type="image/x-icon">
+</head>
+
+<body>
+    <header class="top-nav">
+        <div class="brand">
+            <img src="../static/source/SB.jpeg" alt="SmartBus Logo" class="logo-img">
+            <div class="info">
+                <div class="brand-text">SmartBus</div>
+                <div class="brand-text-sub">Tap • Travel • Secure</div>
+            </div>
+        </div>
+        <nav class="nav-links">
+            <a class="link" href="/home">Home</a>
+            <a class="link" href="/dashboard">Passenger</a>
+            <a class="link" href="/recharge">Recharge</a>
+            <a class="link" href="/admin">Admin</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <section class="page act">
+            <h1>SmartBus – Tap • Travel • Secure</h1>
+            <p>
+                An IoT-powered RFID bus fare system where passengers tap cards,
+                track balance, and recharge online in real-time.
+            </p>
+
+            <div class="hero">
+                <a class="btn-first" href="/dashboard">Check Balance</a>
+                <a class="btn-second" href="/recharge">Recharge Card</a>
+            </div>
+
+        </section>
+
+
+        <!-- SMARTBUS CARD -->
+
+        <section class="card-section">
+
+            <div class="smart-card">
+
+                <div class="card-top">
+
+                    <div>
+                        <h3>SMARTBUS CARD</h3>
+                        <p class="card-sub">RFID • CLOUD CONNECTED</p>
+                    </div>
+
+                    <div class="chip"></div>
+
+                </div>
+
+
+                <div class="card-middle">
+
+                    <div class="left">
+
+                        <p class="label">CURRENT BALANCE</p>
+                        <h2>₹ {{ "%.2f"|format(balance) }}</h2>
+
+                        <p class="label">LAST TRIP</p>
+                        <p class="trip">{{ from_stop }} → {{ to_stop }}</p>
+
+                        <div class="status">
+                            <span class="dot"></span>
+                            Bus Node {{ status }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="right">
+
+                        <p class="label">CARD ID</p>
+                        <p class="value">{{ card_id }}</p>
+
+                        <p class="label">LAST FARE</p>
+                        <p class="value">₹ {{ "%.2f"|format(fare) }}</p>
+
+                        <p class="update">
+                            Updated: <b>{{ updated_time }}</b>
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- STATS -->
+
+            <div class="stats">
+
+                <div class="stat">
+                    <p class="stat-title">Live Riders</p>
+                    <h3>128</h3>
+                    <p class="stat-sub">Across smart bus routes</p>
+                </div>
+
+                <div class="stat">
+                    <p class="stat-title">Today's Rides</p>
+                    <h3>3</h3>
+                    <p class="stat-sub">Auto-synced from IoT logs</p>
+                </div>
+
+                <div class="stat">
+                    <p class="stat-title">System Uptime</p>
+                    <h3>99.7%</h3>
+                    <p class="stat-sub">Last 30 days</p>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        SmartBus IoT Smart Fare System – College Project
+    </footer>
+
+
+</body>
+
+</html>
