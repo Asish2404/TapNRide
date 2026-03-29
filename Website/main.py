@@ -21,10 +21,12 @@ def get_db():
         database="smart_bus",
         cursorclass=pymysql.cursors.DictCursor,
     )
-
-
-@app.get("/home", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse)
 def home(request: Request, card_id: Optional[str] = None):
+
+    # 🔴 FIX: handle "None" string
+    if card_id == "None":
+        card_id = None
 
     db = get_db()
     cursor = db.cursor(pymysql.cursors.DictCursor)
@@ -34,29 +36,21 @@ def home(request: Request, card_id: Optional[str] = None):
 
     if card_id:
         cursor.execute(
-            "SELECT card_id, balance FROM cards WHERE card_id=%s", (card_id,)
+            "SELECT card_id, balance FROM cards WHERE card_id=%s",
+            (card_id,),
         )
         card = cursor.fetchone()
 
         cursor.execute(
             """
-            SELECT from_stop, to_stop, fare, timestamp
+            SELECT from_stop, to_stop, fare
             FROM rides
             WHERE card_id=%s
             ORDER BY id DESC LIMIT 1
-        """,
+            """,
             (card_id,),
         )
         trip = cursor.fetchone()
-
-    # timing formatting
-    if trip and trip.get("timestamp"):
-        ts = trip["timestamp"]
-        if isinstance(ts, str):
-            ts = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
-        time_str = ts.strftime("%I:%M %p")
-    else:
-        time_str = "N/A"
 
     cursor.close()
     db.close()
@@ -72,13 +66,38 @@ def home(request: Request, card_id: Optional[str] = None):
             "from_stop": trip["from_stop"] if trip else "N/A",
             "to_stop": trip["to_stop"] if trip else "N/A",
             "fare": trip["fare"] if trip else 0,
-            "updated_time": time_str,
+            "updated_time": "N/A",
             "status": "Active" if balance > 0 else "Low Balance",
         },
     )
+@app.get("/home", response_class=HTMLResponse)
+def home_redirect(request: Request, card_id: Optional[str] = None):
+    return RedirectResponse(url=f"/?card_id={card_id}", status_code=303)
 
-    # return RedirectResponse(url=f"/?card_id={card_id}", status_code=303)
 
+@app.get("/login", response_class=HTMLResponse)
+def login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@app.post("/login")
+def login_user(request: Request, email: str = Form(...), password: str = Form(...)):
+    db = get_db()
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+
+    # Example: check user in DB (you must have users table)
+    cursor.execute("SELECT * FROM users WHERE email=%s AND password=%s", (email, password))
+    user = cursor.fetchone()
+
+    cursor.close()
+    db.close()
+
+    if user:
+        return RedirectResponse(url="/dashboard", status_code=303)
+    else:
+        return templates.TemplateResponse("login.html", {
+            "request": request,
+            "error": "Invalid credentials"
+        })
 
 @app.post("/scan", response_class=HTMLResponse)
 def scan_card(card_id: str, from_stop: str, to_stop: str):
