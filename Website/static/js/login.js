@@ -97,44 +97,32 @@
     const loginEmail = document.getElementById('loginEmail');
     const remember = document.getElementById('remember');
     const loginSubmit = document.getElementById('loginSubmit');
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    loginForm.addEventListener('submit', (e) => {
+
         let ok = true;
+
         showErr(document.getElementById('loginEmailErr'), false);
         showErr(document.getElementById('loginPassErr'), false);
 
         if (!emailOrPhoneRe.test(loginEmail.value.trim())) {
-            showErr(document.getElementById('loginEmailErr'), true); ok = false;
+            showErr(document.getElementById('loginEmailErr'), true);
+            e.preventDefault();
+            return;
         }
+
         if (passInput.value.length < 6) {
-            showErr(document.getElementById('loginPassErr'), true); ok = false;
+            showErr(document.getElementById('loginPassErr'), true);
+            e.preventDefault();
+            return;
         }
-        if (!ok) return;
 
-        loginSubmit.disabled = true;
-        const original = loginSubmit.innerHTML;
-        loginSubmit.innerHTML = '<svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg><span>Signing in…</span>';
-        await sleep(900);
-        loginSubmit.disabled = false;
-        loginSubmit.innerHTML = original;
-        toast(`Signed in as ${selectedRole}. Redirecting to dashboard…`);
-        // simulate redirect
-        await sleep(700);
-        // window.location.href = "/dashboard";
+        // Allow default form behavior to handle valid submission.
     });
-
     // Sign up
-    const suName = document.getElementById('suName');
-    const suEmail = document.getElementById('suEmail');
-    const suPhone = document.getElementById('suPhone');
-    const suPass = document.getElementById('suPass');
-    const suPass2 = document.getElementById('suPass2');
-    const agree = document.getElementById('agree');
-    const signupSubmit = document.getElementById('signupSubmit');
+    signupForm.addEventListener('submit', (e) => {
 
-    signupForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
         let ok = true;
+
         showErr(document.getElementById('suNameErr'), false);
         showErr(document.getElementById('suEmailErr'), false);
         showErr(document.getElementById('suPhoneErr'), false);
@@ -148,16 +136,12 @@
         if (suPass.value.length < 6) { showErr(document.getElementById('suPassErr'), true); ok = false; }
         if (suPass2.value !== suPass.value) { showErr(document.getElementById('suPass2Err'), true); ok = false; }
         if (!agree.checked) { showErr(document.getElementById('agreeErr'), true); ok = false; }
-        if (!ok) return;
 
-        signupSubmit.disabled = true;
-        const original = signupSubmit.innerHTML;
-        signupSubmit.innerHTML = '<svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg><span>Creating…</span>';
-        await sleep(1000);
-        signupSubmit.disabled = false;
-        signupSubmit.innerHTML = original;
-        toast('Account created! Check your email to verify.');
-        setActive('login');
+        if (!ok) {
+            e.preventDefault();   // ❗ only block if invalid
+        }
+
+        // ✅ otherwise allow normal POST /signup
     });
 
     // Forgot modal

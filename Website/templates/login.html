@@ -324,7 +324,7 @@
               <!-- Forms container -->
               <div class="relative px-6 pb-6 pt-4 sm:px-8 sm:pb-8">
                 <!-- Login form -->
-                <form id="loginForm" method="post" action="/login" class="space-y-4">
+                <form id="loginForm" method="post" action="/login">
                   <div>
                     <label for="loginEmail" class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Email
                       or Phone</label>
@@ -449,37 +449,44 @@
                 </form>
 
                 <!-- Sign up form -->
-                <form id="signupForm" class="hidden space-y-4" novalidate>
+                <form id="signupForm" method="post" action="/signup" class="hidden space-y-4" novalidate>
                   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
                     <div>
                       <label class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Full name</label>
-                      <input id="suName" type="text" placeholder="Aarav Sharma" class="input" required />
+                      <input id="suName" name="name" type="text" placeholder="Aarav Sharma" class="input" required />
                       <p class="mt-1 hidden text-xs text-rose-500" id="suNameErr">Please enter your name.</p>
                     </div>
+
                     <div>
                       <label class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Email</label>
-                      <input id="suEmail" type="email" placeholder="you@citytransit.com" class="input" required />
+                      <input id="suEmail" name="email" type="email" placeholder="you@citytransit.com" class="input"
+                        required />
                       <p class="mt-1 hidden text-xs text-rose-500" id="suEmailErr">Enter a valid email.</p>
                     </div>
+
                     <div>
                       <label class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Phone</label>
-                      <input id="suPhone" type="tel" placeholder="+91 9XXXXXXXXX" class="input" required />
+                      <input id="suPhone" name="phone" type="tel" placeholder="+91 9XXXXXXXXX" class="input" required />
                       <p class="mt-1 hidden text-xs text-rose-500" id="suPhoneErr">Enter a valid phone.</p>
                     </div>
+
                     <div>
                       <label class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Role</label>
-                      <select id="suRole" class="input appearance-none">
+                      <select id="suRole" name="role" class="input appearance-none">
                         <option value="passenger">Passenger</option>
                         <option value="driver">Driver</option>
                         <option value="admin">Admin</option>
                       </select>
                     </div>
+
                     <div>
                       <label class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Password</label>
-                      <input id="suPass" type="password" placeholder="Create a strong password" class="input" required
-                        minlength="6" />
+                      <input id="suPass" name="password" type="password" placeholder="Create a strong password"
+                        class="input" required minlength="6" />
                       <p class="mt-1 hidden text-xs text-rose-500" id="suPassErr">Minimum 6 characters.</p>
                     </div>
+
                     <div>
                       <label class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Confirm
                         password</label>
@@ -487,6 +494,7 @@
                         minlength="6" />
                       <p class="mt-1 hidden text-xs text-rose-500" id="suPass2Err">Passwords do not match.</p>
                     </div>
+
                   </div>
 
                   <label class="inline-flex select-none items-start gap-3 text-sm text-night-700 dark:text-white/80">
@@ -502,6 +510,7 @@
                         class="font-semibold text-cyan-700 hover:underline dark:text-cyan-300">Terms &
                         Privacy</a>.</span>
                   </label>
+
                   <p class="hidden text-xs text-rose-500" id="agreeErr">Please accept the terms.</p>
 
                   <button id="signupSubmit" type="submit"
