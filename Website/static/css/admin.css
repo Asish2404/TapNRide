@@ -1,13 +1,26 @@
+:root {
+    --bg: #020617;
+    --bg-elevated: rgba(15, 23, 42, 0.9);
+    --accent: #22d3ee;
+    --accent2: #0ea5e9;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --radius: 999px;
+}
+
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
-    background: linear-gradient(120deg, #001028, #020617);
-    color: white;
+    font-family: "Inter", sans-serif;
+    background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.14), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.16), transparent 55%),
+        #020617;
+    color: var(--text);
     min-height: 100vh;
 }
 
@@ -31,35 +44,10 @@ body {
     display: flex;
     align-items: center;
 }
+/* PROFILE DROPDOWN FIX */
 
-.info {
-    display: flex;
-    flex-direction: column;
-}
-
-.logo-img {
-    width: 65px;
-    height: 40px;
-    border-radius: 25px;
-    margin-right: 12px;
-}
-
-/* .logo-img img {
-    border-radius: 25px;
-    width: 65px;
-} */
-
-/* Hover Effect */
-
-.top-nav:hover {
-    transform: translateY(-2px);
-    box-shadow:
-        0 0 18px rgba(34, 211, 238, 0.35),
-        0 0 35px rgba(34, 211, 238, 0.15);
-    border: 1px solid rgba(34, 211, 238, 0.5);
-}
 .profile-container {
-    position: relative;   /* 🔥 REQUIRED */
+    position: relative;
     display: inline-block;
 }
 
@@ -81,27 +69,28 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    font-weight: 600;
 }
 
-/* 🔥 FIXED DROPDOWN */
+/* 🔥 MAIN FIX */
 .dropdown-menu {
     display: none;
     position: absolute;
     top: 45px;
     right: 0;
     background: white;
-    min-width: 150px;
+    min-width: 160px;
     border-radius: 8px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.2);
     overflow: hidden;
     z-index: 9999;
 }
 
-/* Fix links */
+/* FIX TEXT ISSUE */
 .dropdown-menu a {
     display: block;
     padding: 10px;
-    color: black !important;   /* 🔥 override nav style */
+    color: black !important;
     text-decoration: none;
 }
 
@@ -112,6 +101,34 @@ body {
     color: rgb(255, 255, 255);
     font-size: 12px;
 }
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-img {
+    width: 65px !important;
+    height: 40px !important;
+    border-radius: 25px;
+    margin-right: 12px;
+}
+
+/* .logo-img img {
+    border-radius: 25px;
+    width: 65px;
+} */
+
+/* Hover Effect */
+
+.top-nav:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 0 18px rgba(34, 211, 238, 0.35),
+        0 0 35px rgba(34, 211, 238, 0.15);
+    border: 1px solid rgba(34, 211, 238, 0.5);
+}
+
 .brand-text {
     font-weight: 600;
     font-size: 18px;
@@ -120,9 +137,11 @@ body {
 
 .brand-text-sub {
     font-size: 11px;
-    color: #9ca3af;
+    color: var(--muted);
     letter-spacing: 2px;
 }
+
+/* NAV LINKS */
 
 .nav-links {
     display: flex;
@@ -135,13 +154,14 @@ body {
     font-weight: 600;
     text-decoration: none;
     padding: 6px 14px;
-    border-radius: 999px;
+    border-radius: var(--radius);
     font-size: 14px;
+    transition: 0.2s;
 }
 
 .link:hover {
-    background: white;
-    color: black;
+    background: #fdfdfd;
+    color: rgb(15, 15, 15);
 }
 
 /* MAIN */

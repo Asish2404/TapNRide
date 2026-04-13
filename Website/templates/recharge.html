@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <title>SmartBus Recharge</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../static/css/recharge.css">
     <link rel="shortcut icon" href="../static/source/SB.jpeg" type="image/x-icon">
 </head>
@@ -32,22 +35,22 @@
 
             <!-- PROFILE -->
             <div class="profile-container">
-
-                <button class="profileBtn profile-btn">
+                <button id="profileBtn" class="profile-btn">
                     <div class="avatar">{{ user.name[0] }}</div>
                     <span class="arrow">▼</span>
                 </button>
 
-                <div class="dropdown-menu">
+                <div id="dropdown" class="dropdown-menu">
                     <a href="/dashboard">Dashboard</a>
                     <a href="/recharge">Recharge</a>
                     <a href="/logout">Logout</a>
                 </div>
-
             </div>
 
             {% else %}
+
             <a class="link" href="/login">Login</a>
+
             {% endif %}
         </nav>
     </header>
@@ -93,23 +96,21 @@
         SmartBus – Tap • Travel • Secure • IoT Smart Bus Fare System
     </footer>
     <script>
-document.querySelectorAll(".profileBtn").forEach(btn => {
-    btn.addEventListener("click", function (e) {
-        e.stopPropagation();
+        const btn = document.getElementById("profileBtn");
+        const dropdown = document.getElementById("dropdown");
 
-        const dropdown = this.nextElementSibling;
+        if (btn) {
+            btn.addEventListener("click", function (e) {
+                e.stopPropagation();
+                dropdown.style.display =
+                    dropdown.style.display === "block" ? "none" : "block";
+            });
 
-        dropdown.style.display =
-            dropdown.style.display === "block" ? "none" : "block";
-    });
-});
-
-document.addEventListener("click", function () {
-    document.querySelectorAll(".dropdown-menu").forEach(menu => {
-        menu.style.display = "none";
-    });
-});
-</script>
+            document.addEventListener("click", function () {
+                dropdown.style.display = "none";
+            });
+        }
+    </script>
 </body>
 
 </html>
