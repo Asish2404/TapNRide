@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 from typing import Optional
 import pymysql
 
-import random # just for testing with random bus stop key
+import random  # just for testing with random bus stop key
 
 
 # 🔴 ADD SESSION
@@ -19,13 +19,9 @@ app.add_middleware(SessionMiddleware, secret_key="supersecretkey")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-#CHANGE-1: bus stops - dictionary mapping stop IDs to names
-stops = {
-    0: "Stop A",
-    1: "Stop B",
-    2: "Stop C",
-    3: "Stop D"
-}
+# CHANGE-1: bus stops - dictionary mapping stop IDs to names
+stops = {0: "Stop A", 1: "Stop B", 2: "Stop C", 3: "Stop D"}
+
 
 # Database connection
 def get_db():
@@ -37,30 +33,32 @@ def get_db():
         cursorclass=pymysql.cursors.DictCursor,
     )
 
-#CHANGE-2:fare table (Matrix representation)
-fares = [
-    [0,8,8,10],
-    [8,0,8,10],
-    [8,8,0,8],
-    [10,10,8,0]
-]
 
-#CHANGE-3: searching the fare between two stops
+# CHANGE-2:fare table (Matrix representation)
+fares = [[0, 8, 8, 10], [8, 0, 8, 10], [8, 8, 0, 8], [10, 10, 8, 0]]
+
+
+# CHANGE-3: searching the fare between two stops
 def get_fare(from_stop, to_stop):
     return fares[from_stop][to_stop]
 
-#CHANGE-4: current stop
-curStopKey = random.choice(list(stops.keys())) # current stop will be updated from keypad
+
+# CHANGE-4: current stop
+curStopKey = random.choice(
+    list(stops.keys())
+)  # current stop will be updated from keypad
 curStop = stops[curStopKey]
 
-#CHANGE-5: retrieving key of corresponding Stop name
+
+# CHANGE-5: retrieving key of corresponding Stop name
 def retrieveKey(stopName):
     for key, value in stops.items():
-        if(value==stopName):
+        if value == stopName:
             return key
     return None
 
-#CHANGE-6: balance updation after fare deduction
+
+# CHANGE-6: balance updation after fare deduction
 # def balanceUpdate(card_id,fare):
 #     balance = card["balance"]
 
@@ -90,6 +88,7 @@ def retrieveKey(stopName):
 #     cursor.close()
 #     db.close()
 
+
 def get_current_user(request: Request):
     return request.session.get("user")
 
@@ -105,18 +104,18 @@ def require_admin(request: Request):
     user = get_current_user(request)
     if not user:
         return RedirectResponse("/login", status_code=303)
-    
+
     if user.get("role") != "admin":
         return HTMLResponse("Access Denied: Admins only", status_code=403)
-    
+
     return user
+
 
 # ---------------- HOME ----------------
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request, card_id: Optional[str] = None):
 
-
-    user = request.session.get("user")   # ✅ ADD THIS
+    user = request.session.get("user")  # ✅ ADD THIS
     if card_id == "None":
         card_id = None
 
@@ -164,22 +163,26 @@ def home(request: Request, card_id: Optional[str] = None):
         },
     )
 
+
 # ---------------- HOME REDIRECT ----------------
 @app.get("/home", response_class=HTMLResponse)
 def home_redirect(request: Request, card_id: Optional[str] = None):
     return RedirectResponse(url=f"/?card_id={card_id}", status_code=303)
 
+
 @app.get("/home")
 def home_redirect(request: Request):
     return RedirectResponse("/", status_code=303)
-#------------------- SIGNUP ----------------
+
+
+# ------------------- SIGNUP ----------------
 @app.post("/signup")
 def signup(
     name: str = Form(...),
     email: str = Form(...),
     phone: str = Form(...),
     password: str = Form(...),
-    role: str = Form(...)
+    role: str = Form(...),
 ):
 
     db = get_db()
@@ -197,10 +200,12 @@ def signup(
 
     return RedirectResponse("/login", status_code=303)
 
+
 # ---------------- LOGIN ----------------
 @app.get("/login", response_class=HTMLResponse)
 def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
+
 
 @app.post("/login")
 def login_user(request: Request, email: str = Form(...), password: str = Form(...)):
@@ -226,7 +231,7 @@ def login_user(request: Request, email: str = Form(...), password: str = Form(..
             "role": (user.get("role") or "").strip().lower(),
         }
 
-        # ✅ FIXED: Always go to HOME after login
+        # ✅ go to home (card will come from session)
         return RedirectResponse(url="/home", status_code=303)
 
     return templates.TemplateResponse(
@@ -234,27 +239,40 @@ def login_user(request: Request, email: str = Form(...), password: str = Form(..
         {"request": request, "error": "Invalid credentials"},
     )
 
+
 # ---------------- SCAN ----------------
 @app.post("/scan", response_class=HTMLResponse)
 def scan_card(card_id: str):
 
     db = get_db()
     cursor = db.cursor()
-    keyStop = random.choice(list(stops.keys())) # current stop will be updated from keypad
+    keyStop = random.choice(
+        list(stops.keys())
+    )  # current stop will be updated from keypad
     curStopKey = keyStop
     curStop = stops[keyStop]
-    cursor.execute("SELECT r.from_stop, c.balance FROM rides r JOIN cards c ON r.card_id = c.card_id WHERE r.card_id=%s", (card_id,))
+    cursor.execute(
+        "SELECT r.from_stop, c.balance FROM rides r JOIN cards c ON r.card_id = c.card_id WHERE r.card_id=%s",
+        (card_id,),
+    )
     card = cursor.fetchone()
     # tap-2
     if card:
         from_stop = card["from_stop"]
         to_stop = curStop
-        fare = get_fare(from_stop=retrieveKey(card["from_stop"]), to_stop=curStopKey) #fare fetched from fare table
+        fare = get_fare(
+            from_stop=retrieveKey(card["from_stop"]), to_stop=curStopKey
+        )  # fare fetched from fare table
         balance = card["balance"]
-        if(balance >= fare):
+        if balance >= fare:
             new_balance = balance - fare
-            cursor.execute("UPDATE rides SET to_stop=%s, fare=%s WHERE card_id=%s", (curStop, fare, card_id))
-            cursor.execute("UPDATE cards SET balance=%s WHERE card_id=%s", (new_balance, card_id))
+            cursor.execute(
+                "UPDATE rides SET to_stop=%s, fare=%s WHERE card_id=%s",
+                (curStop, fare, card_id),
+            )
+            cursor.execute(
+                "UPDATE cards SET balance=%s WHERE card_id=%s", (new_balance, card_id)
+            )
             description = f"{from_stop} → {to_stop}"
 
             cursor.execute(
@@ -272,21 +290,20 @@ def scan_card(card_id: str):
             }
         else:
             return {"status": "insufficient balance", "balance": balance}
-    #tap-1
+    # tap-1
     else:
         cursor.execute(
             "INSERT INTO cards(card_id, balance, status) VALUES(%s,%s,%s)",
             (card_id, 100, "active"),
         )
-        cursor.execute("INSERT INTO rides(card_id, from_stop, to_stop, fare) VALUES(%s,%s,%s,%s)", (card_id, curStop, None, 0))
+        cursor.execute(
+            "INSERT INTO rides(card_id, from_stop, to_stop, fare) VALUES(%s,%s,%s,%s)",
+            (card_id, curStop, None, 0),
+        )
         db.commit()
         return {"status": "new card registered", "card_id": card_id, "balance": 100}
-        
 
-        
 
-        
-        
 # # ---------------- TAP CARD ----------------
 # @app.post("/tap_card")
 # def tap_card(
@@ -407,6 +424,7 @@ def dashboard(request: Request, card_id: str = None):
         },
     )
 
+
 # ---------------- ADMIN ----------------
 @app.get("/admin", response_class=HTMLResponse)
 def admin_dashboard(request: Request):
@@ -419,33 +437,41 @@ def admin_dashboard(request: Request):
     db = get_db()
     cursor = db.cursor(pymysql.cursors.DictCursor)
 
-    cursor.execute("""
+    cursor.execute(
+        """
         SELECT transaction_id, type, card_id, description, amount, transaction_time
         FROM transactions
         ORDER BY transaction_time DESC
-    """)
+    """
+    )
     rides = cursor.fetchall()
 
-    cursor.execute("""
+    cursor.execute(
+        """
         SELECT COUNT(DISTINCT card_id) AS active_cards
         FROM cards
         WHERE status = 'active'
-    """)
+    """
+    )
     active_cards = cursor.fetchone()["active_cards"]
 
-    cursor.execute("""
+    cursor.execute(
+        """
         SELECT SUM(amount) AS total_fare
         FROM transactions
         WHERE type='ride' AND DATE(transaction_time) = CURDATE()
-    """)
+    """
+    )
     result = cursor.fetchone()
     total_fare = result["total_fare"] if result["total_fare"] else 0
 
-    cursor.execute("""
+    cursor.execute(
+        """
         SELECT COUNT(*) AS rides_today
         FROM transactions
         WHERE type='ride' AND DATE(transaction_time) = CURDATE()
-    """)
+    """
+    )
     rides_today = cursor.fetchone()["rides_today"]
 
     cursor.close()
@@ -464,6 +490,7 @@ def admin_dashboard(request: Request):
         },
     )
 
+
 # ---------------- RECHARGE ----------------
 @app.get("/recharge", response_class=HTMLResponse)
 def recharge_page(request: Request):
@@ -474,11 +501,9 @@ def recharge_page(request: Request):
 
     return templates.TemplateResponse(
         "recharge.html",
-        {
-            "request": request,
-            "user": user   # 🔥 THIS LINE FIXES EVERYTHING
-        }
+        {"request": request, "user": user},  # 🔥 THIS LINE FIXES EVERYTHING
     )
+
 
 @app.post("/recharge", response_class=HTMLResponse)
 def recharge(request: Request, card_id: str = Form(...), amount: float = Form(...)):
@@ -509,11 +534,12 @@ def recharge(request: Request, card_id: str = Form(...), amount: float = Form(..
         "recharge.html",
         {
             "request": request,
-             "user": request.session.get("user"),
+            "user": request.session.get("user"),
             "card_id": card["card_id"],
             "balance": card["balance"],
         },
     )
+
 
 # ---------------- LOGOUT ----------------
 @app.get("/logout")
