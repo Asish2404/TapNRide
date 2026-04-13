@@ -22,7 +22,7 @@ def get_db():
         host="localhost",
         user="root",
         password="",
-        database="smart_bus",
+        database="sbus",
         cursorclass=pymysql.cursors.DictCursor,
     )
 
@@ -197,61 +197,61 @@ def scan_card(card_id: str, from_stop: str, to_stop: str):
         return {"status": "new card registered", "card_id": card_id, "balance": 100}
 
 # ---------------- TAP CARD ----------------
-# @app.post("/tap_card")
-# def tap_card(
-#     card_id: str = Form(...),
-#     fare: float = Form(...),
-#     Starting_place: str = Form(...),
-#     Ending_place: str = Form(...),
-# ):
+@app.post("/tap_card")
+def tap_card(
+    card_id: str = Form(...),
+    fare: float = Form(...),
+    Starting_place: str = Form(...),
+    Ending_place: str = Form(...),
+):
 
-#     db = get_db()
-#     cursor = db.cursor(pymysql.cursors.DictCursor)
+    db = get_db()
+    cursor = db.cursor(pymysql.cursors.DictCursor)
 
-#     cursor.execute("SELECT balance FROM cards WHERE card_id=%s", (card_id,))
-#     card = cursor.fetchone()
+    cursor.execute("SELECT balance FROM cards WHERE card_id=%s", (card_id,))
+    card = cursor.fetchone()
 
-#     if not card:
-#         cursor.close()
-#         db.close()
-#         return {"status": "Card not found"}
+    if not card:
+        cursor.close()
+        db.close()
+        return {"status": "Card not found"}
 
-#     balance = card["balance"]
+    balance = card["balance"]
 
-#     if balance < fare:
-#         cursor.close()
-#         db.close()
-#         return {"status": "Insufficient balance"}
+    if balance < fare:
+        cursor.close()
+        db.close()
+        return {"status": "Insufficient balance"}
 
-#     cursor.execute(
-#         "UPDATE cards SET balance = balance - %s WHERE card_id=%s",
-#         (fare, card_id),
-#     )
+    cursor.execute(
+        "UPDATE cards SET balance = balance - %s WHERE card_id=%s",
+        (fare, card_id),
+    )
 
-#     cursor.execute(
-#         """
-#         INSERT INTO rides(card_id, from_stop, to_stop, fare)
-#         VALUES (%s,%s,%s,%s)
-#         """,
-#         (card_id, Starting_place, Ending_place, fare),
-#     )
+    cursor.execute(
+        """
+        INSERT INTO rides(card_id, from_stop, to_stop, fare)
+        VALUES (%s,%s,%s,%s)
+        """,
+        (card_id, Starting_place, Ending_place, fare),
+    )
 
-#     description = f"{Starting_place} → {Ending_place}"
+    description = f"{Starting_place} → {Ending_place}"
 
-#     cursor.execute(
-#         """
-#         INSERT INTO transactions(type, card_id, description, amount)
-#         VALUES (%s,%s,%s,%s)
-#         """,
-#         ("Ride", card_id, description, fare),
-#     )
+    cursor.execute(
+        """
+        INSERT INTO transactions(type, card_id, description, amount)
+        VALUES (%s,%s,%s,%s)
+        """,
+        ("Ride", card_id, description, fare),
+    )
 
-#     db.commit()
+    db.commit()
 
-#     cursor.close()
-#     db.close()
+    cursor.close()
+    db.close()
 
-#     return RedirectResponse(url=f"/dashboard?card_id={card_id}", status_code=303)
+    return RedirectResponse(url=f"/dashboard?card_id={card_id}", status_code=303)
 
 
 # ---------------- DASHBOARD ----------------

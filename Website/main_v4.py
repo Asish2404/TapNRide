@@ -31,7 +31,7 @@ def get_db():
         host="localhost",
         user="root",
         password="",
-        database="smart_bus",
+        database="sbus",
         cursorclass=pymysql.cursors.DictCursor,
     )
 
