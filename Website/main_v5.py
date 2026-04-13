@@ -464,7 +464,13 @@ def recharge_page(request: Request):
     if not user:
         return RedirectResponse("/login", status_code=303)
 
-    return templates.TemplateResponse("recharge.html", {"request": request})
+    return templates.TemplateResponse(
+        "recharge.html",
+        {
+            "request": request,
+            "user": user   # 🔥 THIS LINE FIXES EVERYTHING
+        }
+    )
 
 @app.post("/recharge", response_class=HTMLResponse)
 def recharge(request: Request, card_id: str = Form(...), amount: float = Form(...)):

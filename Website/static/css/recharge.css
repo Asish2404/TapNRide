@@ -9,18 +9,19 @@
 }
 
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
+    font-family: "Inter", sans-serif;
+    background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.14), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.16), transparent 55%),
+        #020617;
+    color: var(--text);
     min-height: 100vh;
-    background: linear-gradient(120deg, #001028, #020617);
-    color: white;
-    display: flex;
-    flex-direction: column;
 }
 
 /* NAVBAR */
@@ -38,6 +39,11 @@ body {
     transition: 0.3s ease;
     box-shadow: 0 0 10px rgba(34, 211, 238, 0.15);
 }
+
+.brand {
+    display: flex;
+    align-items: center;
+}
 /* PROFILE DROPDOWN FIX */
 
 .profile-container {
@@ -52,12 +58,6 @@ body {
     background: none;
     border: none;
     cursor: pointer;
-    color: white;
-}
-
-.arrow {
-    color: rgb(255, 255, 255);
-    font-size: 12px;
 }
 
 .avatar {
@@ -88,20 +88,18 @@ body {
 
 /* FIX TEXT ISSUE */
 .dropdown-menu a {
-    all: unset;                 /* reset everything */
-    display: block;             /* vertical layout */
+    display: block;
     padding: 10px;
     color: black !important;
-    cursor: pointer;
+    text-decoration: none;
 }
-
 
 .dropdown-menu a:hover {
     background: #f3f4f6;
 }
-.brand {
-    display: flex;
-    align-items: center;
+.arrow {
+    color: rgb(255, 255, 255);
+    font-size: 12px;
 }
 
 .info {
@@ -110,8 +108,8 @@ body {
 }
 
 .logo-img {
-    width: 65px;
-    height: 40px;
+    width: 65px !important;
+    height: 40px !important;
     border-radius: 25px;
     margin-right: 12px;
 }
@@ -156,7 +154,7 @@ body {
     font-weight: 600;
     text-decoration: none;
     padding: 6px 14px;
-    border-radius: 20px;
+    border-radius: var(--radius);
     font-size: 14px;
     transition: 0.2s;
 }
@@ -165,6 +163,7 @@ body {
     background: #fdfdfd;
     color: rgb(15, 15, 15);
 }
+
 
 
 main {
