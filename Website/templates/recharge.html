@@ -23,8 +23,32 @@
             <a class="link" href="/home">Home</a>
             <a class="link" href="/dashboard">Passenger</a>
             <a class="link" href="/recharge">Recharge</a>
+
+            {% if user %}
+
+            {% if user.role == "admin" %}
             <a class="link" href="/admin">Admin</a>
+            {% endif %}
+
+            <!-- PROFILE -->
+            <div class="profile-container">
+
+                <button class="profileBtn profile-btn">
+                    <div class="avatar">{{ user.name[0] }}</div>
+                    <span class="arrow">▼</span>
+                </button>
+
+                <div class="dropdown-menu">
+                    <a href="/dashboard">Dashboard</a>
+                    <a href="/recharge">Recharge</a>
+                    <a href="/logout">Logout</a>
+                </div>
+
+            </div>
+
+            {% else %}
             <a class="link" href="/login">Login</a>
+            {% endif %}
         </nav>
     </header>
 
@@ -68,7 +92,24 @@
     <footer>
         SmartBus – Tap • Travel • Secure • IoT Smart Bus Fare System
     </footer>
+    <script>
+document.querySelectorAll(".profileBtn").forEach(btn => {
+    btn.addEventListener("click", function (e) {
+        e.stopPropagation();
 
+        const dropdown = this.nextElementSibling;
+
+        dropdown.style.display =
+            dropdown.style.display === "block" ? "none" : "block";
+    });
+});
+
+document.addEventListener("click", function () {
+    document.querySelectorAll(".dropdown-menu").forEach(menu => {
+        menu.style.display = "none";
+    });
+});
+</script>
 </body>
 
 </html>

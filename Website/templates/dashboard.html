@@ -21,12 +21,36 @@
             </div>
         </div>
         <nav class="nav-links">
-            <a class="link" href="/home">Home</a>
-            <a class="link" href="/dashboard">Passenger</a>
-            <a class="link" href="/recharge">Recharge</a>
+    <a class="link" href="/home">Home</a>
+    <a class="link" href="/dashboard">Passenger</a>
+    <a class="link" href="/recharge">Recharge</a>
+
+    {% if user %}
+
+        {% if user.role == "admin" %}
             <a class="link" href="/admin">Admin</a>
-            <a class="link" href="/login">Login</a>
-        </nav>
+        {% endif %}
+
+        <!-- PROFILE -->
+        <div class="profile-container">
+            <button id="profileBtn" class="profile-btn">
+                <div class="avatar">{{ user.name[0] }}</div>
+                <span class="arrow">▼</span>
+            </button>
+
+            <div id="dropdown" class="dropdown-menu">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/recharge">Recharge</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+
+    {% else %}
+
+        <a class="link" href="/login">Login</a>
+
+    {% endif %}
+</nav>
     </header>
     <main class="container">
         <h1>Passenger Dashboard</h1>
@@ -107,6 +131,22 @@
     <footer>
         SmartBus – Tap • Travel • Secure • IoT Smart Bus Fare System
     </footer>
+   <script>
+const btn = document.getElementById("profileBtn");
+const dropdown = document.getElementById("dropdown");
+
+if (btn) {
+    btn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        dropdown.style.display =
+            dropdown.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", function() {
+        dropdown.style.display = "none";
+    });
+}
+</script>
 </body>
 
 </html>

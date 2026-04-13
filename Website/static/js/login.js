@@ -86,6 +86,7 @@
         return Math.min(s, 4);
     }
 
+
     // Validators
     const emailOrPhoneRe = /^(?:[^\s@]+@[^\s@]+\.[^\s@]+|\+?\d{8,15})$/;
     const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

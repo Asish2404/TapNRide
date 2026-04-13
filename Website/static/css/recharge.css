@@ -1,3 +1,13 @@
+:root {
+    --bg: #020617;
+    --bg-elevated: rgba(15, 23, 42, 0.9);
+    --accent: #22d3ee;
+    --accent2: #0ea5e9;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --radius: 999px;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -28,7 +38,67 @@ body {
     transition: 0.3s ease;
     box-shadow: 0 0 10px rgba(34, 211, 238, 0.15);
 }
+/* PROFILE DROPDOWN FIX */
 
+.profile-container {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+}
+
+.arrow {
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #3b82f6;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+/* 🔥 MAIN FIX */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 45px;
+    right: 0;
+    background: white;
+    min-width: 160px;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    overflow: hidden;
+    z-index: 9999;
+}
+
+/* FIX TEXT ISSUE */
+.dropdown-menu a {
+    all: unset;                 /* reset everything */
+    display: block;             /* vertical layout */
+    padding: 10px;
+    color: black !important;
+    cursor: pointer;
+}
+
+
+.dropdown-menu a:hover {
+    background: #f3f4f6;
+}
 .brand {
     display: flex;
     align-items: center;

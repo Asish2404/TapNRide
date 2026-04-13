@@ -4,7 +4,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from typing import Optional
 import pymysql
-#import random # just for testing with random bus stop key
+
+import random # just for testing with random bus stop key
 
 
 # 🔴 ADD SESSION
@@ -89,12 +90,33 @@ def retrieveKey(stopName):
 #     cursor.close()
 #     db.close()
 
+def get_current_user(request: Request):
+    return request.session.get("user")
 
+
+def require_login(request: Request):
+    user = get_current_user(request)
+    if not user:
+        return RedirectResponse("/login", status_code=303)
+    return user
+
+
+def require_admin(request: Request):
+    user = get_current_user(request)
+    if not user:
+        return RedirectResponse("/login", status_code=303)
+    
+    if user.get("role") != "admin":
+        return HTMLResponse("Access Denied: Admins only", status_code=403)
+    
+    return user
 
 # ---------------- HOME ----------------
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request, card_id: Optional[str] = None):
 
+
+    user = request.session.get("user")   # ✅ ADD THIS
     if card_id == "None":
         card_id = None
 
@@ -131,6 +153,7 @@ def home(request: Request, card_id: Optional[str] = None):
         "home.html",
         {
             "request": request,
+            "user": request.session.get("user"),
             "balance": balance,
             "card_id": card["card_id"] if card else "N/A",
             "from_stop": trip["from_stop"] if trip else "N/A",
@@ -146,6 +169,9 @@ def home(request: Request, card_id: Optional[str] = None):
 def home_redirect(request: Request, card_id: Optional[str] = None):
     return RedirectResponse(url=f"/?card_id={card_id}", status_code=303)
 
+@app.get("/home")
+def home_redirect(request: Request):
+    return RedirectResponse("/", status_code=303)
 #------------------- SIGNUP ----------------
 @app.post("/signup")
 def signup(
@@ -325,6 +351,7 @@ def scan_card(card_id: str):
 def dashboard(request: Request, card_id: str = None):
 
     user = request.session.get("user")
+
     if not user:
         return RedirectResponse("/login", status_code=303)
 
@@ -355,7 +382,6 @@ def dashboard(request: Request, card_id: str = None):
             """,
             (card_id,),
         )
-
         rides = cursor.fetchall()
         total_rides = len(rides)
 
@@ -370,6 +396,7 @@ def dashboard(request: Request, card_id: str = None):
         "dashboard.html",
         {
             "request": request,
+            "user": request.session.get("user"),
             "card_id": card_id,
             "balance": balance,
             "rides": rides,
@@ -429,6 +456,7 @@ def admin_dashboard(request: Request):
         {
             "request": request,
             "user": user,
+            "user": require_admin(request),
             "rides": rides,
             "active_cards": active_cards,
             "total_fare": total_fare,
@@ -475,6 +503,7 @@ def recharge(request: Request, card_id: str = Form(...), amount: float = Form(..
         "recharge.html",
         {
             "request": request,
+             "user": request.session.get("user"),
             "card_id": card["card_id"],
             "balance": card["balance"],
         },

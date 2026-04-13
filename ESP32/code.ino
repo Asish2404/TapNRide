@@ -1,9 +1,9 @@
-// ESP32 code for RFID + GPS + LCD Display
 #include <SPI.h>
 #include <MFRC522.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include <TinyGPSPlus.h>
+#include <Keypad.h>
 
 // ---------------- RFID ----------------
 #define SS_PIN 5
@@ -21,6 +21,26 @@ TinyGPSPlus gps;
 // GPS pins
 #define RXD2 16
 #define TXD2 17
+
+// ---------------- KEYPAD ----------------
+const byte ROWS = 4; 
+const byte COLS = 4; 
+
+char keys[ROWS][COLS] = {
+  {'D','C','B','A'},
+  {'#','9','6','3'},
+  {'0','8','5','2'},
+  {'*','7','4','1'}
+};
+
+byte rowPins[ROWS] = {12, 13, 14, 15}; 
+byte colPins[COLS] = {26, 25, 33, 32}; 
+
+Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
+
+// -------- KEYPAD INPUT STORAGE --------
+String input = "";
+String ip = "";
 
 void setup()
 {
@@ -43,29 +63,78 @@ void setup()
     lcd.setCursor(0, 0);
     lcd.print("Smart Bus");
     lcd.setCursor(0, 1);
+    lcd.print("System Ready");
+
+    delay(2000);
+
+    lcd.clear();
     lcd.print("Scan Card...");
 }
 
 void loop()
 {
-    // --------- GPS Update ---------
-    while (Serial2.available() > 0)
+    // --------- KEYPAD INPUT ---------
+    char key = keypad.getKey();
+
+    if (key)
     {
-        gps.encode(Serial2.read());
+        if (key == '#')  // ENTER
+        {
+            ip = input;
+
+            lcd.clear();
+            lcd.setCursor(0, 0);
+            lcd.print("ID:");
+            lcd.setCursor(0, 1);
+            lcd.print(ip);
+
+            input = "";
+            delay(1500);
+
+            lcd.clear();
+            lcd.print("Scan Card...");
+        }
+        else if (key == '*') // CLEAR
+        {
+            input = "";
+            lcd.clear();
+            lcd.print("Cleared");
+
+            delay(1000);
+
+            lcd.clear();
+            lcd.print("Scan Card...");
+        }
+        else if (key >= '0' && key <= '9')   // ✅ only numbers
+        {
+            input += key;
+
+            lcd.clear();
+            lcd.setCursor(0, 0);
+            lcd.print("Enter ID:");
+            lcd.setCursor(0, 1);
+            lcd.print(input);
+        }
     }
 
-    // --------- RFID Check ---------
+    // --------- RFID CHECK ---------
     if (!mfrc522.PICC_IsNewCardPresent())
-    {
         return;
-    }
 
     if (!mfrc522.PICC_ReadCardSerial())
+        return;
+
+    // ❌ Do NOT proceed if ID not entered
+    if (ip == "")
     {
+        Serial.println("ERROR:EMPTY_ID");
+
+        lcd.clear();
+        lcd.print("Enter ID First");
+        delay(1500);
+
         return;
     }
-
-    Serial.print("Card UID:");
 
     String uid = "";
 
@@ -79,55 +148,32 @@ void loop()
 
     uid.toUpperCase();
 
-    Serial.println(uid);
+    // ✅ ONLY VALID OUTPUT FORMAT
+    Serial.print(uid);
+    Serial.print(",");
+    Serial.println(ip);   // 🔥 ONLY THIS PRINT
 
-    // -------- GPS Data --------
-    float lat = 0;
-    float lng = 0;
-
-    if (gps.location.isValid())
-    {
-        lat = gps.location.lat();
-        lng = gps.location.lng();
-    }
-    else
-    {
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("GPS Not Ready");
-        delay(2000);
-    }
-
-    Serial.print("Latitude: ");
-    Serial.println(lat, 6);
-
-    Serial.print("Longitude: ");
-    Serial.println(lng, 6);
-
-    // -------- Buzzer --------
+    // -------- BUZZER --------
     digitalWrite(BUZZER, HIGH);
 
-    // -------- LCD Display --------
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("UID:");
     lcd.print(uid);
-
-    lcd.setCursor(0, 1);
-    lcd.print("Loc:");
-    lcd.print(lat, 2);
-    lcd.print(",");
-    lcd.print(lng, 2);
 
     delay(2000);
 
     digitalWrite(BUZZER, LOW);
 
     lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Scan Next Card");
+    lcd.print("Done");
 
-    delay(2000);
+    delay(1500);
+
+    lcd.clear();
+    lcd.print("Enter ID");
+
+    ip = "";  // ✅ reset after use
 
     mfrc522.PICC_HaltA();
 }
