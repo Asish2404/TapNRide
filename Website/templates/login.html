@@ -6,14 +6,14 @@
   <title>SmartBus | Secure Login</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap" rel="stylesheet">
+  <link rel="shortcut icon" href="../static/source/SB.jpeg" type="image/x-icon">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="../static/css/login.css">
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: { sans: ['Poppins', 'ui-sans-serif', 'system-ui'] },
           colors: {
             primary: {
               50: '#ecfeff',
@@ -97,36 +97,36 @@
         </div>
       </div>
       <nav class="nav-links">
-    <a class="link" href="/home">Home</a>
-    <a class="link" href="/dashboard">Passenger</a>
-    <a class="link" href="/recharge">Recharge</a>
+        <a class="link" href="/home">Home</a>
+        <a class="link" href="/dashboard">Passenger</a>
+        <a class="link" href="/recharge">Recharge</a>
 
-    {% if user %}
+        {% if user %}
 
         {% if user.role == "admin" %}
-            <a class="link" href="/admin">Admin</a>
+        <a class="link" href="/admin">Admin</a>
         {% endif %}
 
         <!-- PROFILE -->
         <div class="profile-container">
-            <button id="profileBtn" class="profile-btn">
-                <div class="avatar">{{ user.name[0] }}</div>
-                <span class="arrow">▼</span>
-            </button>
+          <button id="profileBtn" class="profile-btn">
+            <div class="avatar">{{ user.name[0] }}</div>
+            <span class="arrow">▼</span>
+          </button>
 
-            <div id="dropdown" class="dropdown-menu">
-                <a href="/dashboard">Dashboard</a>
-                <a href="/recharge">Recharge</a>
-                <a href="/logout">Logout</a>
-            </div>
+          <div id="dropdown" class="dropdown-menu">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/recharge">Recharge</a>
+            <a href="/logout">Logout</a>
+          </div>
         </div>
 
-    {% else %}
+        {% else %}
 
         <a class="link" href="/login">Login</a>
 
-    {% endif %}
-</nav>
+        {% endif %}
+      </nav>
     </header>
 
     <!-- Main -->
@@ -297,7 +297,7 @@
                   <div class="relative">
                     <div class="flex items-center gap-2 sm:gap-3">
                       <button id="themeToggle" aria-label="Toggle theme"
-                        class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/90 backdrop-blur transition hover:bg-white/10 focus-ring">
+                        class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-black/30 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-black/40 focus-ring">
                         <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" viewBox="0 0 24 24"
                           fill="currentColor">
                           <path
@@ -361,7 +361,7 @@
                         </svg>
                       </span>
                       <input id="loginEmail" name="email" type="text" inputmode="email"
-                        placeholder="you@citytransit.com or +91…" class="input" required />
+                        placeholder="you@citytransit.com or +91…" class="input" required/>
                     </div>
                     <p class="mt-1 hidden text-xs text-rose-500" id="loginEmailErr">Please enter a valid email or phone.
                     </p>

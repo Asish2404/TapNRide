@@ -68,7 +68,7 @@ void setup()
     delay(2000);
 
     lcd.clear();
-    lcd.print("Scan Card...");
+    lcd.print("Enter ID...");
 }
 
 void loop()

@@ -400,3 +400,18 @@ tbody tr:hover {
     background: #2ec4d6;
     border-radius: 6px;
 }
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #06b6d4, #0ea5e9);
+    border-radius: 999px
+}
+
+::-webkit-scrollbar-track {
+    background: transparent
+}

@@ -1,5 +1,28 @@
 :root {
+    --bg: #020617;
+    --bg-elevated: rgba(15, 23, 42, 0.9);
+    --accent: #22d3ee;
+    --accent2: #0ea5e9;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --radius: 999px;
     --ring: 0 0 0 3px rgba(6, 182, 212, .25);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.14), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.16), transparent 55%),
+        #020617;
+    color: var(--text);
+    min-height: 100vh;
 }
 
 .top-nav {
@@ -17,12 +40,14 @@
 }
 
 .brand {
+    font-family: "Inter", sans-serif;
     display: flex;
     align-items: center;
 }
 
 .profile-container {
-    position: relative;   /* 🔥 REQUIRED */
+    position: relative;
+    /* 🔥 REQUIRED */
     display: inline-block;
 }
 
@@ -44,9 +69,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    font-weight: 600;
 }
 
-/* 🔥 FIXED DROPDOWN */
 .dropdown-menu {
     display: none;
     position: absolute;
@@ -55,7 +80,7 @@
     background: white;
     min-width: 150px;
     border-radius: 8px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     z-index: 9999;
 }
@@ -64,7 +89,7 @@
 .dropdown-menu a {
     display: block;
     padding: 10px;
-    color: black !important;   /* 🔥 override nav style */
+    color: black !important;
     text-decoration: none;
 }
 
@@ -72,9 +97,9 @@
     background: #f3f4f6;
 }
 
-.info {
-    display: flex;
-    flex-direction: column;
+.arrow {
+    color: rgb(255, 255, 255);
+    font-size: 12px;
 }
 
 .logo-img {
@@ -83,16 +108,12 @@
     border-radius: 25px;
     margin-right: 12px;
 }
-.arrow {
-    color: rgb(255, 255, 255);
-    font-size: 12px;
-}
+
 /* .logo-img img {
     border-radius: 25px;
     width: 65px;
 } */
 
-/* Hover Effect */
 
 .top-nav:hover {
     transform: translateY(-2px);
@@ -102,22 +123,32 @@
     border: 1px solid rgba(34, 211, 238, 0.5);
 }
 
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
 .brand-text {
     font-weight: 600;
     font-size: 18px;
-    color: white;
     letter-spacing: 1px;
+    line-height: 1.1;
 }
 
 .brand-text-sub {
     font-size: 11px;
-    color: white;
+    color: var(--muted);
     letter-spacing: 2px;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
 }
 
 /* NAV LINKS */
 
 .nav-links {
+    font-family: "Inter", sans-serif;
     display: flex;
     gap: 8px;
 }
@@ -127,8 +158,8 @@
     color: #020617;
     font-weight: 600;
     text-decoration: none;
-    padding: 6px 14px;
-    border-radius: 999px;
+    padding: 4px 14px;
+    border-radius: var(--radius);
     font-size: 14px;
     transition: 0.2s;
 }
@@ -171,8 +202,37 @@
 
 /* Input autofill fix */
 input:-webkit-autofill {
-    -webkit-text-fill-color: inherit;
+    -webkit-text-fill-color: #0b1020;
     transition: background-color 5000s ease-in-out 0s;
+    box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.9) inset;
+}
+
+html.dark input:-webkit-autofill {
+    -webkit-text-fill-color: white;
+    transition: background-color 5000s ease-in-out 0s;
+    box-shadow: 0 0 0px 1000px rgba(15, 23, 42, 0.95) inset;
+    border-color: rgba(255, 255, 255, .12) !important;
+    border-radius: 0.9rem;
+}
+
+html.dark input:-webkit-autofill:focus {
+    box-shadow: 0 0 0px 1000px rgba(15, 23, 42, 0.95) inset, 0 0 0 3px rgba(6, 182, 212, .25) !important;
+    border-color: rgba(6, 182, 212, .6) !important;
+    outline: none !important;
+}
+
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+}
+
+input[type="email"]::-webkit-textfield-decoration-container,
+input[type="text"]::-webkit-textfield-decoration-container {
+    display: none;
 }
 
 /* Focus ring */
