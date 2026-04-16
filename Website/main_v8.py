@@ -629,3 +629,19 @@ def recharge(request: Request, card_id: str = Form(...), amount: float = Form(..
 def logout(request: Request):
     request.session.clear()
     return RedirectResponse(url="/login", status_code=303)
+
+@app.get("/profile")
+def profile(request: Request):
+    user = {
+        "first_name": "Rahul",
+        "last_name": "Kumar",
+        "role": "Admin",
+        "email": "rahul@example.com",
+        "card_id": "123456",
+        "balance": 250
+    }
+
+    return templates.TemplateResponse("profile.html", {
+        "request": request,
+        "user": user
+    })
