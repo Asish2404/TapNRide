@@ -9,6 +9,41 @@
 </head>
 
 <body>
+    <header class="header">
+        <nav class="navbar">
+
+            <!-- LEFT SIDE -->
+            <div class="nav-links">
+                <a class="link" href="/home">Home</a>
+                <a class="link" href="/dashboard">Passenger</a>
+                <a class="link" href="/recharge">Recharge</a>
+
+                {% if user.role.lower() == "admin" %}
+                <a class="link" href="/admin">Admin</a>
+                {% endif %}
+            </div>
+
+            <!-- RIGHT SIDE PROFILE -->
+            <div class="profile-container">
+                <button class="profile-btn">
+                    <div class="avatar">
+                        {{ user.first_name[0] }}{{ user.last_name[0] }}
+                    </div>
+                    <span class="arrow">▼</span>
+                </button>
+
+                <div class="dropdown-menu">
+                    <a href="/profile">Profile</a>
+                    <a href="/recharge">Recharge</a>
+                    <a href="/logout">Logout</a>
+                </div>
+            </div>
+
+        </nav>
+    </header>
+
+
+
     <div class="container">
         <div class="cards" style="--color:#FF00FD;">
             <div class="profile-block">
