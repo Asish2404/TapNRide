@@ -12,7 +12,6 @@
     <header class="header">
         <nav class="navbar">
 
-            <!-- LEFT SIDE -->
             <div class="nav-links">
                 <a class="link" href="/home">Home</a>
                 <a class="link" href="/dashboard">Passenger</a>
@@ -23,7 +22,6 @@
                 {% endif %}
             </div>
 
-            <!-- RIGHT SIDE PROFILE -->
             <div class="profile-container">
                 <button class="profile-btn">
                     <div class="avatar">
@@ -42,12 +40,10 @@
         </nav>
     </header>
 
-
-
     <div class="container">
         <div class="cards" style="--color:#FF00FD;">
             <div class="profile-block">
-                <div class="avatar">RK</div>
+                <img src="" class="avatar2" id="profile-pic" alt="profile">
                 <div>
                     <h2>Rahul Kumar</h2>
                     <p class="username">@smartbus_admin</p>
@@ -73,51 +69,69 @@
                     <p>On-Time</p>
                 </div>
             </div>
-            <div class="description"> Managing smart transportation systems with real-time tracking, optimizing routes,
-                improving efficiency, ensuring
-                reliable service, monitoring performance metrics, and enhancing urban mobility through data-driven
-                decisions
-                across the city.
+
+            <div class="description">
+                Managing smart transportation systems with real-time tracking, optimizing routes, improving efficiency,
+                ensuring reliable service, monitoring performance metrics, and enhancing urban mobility.
             </div>
+
             <div class="status active" id="systemStatus">
                 <span class="dot"></span>
                 <span id="statusText">System Active • All routes operational</span>
             </div>
         </div>
-        <div class="cards" style="--color: #00BFFF;">
 
+        <div class="cards" style="--color: #00BFFF;">
             <div class="header-row">
                 <h3 class="title">Account Details</h3>
-                <button class="button" id="editBtn">Edit</button>
+                <button type="button" class="button" id="editBtn">Edit</button>
             </div>
-            <br>
-            <!-- <div class="title">Acco</div> -->
+
             <div class="description">
-                <form>
+                <form method="post" action="/profile" enctype="multipart/form-data">
+
                     <div class="form-grid">
+
                         <div class="input-group">
-                            <label>Full Name</label>
-                            <input type="text" value="{{ user.first_name }} {{ user.last_name }}" readonly>
+                            <label>First Name</label>
+                            <input type="text" name="first_name" value="{{ user.first_name }}" readonly>
                         </div>
+
+                        <div class="input-group">
+                            <label>Last Name</label>
+                            <input type="text" name="last_name" value="{{ user.last_name }}" readonly>
+                        </div>
+
                         <div class="input-group role-box">
                             <label>Role</label>
                             <input type="text" value="{{ user.role }}" readonly>
                         </div>
+
                         <div class="input-group">
                             <label>Email</label>
-                            <input type="email" value="{{ user.email }}" readonly>
+                            <input type="email" name="email" value="{{ user.email }}" readonly>
                         </div>
+
                         <div class="input-group">
                             <label>Card ID</label>
                             <input type="text" value="{{ user.card_id }}" readonly>
                         </div>
+
                         <div class="input-group highlight">
                             <label>Current Balance</label>
                             <input type="text" value="₹{{ user.balance }}" readonly>
                         </div>
+
+                        <div class="input-group highlight">
+                            <label for="input-file">Update Image</label>
+                            <input type="file" name="photo" id="input-file"
+                                accept="image/jpeg, image/png, image/jpg">
+                        </div>
+
                     </div>
+
                     <div class="save-area">
-                        <button class="button" id="saveBtn">Save Changes</button>
+                        <button type="submit" class="button" id="saveBtn">Save Changes</button>
                     </div>
 
                 </form>
@@ -125,14 +139,15 @@
         </div>
     </div>
 
-
     <script>
         const editBtn = document.getElementById("editBtn");
-        const inputs = document.querySelectorAll("input");
         const saveBtn = document.getElementById("saveBtn");
 
         editBtn.addEventListener("click", () => {
-            inputs.forEach(input => input.removeAttribute("readonly"));
+            document.querySelectorAll("input[readonly]").forEach(input => {
+                input.removeAttribute("readonly");
+            });
+
             saveBtn.style.display = "inline-block";
             editBtn.style.display = "none";
         });
@@ -148,16 +163,22 @@
         setInterval(() => {
             const states = [
                 ["active", "System Active • All routes operational"],
-                ["warning", "Minor delays detected on Route R-45A"],
-                ["offline", "System Offline • Connection lost"]
+                ["warning", "Minor delays detected"],
+                ["offline", "System Offline"]
             ];
 
             const random = states[Math.floor(Math.random() * states.length)];
             setStatus(random[0], random[1]);
 
         }, 4000);
+
+        let profilePic = document.getElementById("profile-pic");
+        let inputFile = document.getElementById("input-file");
+
+        inputFile.onchange = function () {
+            profilePic.src = URL.createObjectURL(inputFile.files[0]);
+        }
     </script>
 
 </body>
-
 </html>

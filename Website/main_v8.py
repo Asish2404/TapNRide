@@ -645,3 +645,18 @@ def profile(request: Request):
         "request": request,
         "user": user
     })
+@app.post("/profile")
+async def update_profile(
+    request: Request,
+    first_name: str = Form(...),
+    last_name: str = Form(...),
+    email: str = Form(...),
+    photo: UploadFile = File(None)
+):
+    print(first_name, last_name, email)
+
+    if photo:
+        with open(f"static/uploads/{photo.filename}", "wb") as f:
+            f.write(await photo.read())
+
+    return RedirectResponse("/profile", status_code=303)
