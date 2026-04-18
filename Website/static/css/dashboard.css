@@ -19,7 +19,7 @@ body {
     background:
         radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.14), transparent 55%),
         radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.16), transparent 55%),
-        #020617;
+        var(--bg);
     color: var(--text);
     min-height: 100vh;
 }
@@ -40,13 +40,66 @@ body {
     box-shadow: 0 0 10px rgba(34, 211, 238, 0.15);
 }
 
+.top-nav:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 0 18px rgba(34, 211, 238, 0.35),
+        0 0 35px rgba(34, 211, 238, 0.15);
+    border: 1px solid rgba(34, 211, 238, 0.5);
+}
+
 .brand {
     display: flex;
     align-items: center;
 }
 
-/* PROFILE DROPDOWN FIX */
+.logo-img {
+    width: 65px !important;
+    height: 40px !important;
+    border-radius: 25px;
+    margin-right: 12px;
+}
 
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-text {
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 1px;
+}
+
+.brand-text-sub {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+}
+
+/* NAV LINKS */
+.nav-links {
+    display: flex;
+    gap: 8px;
+}
+
+.link {
+    background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+    color: #020617;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.link:hover {
+    background: #fdfdfd;
+    color: rgb(15, 15, 15);
+}
+
+/* PROFILE */
 .profile-container {
     position: relative;
     display: inline-block;
@@ -73,7 +126,12 @@ body {
     font-weight: 600;
 }
 
-/* 🔥 MAIN FIX */
+.arrow {
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+}
+
+/* DROPDOWN */
 .dropdown-menu {
     display: none;
     position: absolute;
@@ -87,7 +145,6 @@ body {
     z-index: 9999;
 }
 
-/* FIX TEXT ISSUE */
 .dropdown-menu a {
     display: block;
     padding: 10px;
@@ -99,76 +156,7 @@ body {
     background: #f3f4f6;
 }
 
-.arrow {
-    color: rgb(255, 255, 255);
-    font-size: 12px;
-}
-
-.info {
-    display: flex;
-    flex-direction: column;
-}
-
-.logo-img {
-    width: 65px !important;
-    height: 40px !important;
-    border-radius: 25px;
-    margin-right: 12px;
-}
-
-/* .logo-img img {
-    border-radius: 25px;
-    width: 65px;
-} */
-
-/* Hover Effect */
-
-.top-nav:hover {
-    transform: translateY(-2px);
-    box-shadow:
-        0 0 18px rgba(34, 211, 238, 0.35),
-        0 0 35px rgba(34, 211, 238, 0.15);
-    border: 1px solid rgba(34, 211, 238, 0.5);
-}
-
-.brand-text {
-    font-weight: 600;
-    font-size: 18px;
-    letter-spacing: 1px;
-}
-
-.brand-text-sub {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 2px;
-}
-
-/* NAV LINKS */
-
-.nav-links {
-    display: flex;
-    gap: 8px;
-}
-
-.link {
-    background: linear-gradient(135deg, #22d3ee, #0ea5e9);
-    color: #020617;
-    font-weight: 600;
-    text-decoration: none;
-    padding: 6px 14px;
-    border-radius: var(--radius);
-    font-size: 14px;
-    transition: 0.2s;
-}
-
-.link:hover {
-    background: #fdfdfd;
-    color: rgb(15, 15, 15);
-}
-
-
 /* MAIN */
-
 .container {
     padding: 40px;
 }
@@ -179,7 +167,6 @@ body {
 }
 
 /* GRID */
-
 .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -187,9 +174,7 @@ body {
 }
 
 /* CARD */
-
 .card {
-    /* padding-bottom: 5px; */
     background: #0a1b2d;
     padding: 25px;
     border-radius: 10px;
@@ -229,7 +214,6 @@ body {
 }
 
 /* BALANCE */
-
 .balance {
     background: #0f2f45;
     padding: 10px;
@@ -240,7 +224,6 @@ body {
 }
 
 /* INFO GRID */
-
 .info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -261,16 +244,12 @@ body {
 }
 
 /* BUTTONS */
-
-/* BUTTONS */
-
 .buttons {
     display: flex;
     gap: 10px;
 }
 
 /* Recharge Button */
-
 .recharge {
     background: linear-gradient(135deg, #22d3ee, #0ea5e9);
     border: none;
@@ -290,7 +269,6 @@ body {
 }
 
 /* Refund Button */
-
 .refund {
     background: transparent;
     border: 1px solid #22d3ee;
@@ -311,7 +289,6 @@ body {
 }
 
 /* TABLE */
-
 table {
     width: 100%;
     border-collapse: collapse;
@@ -331,7 +308,6 @@ td {
 }
 
 /* FOOTER */
-
 footer {
     text-align: center;
     padding: 20px;
@@ -358,10 +334,8 @@ tbody tr:hover {
 
 .tap-form button {
     grid-column: 1 / -1;
-    /* button spans full width */
     width: 100px;
     justify-self: center;
-    /* center the button */
     background: #22c1dc;
     color: white;
     border: none;
