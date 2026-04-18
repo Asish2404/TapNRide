@@ -41,7 +41,7 @@
                 </button>
 
                 <div id="dropdown" class="dropdown-menu">
-                    <a href="/profile">Profile</a>
+                    <a href="/profile">Profile  </a>
                     <a href="/recharge">Recharge</a>
                     <a href="/logout">Logout</a>
                 </div>
@@ -66,11 +66,11 @@
                 <h3>Card Lookup</h3>
                 <!-- <label>Card ID</label> -->
                 <form action="/plan_ride" method="post" class="tap-form">
-                    <input type="text" name="card_id" placeholder="Enter your Card ID"
+                    <input   type="text" name="card_id" placeholder="Enter your Card ID"
                         value="{{ card_id if card_id else '' }}" required>
-                    <input type="text" name="Starting_place" placeholder="Starting Place" value="{{ from_stop if from_stop else '' }}" readonly>
-                    <input type="text" name="Ending_place" placeholder="Destination" required>
-                    <input type="number" name="fare" placeholder="Fare" value="{{ fare if fare else '' }}" readonly>
+                    <input   type="text" name="Starting_place" placeholder="Starting Place" value="{{ from_stop if from_stop else '' }}" readonly>
+                    <input   type="text" name="Ending_place" placeholder="Destination" required>
+                    <input   type="number" name="fare" placeholder="Fare" value="{{ fare if fare else '' }}" readonly>
                     <button type="submit" onclick="this.disabled=true; this.form.submit();">
                         Tap Card
                     </button>
