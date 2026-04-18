@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -115,7 +116,7 @@
           </button>
 
           <div id="dropdown" class="dropdown-menu">
-            <a href="/profile">Profile</a>
+            <a href="/dashboard">Dashboard</a>
             <a href="/recharge">Recharge</a>
             <a href="/logout">Logout</a>
           </div>
@@ -477,26 +478,26 @@
                   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
                     <div>
-                      <label class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Full name</label>
+                      <label for="suName" class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Full name</label>
                       <input id="suName" name="name" type="text" placeholder="Aarav Sharma" class="input" required />
                       <p class="mt-1 hidden text-xs text-rose-500" id="suNameErr">Please enter your name.</p>
                     </div>
 
                     <div>
-                      <label class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Email</label>
+                      <label for="suEmail" class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Email</label>
                       <input id="suEmail" name="email" type="email" placeholder="you@citytransit.com" class="input"
                         required />
                       <p class="mt-1 hidden text-xs text-rose-500" id="suEmailErr">Enter a valid email.</p>
                     </div>
 
                     <div>
-                      <label class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Phone</label>
+                      <label for="suPhone" class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Phone</label>
                       <input id="suPhone" name="phone" type="tel" placeholder="+91 9XXXXXXXXX" class="input" required />
                       <p class="mt-1 hidden text-xs text-rose-500" id="suPhoneErr">Enter a valid phone.</p>
                     </div>
 
                     <div>
-                      <label class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Role</label>
+                      <label for="suRole" class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Role</label>
                       <select id="suRole" name="role" class="input appearance-none">
                         <option value="passenger">Passenger</option>
                         <option value="driver">Driver</option>
@@ -505,16 +506,16 @@
                     </div>
 
                     <div>
-                      <label class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Password</label>
+                      <label for="suPass" class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Password</label>
                       <input id="suPass" name="password" type="password" placeholder="Create a strong password"
                         class="input" required minlength="6" />
                       <p class="mt-1 hidden text-xs text-rose-500" id="suPassErr">Minimum 6 characters.</p>
                     </div>
 
                     <div>
-                      <label class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Confirm
+                      <label for="suPass2" class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Confirm
                         password</label>
-                      <input id="suPass2" type="password" placeholder="Repeat password" class="input" required
+                      <input id="suPass2" name="confirm_password" type="password" placeholder="Repeat password" class="input" required
                         minlength="6" />
                       <p class="mt-1 hidden text-xs text-rose-500" id="suPass2Err">Passwords do not match.</p>
                     </div>
@@ -604,6 +605,31 @@
       </div>
     </div>
 
+    <!-- Global Popup Modal -->
+    <div id="popupModal" class="fixed inset-0 z-50 hidden">
+      <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+      <div class="relative mx-auto flex min-h-full items-center justify-center p-4">
+        <div
+          class="w-full max-w-sm animate-pop rounded-2xl border border-white/10 bg-white/90 p-6 shadow-deep backdrop-blur dark:bg-night-800/80">
+
+          <h3 id="popupTitle" class="text-lg font-semibold text-night-900 dark:text-white">
+            Message
+          </h3>
+
+          <p id="popupMessage" class="mt-2 text-sm text-night-700/70 dark:text-white/70">
+            Something happened
+          </p>
+
+          <button id="popupOk"
+            class="mt-5 w-full rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2.5 font-semibold text-white shadow-glow hover:brightness-110 transition">
+            OK
+          </button>
+
+        </div>
+      </div>
+    </div>
+
     <!-- Toast -->
     <div id="toast" class="pointer-events-none fixed inset-x-0 top-4 z-[60] flex items-center justify-center px-4">
       <div
@@ -612,6 +638,12 @@
     </div>
   </div>
   <script src="../static/js/login.js"></script>
+
+  {% if error %}
+  <script>
+    window.loginError = "{{ error }}";
+  </script>
+  {% endif %}
 </body>
 
 </html>
