@@ -54,6 +54,13 @@
         </nav>
     </header>
 
+
+    <div class="middle">
+        <button class="theme-btn" onclick="ThemeChange()">
+            Change Theme
+        </button>
+    </div>
+
     <main>
 
         <section class="page act">
@@ -154,24 +161,39 @@
 
     </main>
 
-    <footer class="footer">
-        SmartBus IoT Smart Fare System – College Project
-    </footer>
+    <div class="footer">
+        <div class="footer-brand">SmartBus IoT Smart Fare System</div>
+        <div class="footer-text">
+            College Project
+            <span class="footer-dot"></span>
+            Built with RFID · Cloud · Real-time sync
+        </div>
+    </div>
     <script>
         const btn = document.getElementById("profileBtn");
         const dropdown = document.getElementById("dropdown");
 
-        if (btn) {
+        if (btn && dropdown) {
             btn.addEventListener("click", function (e) {
                 e.stopPropagation();
-                dropdown.style.display =
-                    dropdown.style.display === "block" ? "none" : "block";
+
+                const isVisible =
+                    getComputedStyle(dropdown).display !== "none";
+
+                dropdown.style.display = isVisible ? "none" : "flex";
             });
 
             document.addEventListener("click", function () {
                 dropdown.style.display = "none";
             });
         }
+
+        function ThemeChange() {
+            document.body.classList.toggle("light-bg");
+            document.body.classList.toggle("gradient-bg");
+        }
+
+
     </script>
 
 </body>
