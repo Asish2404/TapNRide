@@ -5,35 +5,40 @@
     <meta charset="UTF-8">
     <title>SmartBus Recharge</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../static/css/recharge.css">
-    <link rel="shortcut icon" href="../static/source/SB.jpeg" type="image/x-icon">
+
+    <link rel="shortcut icon" href="../static/source/SB.jpeg">
 </head>
 
 <body>
 
+    <!-- 🔥 Animated Background -->
+    <div class="bg-animation"></div>
+
+    <!-- NAVBAR -->
     <header class="top-nav">
         <div class="brand">
-            <img src="../static/source/SB.jpeg" alt="SmartBus Logo" class="logo-img">
+            <img src="../static/source/SB.jpeg" class="logo-img">
             <div class="info">
                 <div class="brand-text">SmartBus</div>
                 <div class="brand-text-sub">Tap • Travel • Secure</div>
             </div>
         </div>
+
         <nav class="nav-links">
             <a class="link" href="/home">Home</a>
             <a class="link" href="/dashboard">Passenger</a>
             <a class="link" href="/recharge">Recharge</a>
 
             {% if user %}
-
             {% if user.role == "admin" %}
             <a class="link" href="/admin">Admin</a>
             {% endif %}
 
-            <!-- PROFILE -->
             <div class="profile-container">
                 <button id="profileBtn" class="profile-btn">
                     <div class="avatar">{{ user.name[0] }}</div>
@@ -46,71 +51,201 @@
                     <a href="/logout">Logout</a>
                 </div>
             </div>
-
             {% else %}
-
             <a class="link" href="/login">Login</a>
-
             {% endif %}
         </nav>
     </header>
 
+    <!-- MAIN -->
     <main>
+        <div class="container">
+            <div class="glass-card">
 
-        <div class="page">
+                <h1>Recharge Card</h1>
+                <p class="subtitle">Fast • Secure • Smart</p>
 
-            <h1>Recharge Card</h1>
-            <p>Add balance to your SmartBus card.</p>
+                <!-- Balance -->
+                <div class="balance-box">
+                    <span>Current Balance</span>
+                    <h2 id="balance">
+                        ₹{{ balance if balance is not none else "--" }}
+                    </h2>
+                </div>
 
-            <div class="card">
+                <!-- FORM -->
+                <form method="post" action="/recharge" onsubmit="return validateRecharge()" novalidate>
 
-                <h3>Secure Recharge</h3>
+                    <div class="input-group">
+                        <label for="card_id">Card ID</label>
+                        <input type="text" name="card_id" id="card_id" value="{{ user.card_id }}" readonly>
+                    </div>
 
-                <form action="/recharge" method="post">
+                    <div class="input-group">
+                        <label for="amount">Recharge Amount</label>
+                        <input type="number" name="amount" id="amount" placeholder="Min ₹50" min="50" required>
+                    </div>
 
-                    <label for="card_id">Card ID</label>
-                    <input type="text" id="card_id" name="card_id" placeholder="Enter SmartBus Card ID (SB1001)"
-                        required>
+                    <!-- Slider -->
+                    <input type="range" min="50" max="5000" value="100" id="slider">
 
-                    <label for="amount">Recharge Amount (₹)</label>
-                    <input type="number" id="amount" name="amount" placeholder="Minimum amount 50" min="50" required>
+                    <!-- Quick Buttons -->
+                    <div class="quick-btns">
+                        <button type="button" onclick="setAmount(100)">₹100</button>
+                        <button type="button" onclick="setAmount(300)">₹300</button>
+                        <button type="button" onclick="setAmount(500)">₹500</button>
+                        <button type="button" onclick="setAmount(1000)">₹1000</button>
+                    </div>
 
-                    <button class="btn" type="submit">Recharge</button>
-
+                    <button class="btn" type="submit">Recharge Now</button>
                 </form>
-
-                {% if card_id %}
-                <p><strong>Card ID:</strong> {{ card_id }}</p>
-                {% endif %}
-
+                <br>
                 {% if balance %}
-                <p><strong>Updated Balance:</strong> ₹{{ balance }}</p>
+                <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+                        // document.querySelector("input[name='card_id']").value = "";
+                        document.getElementById("amount").value = "";
+                    });
+                </script>
                 {% endif %}
+
+
+                <p id="message"></p>
+
             </div>
-
         </div>
-
     </main>
 
-    <footer>
-        SmartBus – Tap • Travel • Secure • IoT Smart Bus Fare System
-    </footer>
+    <div id="popupModal" class="popup hidden">
+        <div class="popup-box">
+            <p id="popupMessage">Message</p>
+            <button onclick="closePopup()">OK</button>
+        </div>
+    </div>
+
+    {% if error %}
     <script>
+        window.popupError = "{{ error }}";
+    </script>
+    {% endif %}
+
+    {% if balance %}
+    <script>
+        window.popupSuccess = "Recharge Successful! New Balance: ₹{{ balance }}";
+    </script>
+    {% endif %}
+
+    <!-- FOOTER -->
+    <footer>
+        SmartBus – Tap • Travel • Secure
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+
+        // Profile dropdown
         const btn = document.getElementById("profileBtn");
         const dropdown = document.getElementById("dropdown");
 
         if (btn) {
-            btn.addEventListener("click", function (e) {
+            btn.addEventListener("click", (e) => {
                 e.stopPropagation();
                 dropdown.style.display =
                     dropdown.style.display === "block" ? "none" : "block";
             });
 
-            document.addEventListener("click", function () {
+            document.addEventListener("click", () => {
                 dropdown.style.display = "none";
             });
         }
+
+        // Slider sync
+        let slider = document.getElementById("slider");
+        let amountInput = document.getElementById("amount");
+
+        slider.oninput = () => amountInput.value = slider.value;
+        amountInput.oninput = () => slider.value = amountInput.value;
+
+        // Quick buttons
+        function setAmount(val) {
+            amountInput.value = val;
+            slider.value = val;
+        }
+
+        // Validation
+        function validateRecharge() {
+
+            let enteredCard = document.querySelector("input[name='card_id']").value.trim();
+            let actualCard = "{{ user.card_id }}";   // from backend
+            let amount = parseInt(document.getElementById("amount").value);
+
+            if (!enteredCard || !amount || isNaN(amount)) {
+                showPopup("Please enter valid inputs");
+                return false;
+            }
+
+            if (amount < 50) {
+                showPopup("Minimum recharge ₹50");
+                return false;
+            }
+
+            if (amount > 5000) {
+                showPopup("Max limit ₹5000");
+                return false;
+            }
+
+            return true;
+        }
+
+        function showMessage(text, type) {
+            let msg = document.getElementById("message");
+            msg.innerText = text;
+            msg.className = type;
+        }
+
+        function showSuccessAnimation() {
+            let card = document.querySelector(".glass-card");
+            card.style.transform = "scale(1.05)";
+            setTimeout(() => card.style.transform = "scale(1)", 300);
+        }
+
+        function showPopup(message) {
+            document.getElementById("popupMessage").innerText = message;
+            document.getElementById("popupModal").classList.remove("hidden");
+        }
+
+        function closePopup() {
+            document.getElementById("popupModal").classList.add("hidden");
+
+            // 🔥 CLEAR amount input
+            let amountInput = document.getElementById("amount");
+            if (amountInput) {
+                amountInput.value = "";
+            }
+
+            let slider = document.getElementById("slider");
+            if (slider) {
+                slider.value = 50;
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            if (window.popupError) {
+                showPopup(window.popupError);
+            }
+
+            if (window.popupSuccess) {
+                showPopup(window.popupSuccess);
+            }
+        });
+
+        // Prevent form resubmission popup on refresh/back
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+
     </script>
+
 </body>
 
 </html>

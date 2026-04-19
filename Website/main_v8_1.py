@@ -22,7 +22,6 @@ templates = Jinja2Templates(directory="templates")
 # bus stops - dictionary mapping stop IDs to names
 stops = {0: "Stop A", 1: "Stop B", 2: "Stop C", 3: "Stop D"}
 
-
 # Database connection
 def get_db():
     return pymysql.connect(
@@ -33,7 +32,6 @@ def get_db():
         cursorclass=pymysql.cursors.DictCursor,
     )
 
-
 # fare table (Matrix representation)
 fares = [[0, 8, 8, 10], [8, 0, 8, 10], [8, 8, 0, 8], [10, 10, 8, 0]]
 
@@ -41,7 +39,6 @@ fares = [[0, 8, 8, 10], [8, 0, 8, 10], [8, 8, 0, 8], [10, 10, 8, 0]]
 # searching the fare between two stops
 def get_fare(from_stop, to_stop):
     return fares[from_stop][to_stop]
-
 
 
 # Retrieving key of corresponding Stop name
@@ -52,17 +49,14 @@ def retrieveKey(stopName):
     return None
 
 
-
 def get_current_user(request: Request):
     return request.session.get("user")
-
 
 def require_login(request: Request):
     user = get_current_user(request)
     if not user:
         return RedirectResponse("/login", status_code=303)
     return user
-
 
 def require_admin(request: Request):
     user = get_current_user(request)
@@ -73,7 +67,6 @@ def require_admin(request: Request):
         return HTMLResponse("Access Denied: Admins only", status_code=403)
 
     return user
-
 
 # ---------------- HOME ----------------
 @app.get("/", response_class=HTMLResponse)
@@ -129,7 +122,6 @@ def home(request: Request, card_id: Optional[str] = None):
         },
     )
 
-
 # ---------------- HOME REDIRECT ----------------
 @app.get("/home", response_class=HTMLResponse)
 def home_redirect(request: Request, card_id: Optional[str] = None):
@@ -139,7 +131,6 @@ def home_redirect(request: Request, card_id: Optional[str] = None):
 @app.get("/home")
 def home_redirect(request: Request):
     return RedirectResponse("/", status_code=303)
-
 
 # ------------------- SIGNUP ----------------
 @app.post("/signup")
@@ -158,7 +149,9 @@ def signup(
 
     row = cursor.fetchone()
     if not row:
-        return {"error": "No available cards in stock"}
+        return RedirectResponse(
+            url="/login?error=No available cards in stock",status_code=303
+        )
 
     card_id = row["card_id"]  # allocate a unique card ID for the new user
 
@@ -176,11 +169,10 @@ def signup(
 
     return RedirectResponse("/login", status_code=303)
 
-
 # ---------------- LOGIN ----------------
 @app.get("/login", response_class=HTMLResponse)
-def login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+def login_page(request: Request, error: str = None):
+    return templates.TemplateResponse("login.html", {"request": request, "error": error})
 
 
 @app.post("/login")
@@ -205,7 +197,7 @@ def login_user(request: Request, email: str = Form(...), password: str = Form(..
             "name": user.get("name"),
             "email": user.get("email"),
             "role": (user.get("role") or "").strip().lower(),
-            "card_id": user.get("card_id") 
+            "card_id": user.get("card_id")
         }
 
         return RedirectResponse(url="/home", status_code=303)
@@ -214,7 +206,6 @@ def login_user(request: Request, email: str = Form(...), password: str = Form(..
         "login.html",
         {"request": request, "error": "Invalid credentials"},
     )
-
 
 # ---------------- SCAN ----------------
 
@@ -325,14 +316,14 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
 
             # Update ride
             cursor.execute("""
-                UPDATE rides 
+                UPDATE rides
                 SET to_stop=%s, fare=%s
                 WHERE card_id=%s AND to_stop IS NULL
             """, (to_stop, fare, card_id))
 
             # Update balance
             cursor.execute("""
-                UPDATE cards 
+                UPDATE cards
                 SET balance=%s
                 WHERE card_id=%s
             """, (new_balance, card_id))
@@ -466,7 +457,6 @@ def plan_ride(
     return RedirectResponse(url=f"/dashboard?card_id={card_id}", status_code=303)
 
 
-
 #-----------------------New addition for dashboard display-----------------------
 
 #---------------------- fetch active ride details - source stop of corresponding card_id----------------------
@@ -494,8 +484,6 @@ def calculate_fare(card_id: str, to_stop: str):
     cursor.close()
     db.close()
     return {"fare": fare}
-
-
 
 # ---------------- DASHBOARD ----------------
 @app.get("/dashboard", response_class=HTMLResponse)
@@ -557,7 +545,6 @@ def dashboard(request: Request, card_id: str = None):
             "status": status,
         },
     )
-
 
 # ---------------- ADMIN ----------------
 @app.get("/admin", response_class=HTMLResponse)
@@ -624,7 +611,6 @@ def admin_dashboard(request: Request):
         },
     )
 
-
 # ---------------- RECHARGE ----------------
 @app.get("/recharge", response_class=HTMLResponse)
 def recharge_page(request: Request):
@@ -643,11 +629,21 @@ def recharge(request: Request, card_id: str = Form(...), amount: float = Form(..
     if not user:
         return RedirectResponse("/login", status_code=303)
 
+    if card_id != user["card_id"]:
+        return templates.TemplateResponse(
+            "recharge.html",
+            {
+                "request": request,
+                "user": user,
+                "error": "Invalid Card ID"
+            }
+        )
+
     db = get_db()
     cursor = db.cursor(pymysql.cursors.DictCursor)
 
     # ✅ check if card exists
-    cursor.execute("SELECT balance FROM cards WHERE card_id=%s", (card_id,))
+    cursor.execute("SELECT * FROM cards WHERE card_id=%s", (card_id,))
     card = cursor.fetchone()
 
     if not card:
@@ -655,7 +651,7 @@ def recharge(request: Request, card_id: str = Form(...), amount: float = Form(..
         db.close()
         return templates.TemplateResponse(
             "recharge.html",
-            {"request": request, "error": "Card not found"},
+            {"request": request, "user": request.session.get("user"), "error": "Card not found"},
         )
 
     cursor.execute(

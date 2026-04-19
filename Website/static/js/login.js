@@ -197,6 +197,23 @@
         }, 2200);
     }
 
+    const popupModal = document.getElementById('popupModal');
+    const popupMessage = document.getElementById('popupMessage');
+    const popupOk = document.getElementById('popupOk');
+
+    function showPopup(message, redirectUrl = null) {
+        popupMessage.textContent = message;
+        popupModal.classList.remove('hidden');
+
+        popupOk.onclick = () => {
+            popupModal.classList.add('hidden');
+
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            }
+        };
+    }
+
     // Helpers
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
@@ -205,4 +222,17 @@
 
     // Footer year
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ✅ Show login error popup if exists
+    window.addEventListener("DOMContentLoaded", () => {
+        if (window.loginError) {
+            showPopup(window.loginError);
+        }
+    });
+
+    // Prevent form resubmission popup on refresh/back
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
 })();
