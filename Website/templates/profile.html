@@ -43,16 +43,20 @@
     <div class="container">
         <div class="cards" style="--color:#FF00FD;">
             <div class="profile-block">
-                <img src="" class="avatar2" id="profile-pic" alt="profile">
+               <img src="/{{ user.profile_pic or 'static/default.png' }}" class="avatar2" id="profile-pic">
                 <div>
-                    <h2>Rahul Kumar</h2>
-                    <p class="username">@smartbus_admin</p>
+                    <h2>{{user.first_name}} {{user.last_name}}</h2>
+                    <p class="username">@smartbus_{{user.role.lower()}}</p>
+                    <div class="video">
+                        <video autoplay muted loop>
+                            <source src="/static/source/Smart_bus_profile.mp4" type="video/mp4">
+                        </video>
+                    </div>
                 </div>
             </div>
 
             <div class="info">
-                <span>Kolkata, West Bengal</span><br>
-                <span>Fleet Manager · 6 yrs</span>
+                <h3>Welcome, {{ user.first_name }}! to Smart Bus System</h3>
             </div>
 
             <div class="stats">
@@ -70,10 +74,10 @@
                 </div>
             </div>
 
-            <div class="description">
+            <!-- <div class="description">
                 Managing smart transportation systems with real-time tracking, optimizing routes, improving efficiency,
                 ensuring reliable service, monitoring performance metrics, and enhancing urban mobility.
-            </div>
+            </div> -->
 
             <div class="status active" id="systemStatus">
                 <span class="dot"></span>
