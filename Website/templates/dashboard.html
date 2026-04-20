@@ -41,7 +41,7 @@
                 </button>
 
                 <div id="dropdown" class="dropdown-menu">
-                    <a href="/profile">Profile  </a>
+                    <a href="/profile">Profile </a>
                     <a href="/recharge">Recharge</a>
                     <a href="/logout">Logout</a>
                 </div>
@@ -66,11 +66,12 @@
                 <h3>Card Lookup</h3>
                 <!-- <label>Card ID</label> -->
                 <form action="/plan_ride" method="post" class="tap-form">
-                    <input   type="text" name="card_id" placeholder="Enter your Card ID"
+                    <input type="text" name="card_id" placeholder="Enter your Card ID"
                         value="{{ card_id if card_id else '' }}" required>
-                    <input   type="text" name="Starting_place" placeholder="Starting Place" value="{{ from_stop if from_stop else '' }}" readonly>
-                    <input   type="text" name="Ending_place" placeholder="Destination" required>
-                    <input   type="number" name="fare" placeholder="Fare" value="{{ fare if fare else '' }}" readonly>
+                    <input type="text" name="Starting_place" placeholder="Starting Place"
+                        value="{{ from_stop if from_stop else '' }}" readonly>
+                    <input type="text" name="Ending_place" placeholder="Destination" required>
+                    <input type="number" name="fare" placeholder="Fare" value="{{ fare if fare else '' }}" readonly>
                     <button type="submit" onclick="this.disabled=true; this.form.submit();">
                         Tap Card
                     </button>
@@ -133,53 +134,66 @@
     <footer>
         SmartBus – Tap • Travel • Secure • IoT Smart Bus Fare System
     </footer>
-   <script>
-const btn = document.getElementById("profileBtn");
-const dropdown = document.getElementById("dropdown");
+    <script>
+        const btn = document.getElementById("profileBtn");
+        const dropdown = document.getElementById("dropdown");
 
-if (btn) {
-    btn.addEventListener("click", function(e) {
-        e.stopPropagation();
-        dropdown.style.display =
-            dropdown.style.display === "block" ? "none" : "block";
-    });
+        if (btn) {
+            btn.addEventListener("click", function (e) {
+                e.stopPropagation();
+                dropdown.style.display =
+                    dropdown.style.display === "block" ? "none" : "block";
+            });
 
-    document.addEventListener("click", function() {
-        dropdown.style.display = "none";
-    });
-}
-</script>
-
-<!-- New addition -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const cardField = document.querySelector("input[name='card_id']");
-    const fromField = document.querySelector("input[name='Starting_place']");
-    const toField = document.querySelector("input[name='Ending_place']");
-    const fareField = document.querySelector("input[name='fare']");
-
-    // When Card ID is typed → fetch from_stop
-    cardField.addEventListener("blur", async () => {
-        let cardId = cardField.value;
-        if(cardId) {
-            let res = await fetch(`/get_active_ride?card_id=${cardId}`);
-            let data = await res.json();
-            fromField.value = data.from_stop || "";
+            document.addEventListener("click", function () {
+                dropdown.style.display = "none";
+            });
         }
-    });
+    </script>
 
-    // When Destination is typed → fetch fare
-    toField.addEventListener("blur", async () => {
-        let cardId = cardField.value;
-        let toStop = toField.value;
-        if(cardId && toStop) {
-            let res = await fetch(`/calculate_fare?card_id=${cardId}&to_stop=${toStop}`);
-            let data = await res.json();
-            fareField.value = data.fare || "";
-        }
-    });
-});
-</script>
+    <!-- New addition -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const cardField = document.querySelector("input[name='card_id']");
+            const fromField = document.querySelector("input[name='Starting_place']");
+            const toField = document.querySelector("input[name='Ending_place']");
+            const fareField = document.querySelector("input[name='fare']");
+
+            // When Card ID is typed → fetch from_stop
+            cardField.addEventListener("blur", async () => {
+                let cardId = cardField.value;
+                if (cardId) {
+                    let res = await fetch(`/get_active_ride?card_id=${cardId}`);
+                    let data = await res.json();
+                    fromField.value = data.from_stop || "";
+                }
+            });
+
+            // When Destination is typed → fetch fare
+            toField.addEventListener("blur", async () => {
+                let cardId = cardField.value;
+                let toStop = toField.value;
+                if (cardId && toStop) {
+                    let res = await fetch(`/calculate_fare?card_id=${cardId}&to_stop=${toStop}`);
+                    let data = await res.json();
+                    fareField.value = data.fare || "";
+                }
+            });
+        });
+    </script>
+
+    <script>
+        const nav = document.querySelector(".top-nav");
+
+        nav.addEventListener("mousemove", (e) => {
+            const rect = nav.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+            nav.style.setProperty("--x", x + "%");
+            nav.style.setProperty("--y", y + "%");
+        });
+    </script>
 
 
 </body>
