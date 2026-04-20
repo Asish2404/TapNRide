@@ -142,15 +142,16 @@ footer {
 }
 
 .avatar {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
-    background: #3b82f6;
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
+    font-size: 13px;
 }
 
 .arrow {
@@ -166,7 +167,7 @@ footer {
     right: 0;
     min-width: 140px;
     border-radius: 10px;
-    background: rgba(248, 246, 246, 0.85);
+    background: rgba(14, 14, 14, 0.85);
     overflow: hidden;
     padding: 10px;
     z-index: 10001;
@@ -175,13 +176,13 @@ footer {
 .dropdown-menu a {
     display: block;
     padding: 8px 10px;
-    color: black;
+    color: white !important;
     text-decoration: none;
     border-radius: 6px;
 }
 
 .dropdown-menu a:hover {
-    background: rgba(49, 46, 46, 0.1);
+    background: rgba(176, 170, 170, 0.1);
 }
 
 /* CARD */

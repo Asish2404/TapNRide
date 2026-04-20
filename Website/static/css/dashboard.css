@@ -115,15 +115,16 @@ body {
 }
 
 .avatar {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
-    background: #3b82f6;
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
+    font-size: 13px;
 }
 
 .arrow {
@@ -139,7 +140,7 @@ body {
     display: none;
     flex-direction: column;
     z-index: 10001;
-    background: rgba(248, 246, 246, 0.85);
+    background: rgba(14, 14, 14, 0.85);
     border-radius: 10px;
     padding: 10px;
     min-width: 140px;
@@ -149,14 +150,14 @@ body {
 .dropdown-menu a {
     display: block;
     padding: 8px 10px;
-    color: black !important;
+    color: white !important;
     text-decoration: none;
     position: relative;
     border-radius: 6px;
 }
 
 .dropdown-menu a:hover {
-    background:rgba(49, 46, 46, 0.1);
+    background: rgba(176, 170, 170, 0.1);
 }
 
 /* MAIN */

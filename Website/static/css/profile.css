@@ -145,15 +145,17 @@ body {
 }
 
 .avatar {
-  width: 30px !important;
-  height: 30px !important;
+  width: 34px !important;
+  height: 34px !important;
   border-radius: 50%;
-  background: linear-gradient(135deg, #00d4ff, #7c3aed);
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: white;
   display: flex;
   align-items: center;
+  font-family: 'Inter', sans-serif;
   justify-content: center;
-  font-weight: bold;
-  color: black;
+  font-weight: 600;
+  font-size: 13px;
 }
 .arrow {
     color: rgba(148, 163, 184, 0.6);
@@ -167,21 +169,21 @@ body {
   display: none;
   flex-direction: column;
 
-  background: rgba(248, 246, 246, 0.85);
+  background: rgba(14, 14, 14, 0.85);
   border-radius: 10px;
   padding: 10px;
   min-width: 140px;
 }
 
 .dropdown-menu a {
-  color: black !important;
+  color: white !important;
   padding: 8px 10px;
   text-decoration: none;
   border-radius: 6px;
 }
 
 .dropdown-menu a:hover {
-  background: rgba(49, 46, 46, 0.1);
+  background: rgba(176, 170, 170, 0.1);
 }
 
 
