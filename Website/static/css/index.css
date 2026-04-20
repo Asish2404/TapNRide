@@ -126,11 +126,10 @@ body {
 }
 
 .logo-img {
-    width: 42px;
-    height: 42px;
-    border-radius: 13px;
-    object-fit: cover;
-    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+    width: 65px !important;
+    height: 40px !important;
+    border-radius: 25px;
+    margin-right: 12px;
 }
 
 .brand-text {
@@ -182,30 +181,28 @@ body {
 
 .dropdown-menu {
     position: absolute;
-    top: 55px;
+    top: 45px;
     right: 0;
     display: none;
     flex-direction: column;
     z-index: 10001;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(248, 246, 246, 0.85);
     border-radius: 10px;
     padding: 10px;
     min-width: 140px;
+    overflow: hidden;
 }
 
 .dropdown-menu a {
-    color: white;
+    color: black !important;
     padding: 8px 10px;
     text-decoration: none;
     border-radius: 6px;
-}
-
-.dropdown-menu a {
     position: relative;
 }
 
 .dropdown-menu a:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(49, 46, 46, 0.1);
 }
 
 
@@ -252,7 +249,7 @@ main {
 
 .page {
     text-align: left;
-    max-width: 500px;
+    max-width: 800px;
     flex-shrink: 0;
 }
 
@@ -261,6 +258,7 @@ main {
     font-weight: 700;
     letter-spacing: -0.03em;
     line-height: 1.15;
+    white-space: nowrap;
     margin-bottom: 14px;
     background: linear-gradient(135deg,
             #f0f9ff 0%, #7dd3fc 45%, #a78bfa 100%);
@@ -328,69 +326,92 @@ main {
     margin: 0;
     margin-left: auto;
     padding-right: 20px;
+    overflow: visible; 
 }
 
+/* MAIN CARD */
 .smart-card {
-    position: relative;
-    width: 100%;
-    box-sizing: border-box;
-    aspect-ratio: 2.1;
-    border-radius: 22px;
-    overflow: hidden;
-    font-family: 'Space Grotesk', sans-serif;
-    padding: 22px 24px 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background: linear-gradient(155deg,
-            #112240 0%, #0d1e38 35%,
-            #091628 65%, #071120 100%);
-    box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.06),
-        2px 4px 0 rgba(0, 0, 0, 0.5),
-        0 20px 50px rgba(0, 0, 0, 0.75),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    transition: transform 0.45s cubic-bezier(.23, 1, .32, 1), box-shadow 0.45s ease;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  aspect-ratio: 2.1;
+  border-radius: 22px;
+  padding: 22px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+
+  font-family: "Space Grotesk", sans-serif;
+
+  /* Premium dark gradient */
+  background: linear-gradient(
+    155deg,
+    #0f172a 0%,
+    #0b1a33 35%,
+    #081426 65%,
+    #050d1a 100%
+  );
+
+  /* 🔥 PERFECT BORDER GLOW */
+  box-shadow:
+    0 0 0 1px rgba(56,189,248,0.35),
+    0 0 14px rgba(56,189,248,0.35),
+    0 0 30px rgba(56,189,248,0.25),
+    0 0 60px rgba(99,102,241,0.18),
+    0 25px 60px rgba(0,0,0,0.85);
+
+  transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+/* HOVER LIFT */
 .smart-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow:
-        0 0 0 1px rgba(56, 189, 248, 0.18),
-        3px 6px 0 rgba(0, 0, 0, 0.5),
-        0 30px 70px rgba(0, 0, 0, 0.85),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transform: translateY(-10px) scale(1.02);
+
+  box-shadow:
+    0 0 0 1px rgba(56,189,248,0.5),
+    0 0 20px rgba(56,189,248,0.45),
+    0 0 45px rgba(56,189,248,0.35),
+    0 0 80px rgba(99,102,241,0.25),
+    0 35px 80px rgba(0,0,0,0.95);
 }
 
-.smart-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(91deg,
-            transparent, transparent 2px,
-            rgba(255, 255, 255, 0.011) 2px,
-            rgba(255, 255, 255, 0.011) 3px);
-    z-index: 0;
-    pointer-events: none;
-}
-
+/* ✨ TOP SHINE LINE */
 .smart-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 255, 255, 0.22) 35%,
-            rgba(167, 139, 250, 0.18) 60%,
-            rgba(56, 189, 248, 0.15) 80%,
-            transparent);
-    z-index: 10;
-    pointer-events: none;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.25),
+    rgba(167,139,250,0.2),
+    rgba(56,189,248,0.18),
+    transparent
+  );
+
+  pointer-events: none;
 }
 
+/* 💎 SUBTLE INNER LIGHT */
+.smart-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+
+  background: radial-gradient(
+    circle at 20% 10%,
+    rgba(56,189,248,0.12),
+    transparent 60%
+  );
+
+  pointer-events: none;
+}
 .card-top {
     position: relative;
     z-index: 2;

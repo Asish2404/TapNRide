@@ -133,27 +133,30 @@ body {
 
 /* DROPDOWN */
 .dropdown-menu {
-    display: none;
-    position: absolute;
+     position: absolute;
     top: 45px;
     right: 0;
-    background: white;
-    min-width: 160px;
-    border-radius: 8px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    display: none;
+    flex-direction: column;
+    z-index: 10001;
+    background: rgba(248, 246, 246, 0.85);
+    border-radius: 10px;
+    padding: 10px;
+    min-width: 140px;
     overflow: hidden;
-    z-index: 9999;
 }
 
 .dropdown-menu a {
     display: block;
-    padding: 10px;
+    padding: 8px 10px;
     color: black !important;
     text-decoration: none;
+    position: relative;
+    border-radius: 6px;
 }
 
 .dropdown-menu a:hover {
-    background: #f3f4f6;
+    background:rgba(49, 46, 46, 0.1);
 }
 
 /* MAIN */

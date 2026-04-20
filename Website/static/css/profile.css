@@ -155,7 +155,10 @@ body {
   font-weight: bold;
   color: black;
 }
-
+.arrow {
+    color: rgba(148, 163, 184, 0.6);
+    font-size: 11px;
+}
 .dropdown-menu {
   position: absolute;
   top: 55px;
@@ -164,21 +167,21 @@ body {
   display: none;
   flex-direction: column;
 
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(248, 246, 246, 0.85);
   border-radius: 10px;
   padding: 10px;
   min-width: 140px;
 }
 
 .dropdown-menu a {
-  color: white;
+  color: black !important;
   padding: 8px 10px;
   text-decoration: none;
   border-radius: 6px;
 }
 
 .dropdown-menu a:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(49, 46, 46, 0.1);
 }
 
 
