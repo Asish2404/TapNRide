@@ -202,7 +202,7 @@ body {
 }
 
 .dropdown-menu a:hover {
-    background: rgba(176, 170, 170, 0.1);
+    background: rgba(49, 46, 46, 0.1);
 }
 
 
@@ -390,13 +390,9 @@ main {
     transparent,
     rgba(255,255,255,0.25),
     rgba(167,139,250,0.2),
-    rgba(56,189,248,0.18),
+    rgba(47, 171, 225, 0.18),
     transparent
   );
-
-  pointer-events: none;
-}
-
 /* 💎 SUBTLE INNER LIGHT */
 .smart-card::before {
   content: "";
@@ -405,13 +401,17 @@ main {
   border-radius: 22px;
 
   background: radial-gradient(
-    circle at 20% 10%,
-    rgba(56,189,248,0.12),
-    transparent 60%
+    circle at 30% 20%,
+    rgba(1, 86, 122, 0.12),
+    transparent 50%
   );
 
   pointer-events: none;
 }
+  pointer-events: none;
+}
+
+
 .card-top {
     position: relative;
     z-index: 2;
