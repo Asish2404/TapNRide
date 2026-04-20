@@ -188,10 +188,23 @@ def signup(
     db = get_db()
     cursor = db.cursor()
 
+    cursor.execute("SELECT card_id FROM cards_in_stock WHERE status='OPEN' LIMIT 1")
+
+    row = cursor.fetchone()
+    if not row:
+        return RedirectResponse(
+            url="/login?error=No available cards in stock",status_code=303
+        )
+
+    card_id = row["card_id"]  # allocate a unique card ID for the new user
+
+
     cursor.execute(
-        "INSERT INTO login(first_name, last_name, email, phone, password, role) VALUES(%s,%s,%s,%s,%s,%s)",
-        (first_name, last_name, email, phone, password, role),
+        "INSERT INTO login(card_id,first_name, last_name, email, phone, password, role) VALUES(%s,%s,%s,%s,%s,%s,%s)",
+        (card_id,first_name, last_name, email, phone, password, role),
     )
+
+    cursor.execute("UPDATE cards_in_stock SET status='CLOSED' WHERE card_id=%s", (card_id,))
 
     db.commit()
 
@@ -652,7 +665,7 @@ def logout(request: Request):
     request.session.clear()
     return RedirectResponse(url="/login", status_code=303)
 
-
+# ----profile profile ~~~~~~~~||||||.......
 @app.get("/profile")
 def profile(request: Request):
 
@@ -673,8 +686,8 @@ def profile(request: Request):
         l.email, 
         l.phone, 
         l.role, 
-        c.card_id, 
-        c.balance 
+        coalesce(l.card_id,c.card_id) AS card_id,
+        coalesce(c.balance, 0) AS balance
     FROM login l
     LEFT JOIN cards c ON l.card_id = c.card_id
     WHERE l.id=%s
