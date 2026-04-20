@@ -133,8 +133,8 @@ body {
 }
 
 .avatar2 {
-  width: 60px;
-  height: 60px;
+  width: 40px !important;
+  height: 40px !important;
   border-radius: 50%;
   background: linear-gradient(135deg, #00d4ff, #7c3aed);
   display: flex;
@@ -362,20 +362,88 @@ body {
 
 .profile-block {
   display: flex;
-  gap: 15px;
-  align-items: center;
-  margin-bottom: 20px;
+  gap: 18px;
+  align-items: flex-start;
+  margin-bottom: 25px;
 }
 
-.avatar {
-  width: 60px;
-  height: 60px;
+/* Profile Image */
+.avatar2 {
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #00d4ff, #7c3aed);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
+}
+
+/* Right content */
+.profile-block h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.username {
+  font-size: 13px;
+  color: #00d4ff;
+  margin-bottom: 10px;
+}
+
+/* 🎬 Video Container */
+.video {
+  margin-top: 12px;
+  position: relative;
+  display: inline-block;
+  margin-right: 37px;
+  border-radius: 16px;
+  padding: 2px;
+  background: linear-gradient(135deg, #00d4ff, #7c3aed, #00d4ff);
+  background-size: 200% 200%;
+  animation: borderGlow 6s linear infinite;
+}
+
+/* 🎥 Video Styling */
+.video video {
+  width: 280px;
+  height: auto;
+  border-radius: 14px;
+  object-fit: cover;
+  display: block;
+  background: #000;
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+/* 🌊 Hover Effect */
+.video:hover video {
+  transform: scale(1.04);
+  filter: brightness(1.1) contrast(1.05);
+}
+
+/* ✨ Floating Glow */
+.video::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.25), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.video:hover::after {
+  opacity: 1;
+}
+
+/* 🔄 Animated Border */
+@keyframes borderGlow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 200% 50%;
+  }
 }
 
 .username {

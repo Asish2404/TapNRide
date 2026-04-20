@@ -6,6 +6,7 @@ from typing import Optional
 import pymysql
 import random  # just for testing with random bus stop key
 import threading
+from fastapi import Form
 
 # 🔴 ADD SESSION
 from starlette.middleware.sessions import SessionMiddleware
@@ -43,7 +44,9 @@ def get_fare(from_stop, to_stop):
 
 
 # CHANGE-4: current stop
-curStopKey = random.choice(list(stops.keys()))  # current stop will be updated from keypad
+curStopKey = random.choice(
+    list(stops.keys())
+)  # current stop will be updated from keypad
 curStop = stops[curStopKey]
 
 
@@ -174,7 +177,8 @@ def home_redirect(request: Request):
 # ------------------- SIGNUP ----------------
 @app.post("/signup")
 def signup(
-    name: str = Form(...),
+    first_name: str = Form(...),
+    last_name: str = Form(...),
     email: str = Form(...),
     phone: str = Form(...),
     password: str = Form(...),
@@ -184,10 +188,23 @@ def signup(
     db = get_db()
     cursor = db.cursor()
 
+    cursor.execute("SELECT card_id FROM cards_in_stock WHERE status='OPEN' LIMIT 1")
+
+    row = cursor.fetchone()
+    if not row:
+        return RedirectResponse(
+            url="/login?error=No available cards in stock",status_code=303
+        )
+
+    card_id = row["card_id"]  # allocate a unique card ID for the new user
+
+
     cursor.execute(
-        "INSERT INTO login(name, email, phone, password, role) VALUES(%s,%s,%s,%s,%s)",
-        (name, email, phone, password, role),
+        "INSERT INTO login(card_id,first_name, last_name, email, phone, password, role) VALUES(%s,%s,%s,%s,%s,%s,%s)",
+        (card_id,first_name, last_name, email, phone, password, role),
     )
+
+    cursor.execute("UPDATE cards_in_stock SET status='CLOSED' WHERE card_id=%s", (card_id,))
 
     db.commit()
 
@@ -222,7 +239,8 @@ def login_user(request: Request, email: str = Form(...), password: str = Form(..
     if user:
         request.session["user"] = {
             "id": user.get("id"),
-            "name": user.get("name"),
+            "first_name": user.get("first_name"),
+            "last_name": user.get("last_name"),
             "email": user.get("email"),
             "role": (user.get("role") or "").strip().lower(),
         }
@@ -236,7 +254,7 @@ def login_user(request: Request, email: str = Form(...), password: str = Form(..
 
 
 # ---------------- SCAN ----------------
-from fastapi import Form
+
 
 @app.post("/scan")
 def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
@@ -253,13 +271,16 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
     print("SCAN:", card_id, keyStop)
 
     # 🔍 Check for active ride
-    cursor.execute("""
+    cursor.execute(
+        """
         SELECT r.from_stop, c.balance, c.status
         FROM rides r
         JOIN cards c ON r.card_id = c.card_id
         WHERE r.card_id=%s AND r.to_stop IS NULL
         LIMIT 1
-    """, (card_id,))
+    """,
+        (card_id,),
+    )
 
     active_ride = cursor.fetchone()
 
@@ -282,7 +303,7 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
             return {
                 "status": "duplicate tap",
                 "message": "Tap ignored: Same stop scanned twice",
-                "stop": to_stop
+                "stop": to_stop,
             }
 
         from_key = retrieveKey(from_stop)
@@ -299,25 +320,34 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
             new_balance = balance - fare
 
             # ✅ Update ride
-            cursor.execute("""
+            cursor.execute(
+                """
                 UPDATE rides 
                 SET to_stop=%s, fare=%s
                 WHERE card_id=%s AND to_stop IS NULL
-            """, (to_stop, fare, card_id))
+            """,
+                (to_stop, fare, card_id),
+            )
 
             # ✅ Update balance
-            cursor.execute("""
+            cursor.execute(
+                """
                 UPDATE cards 
                 SET balance=%s
                 WHERE card_id=%s
-            """, (new_balance, card_id))
+            """,
+                (new_balance, card_id),
+            )
 
             # ✅ Store transaction
             description = f"{from_stop} → {to_stop}"
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO transactions(type, card_id, description, amount)
                 VALUES(%s,%s,%s,%s)
-            """, ("ride", card_id, description, fare))
+            """,
+                ("ride", card_id, description, fare),
+            )
 
             db.commit()
 
@@ -326,14 +356,14 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
                 "from": from_stop,
                 "to": to_stop,
                 "fare": fare,
-                "balance": new_balance
+                "balance": new_balance,
             }
 
         else:
             return {
                 "status": "insufficient balance",
                 "balance": balance,
-                "required": fare
+                "required": fare,
             }
 
     # =========================
@@ -344,38 +374,41 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
         existing_card = cursor.fetchone()
 
         if not existing_card:
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO cards(card_id, balance, status)
                 VALUES(%s,%s,%s)
-            """, (card_id, 100, "active"))
+            """,
+                (card_id, 100, "active"),
+            )
         else:
             if existing_card["status"] != "active":
                 return {"error": "Card is inactive"}
 
         # 🔒 Extra safety
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT * FROM rides
             WHERE card_id=%s AND to_stop IS NULL
-        """, (card_id,))
+        """,
+            (card_id,),
+        )
 
         if cursor.fetchone():
             return {"error": "Ride already in progress"}
 
         # ✅ Start ride
-        cursor.execute("""
+        cursor.execute(
+            """
             INSERT INTO rides(card_id, from_stop, to_stop, fare)
             VALUES(%s,%s,%s,%s)
-        """, (card_id, curStop, None, 0))
+        """,
+            (card_id, curStop, None, 0),
+        )
 
         db.commit()
 
-        return {
-            "status": "ride started",
-            "from": curStop,
-            "card_id": card_id
-        }
-
-
+        return {"status": "ride started", "from": curStop, "card_id": card_id}
 
 
 # # ---------------- TAP CARD ----------------
@@ -573,7 +606,9 @@ def recharge_page(request: Request):
     if not user:
         return RedirectResponse("/login", status_code=303)
 
-    return templates.TemplateResponse("recharge.html", {"request": request, "user": user})
+    return templates.TemplateResponse(
+        "recharge.html", {"request": request, "user": user}
+    )
 
 
 @app.post("/recharge")
@@ -630,35 +665,91 @@ def logout(request: Request):
     request.session.clear()
     return RedirectResponse(url="/login", status_code=303)
 
+# ----profile profile ~~~~~~~~||||||.......
 @app.get("/profile")
 def profile(request: Request):
+
+    session_user = request.session.get("user")
+
+    # ✅ check if logged in
+    if not session_user:
+        return RedirectResponse("/login", status_code=303)
+
+    db = get_db()
+    cursor = db.cursor(pymysql.cursors.DictCursor)  # ✅ IMPORTANT
+
+    cursor.execute(
+        """
+    SELECT 
+        l.first_name, 
+        l.last_name, 
+        l.email, 
+        l.phone, 
+        l.role, 
+        coalesce(l.card_id,c.card_id) AS card_id,
+        coalesce(c.balance, 0) AS balance
+    FROM login l
+    LEFT JOIN cards c ON l.card_id = c.card_id
+    WHERE l.id=%s
+    """,
+        (session_user["id"],),
+    )
+
+    user = cursor.fetchone()
+
+    cursor.close()
+    db.close()
+
+    # ✅ safety check
+    if not user:
+        return RedirectResponse("/login", status_code=303)
+
+    # ✅ optional defaults
     user = {
-        "first_name": "Rahul",
-        "last_name": "Kumar",
-        "role": "Admin",
-        "email": "rahul@example.com",
-        "card_id": "123456",
-        "balance": 250
+        "first_name": user.get("first_name", "Rahul"),
+        "last_name": user.get("last_name", "Kumar"),
+        "role": user.get("role", "Admin"),
+        "email": user.get("email", "rahul@example.com"),
+        "card_id": user.get("card_id", "123456"),
+        "balance": user.get("balance", 250),
     }
 
-    return templates.TemplateResponse("profile.html", {
-        "request": request,
-        "user": user
-    })
+    return templates.TemplateResponse(
+        "profile.html", {"request": request, "user": user}
+    )
 
 
-# @app.post("/profile")
-# async def update_profile(
-#     request: Request,
-#     first_name: str = Form(...),
-#     last_name: str = Form(...),
-#     email: str = Form(...),
-#     photo: UploadFile = File(None)
-# ):
-#     print(first_name, last_name, email)
+@app.post("/profile")
+async def update_profile(
+    request: Request,
+    first_name: str = Form(...),
+    last_name: str = Form(...),
+    email: str = Form(...),
+):
+    print(first_name, last_name, email)
 
-#     if photo:
-#         with open(f"static/uploads/{photo.filename}", "wb") as f:
-#             f.write(await photo.read())
+    session_user = request.session.get("user")
+    if not session_user:
+        return RedirectResponse("/login", status_code=303)
 
-#     return RedirectResponse("/profile", status_code=303)
+    db = get_db()
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+
+    cursor.execute(
+        """
+            UPDATE login
+            SET first_name=%s, last_name=%s, email=%s
+            WHERE id=%s
+        """,
+        (first_name, last_name, email, session_user["id"]),
+    )
+    db.commit()
+
+    cursor.close()
+    db.close()
+
+    request.session["user"]["first_name"] = first_name
+    request.session["user"]["last_name"] = last_name
+    request.session["user"]["email"] = email
+
+    return RedirectResponse("/profile", status_code=303)
