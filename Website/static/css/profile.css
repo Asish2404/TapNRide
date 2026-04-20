@@ -182,9 +182,9 @@ body {
 }
 
 
-.profile-container:hover .dropdown-menu {
+/* .profile-container:hover .dropdown-menu {
   display: flex;
-}
+} */
 
 .container {
   display: flex;

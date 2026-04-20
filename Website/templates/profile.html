@@ -25,7 +25,7 @@
             <div class="profile-container">
                 <button class="profile-btn">
                     <div class="avatar">
-                        {{ user.first_name[0] }}{{ user.last_name[0] }}
+                        {{ user.first_name[0] }}
                     </div>
                     <span class="arrow">▼</span>
                 </button>
@@ -43,7 +43,7 @@
     <div class="container">
         <div class="cards" style="--color:#FF00FD;">
             <div class="profile-block">
-               <img src="/{{ user.profile_pic or 'static/default.png' }}" class="avatar2" id="profile-pic">
+                <img src="/{{ user.profile_pic or 'static/default.png' }}" class="avatar2" id="profile-pic">
                 <div>
                     <h2>{{user.first_name}} {{user.last_name}}</h2>
                     <p class="username">@smartbus_{{user.role.lower()}}</p>
@@ -128,8 +128,7 @@
 
                         <div class="input-group highlight">
                             <label for="input-file">Update Image</label>
-                            <input type="file" name="photo" id="input-file"
-                                accept="image/jpeg, image/png, image/jpg">
+                            <input type="file" name="photo" id="input-file" accept="image/jpeg, image/png, image/jpg">
                         </div>
 
                     </div>
@@ -147,6 +146,30 @@
         const editBtn = document.getElementById("editBtn");
         const saveBtn = document.getElementById("saveBtn");
 
+        const btn = document.querySelector(".profile-btn");
+        const dropdown = document.querySelector(".dropdown-menu");
+
+        // 🔥 DROPDOWN FIX (same logic as your working one)
+        if (btn && dropdown) {
+            btn.addEventListener("click", function (e) {
+                e.stopPropagation();
+
+                const isVisible =
+                    getComputedStyle(dropdown).display !== "none";
+
+                dropdown.style.display = isVisible ? "none" : "flex";
+            });
+
+            dropdown.addEventListener("click", function (e) {
+                e.stopPropagation(); // ✅ prevent closing when clicking inside
+            });
+
+            document.addEventListener("click", function () {
+                dropdown.style.display = "none";
+            });
+        }
+
+        // EDIT BUTTON
         editBtn.addEventListener("click", () => {
             document.querySelectorAll("input[readonly]").forEach(input => {
                 input.removeAttribute("readonly");
@@ -156,6 +179,7 @@
             editBtn.style.display = "none";
         });
 
+        // STATUS SYSTEM
         const status = document.getElementById("systemStatus");
         const statusText = document.getElementById("statusText");
 
@@ -176,6 +200,7 @@
 
         }, 4000);
 
+        // PROFILE IMAGE PREVIEW
         let profilePic = document.getElementById("profile-pic");
         let inputFile = document.getElementById("input-file");
 
@@ -183,6 +208,6 @@
             profilePic.src = URL.createObjectURL(inputFile.files[0]);
         }
     </script>
-
 </body>
+
 </html>
