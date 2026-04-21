@@ -16,7 +16,7 @@
 
 <body>
 
-    <!-- 🔥 Animated Background -->
+    <!-- Animated Background -->
     <div class="bg-animation"></div>
 
     <!-- NAVBAR -->
@@ -103,7 +103,6 @@
                 {% if balance %}
                 <script>
                     document.addEventListener("DOMContentLoaded", () => {
-                        // document.querySelector("input[name='card_id']").value = "";
                         document.getElementById("amount").value = "";
                     });
                 </script>
@@ -129,7 +128,7 @@
     </script>
     {% endif %}
 
-    {% if balance %}
+    {% if success %}
     <script>
         window.popupSuccess = "Recharge Successful! New Balance: ₹{{ balance }}";
     </script>
@@ -217,7 +216,7 @@
         function closePopup() {
             document.getElementById("popupModal").classList.add("hidden");
 
-            // 🔥 CLEAR amount input
+            // CLEAR amount input
             let amountInput = document.getElementById("amount");
             if (amountInput) {
                 amountInput.value = "";

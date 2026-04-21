@@ -6,5 +6,6 @@ CREATE TABLE login (
     email VARCHAR(100) UNIQUE,
     phone VARCHAR(15),
     password VARCHAR(255),
-    role ENUM('passenger','driver','admin')
+    role ENUM('passenger','driver','admin'),
+    profile_pic VARCHAR(255)
 );

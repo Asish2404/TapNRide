@@ -72,11 +72,10 @@ body {
         0 0 20px rgba(99, 102, 241, 0.3);
 }
 
-
 .top-nav {
     display: flex;
     position: relative;
-     z-index: 10000;
+    z-index: 10000;
     justify-content: space-between;
     align-items: center;
     padding: 10px 18px;
@@ -202,7 +201,7 @@ body {
 }
 
 .dropdown-menu a:hover {
-    background: rgba(49, 46, 46, 0.1);
+    background: rgba(176, 170, 170, 0.1);
 }
 
 
@@ -319,96 +318,91 @@ main {
     transform: translateY(-1px);
 }
 
-
 .card-section {
     width: 100%;
     max-width: 560px;
     margin: 0;
     margin-left: auto;
     padding-right: 20px;
-    overflow: visible; 
+    overflow: visible;
 }
 
 /* MAIN CARD */
 .smart-card {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  aspect-ratio: 2.1;
-  border-radius: 22px;
-  padding: 22px 24px 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  overflow: hidden;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    aspect-ratio: 2.1;
+    border-radius: 22px;
+    padding: 22px 24px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
 
-  font-family: "Space Grotesk", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
 
-  /* Premium dark gradient */
-  background: linear-gradient(
-    155deg,
-    #0f172a 0%,
-    #0b1a33 35%,
-    #081426 65%,
-    #050d1a 100%
-  );
+    /* Premium dark gradient */
+    background: linear-gradient(155deg,
+            #0f172a 0%,
+            #0b1a33 35%,
+            #081426 65%,
+            #050d1a 100%);
 
-  /* 🔥 PERFECT BORDER GLOW */
-  box-shadow:
-    0 0 0 1px rgba(56,189,248,0.35),
-    0 0 14px rgba(56,189,248,0.35),
-    0 0 30px rgba(56,189,248,0.25),
-    0 0 60px rgba(99,102,241,0.18),
-    0 25px 60px rgba(0,0,0,0.85);
+    /* PERFECT BORDER GLOW */
+    box-shadow:
+        0 0 0 1px rgba(56, 189, 248, 0.35),
+        0 0 14px rgba(56, 189, 248, 0.35),
+        0 0 30px rgba(56, 189, 248, 0.25),
+        0 0 60px rgba(99, 102, 241, 0.18),
+        0 25px 60px rgba(0, 0, 0, 0.85);
 
-  transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 /* HOVER LIFT */
 .smart-card:hover {
-  transform: translateY(-10px) scale(1.02);
+    transform: translateY(-10px) scale(1.02);
 
-  box-shadow:
-    0 0 0 1px rgba(56,189,248,0.5),
-    0 0 20px rgba(56,189,248,0.45),
-    0 0 45px rgba(56,189,248,0.35),
-    0 0 80px rgba(99,102,241,0.25),
-    0 35px 80px rgba(0,0,0,0.95);
+    box-shadow:
+        0 0 0 1px rgba(56, 189, 248, 0.5),
+        0 0 20px rgba(56, 189, 248, 0.45),
+        0 0 45px rgba(56, 189, 248, 0.35),
+        0 0 80px rgba(99, 102, 241, 0.25),
+        0 35px 80px rgba(0, 0, 0, 0.95);
 }
 
-/* ✨ TOP SHINE LINE */
+/* TOP SHINE LINE */
 .smart-card::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
 
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255,255,255,0.25),
-    rgba(167,139,250,0.2),
-    rgba(47, 171, 225, 0.18),
-    transparent
-  );
-/* 💎 SUBTLE INNER LIGHT */
-.smart-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 22px;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.25),
+            rgba(167, 139, 250, 0.2),
+            rgba(47, 171, 225, 0.18),
+            transparent);
 
-  background: radial-gradient(
-    circle at 30% 20%,
-    rgba(1, 86, 122, 0.12),
-    transparent 50%
-  );
+    /* SUBTLE INNER LIGHT */
+    .smart-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 22px;
 
-  pointer-events: none;
-}
-  pointer-events: none;
+        background: radial-gradient(circle at 30% 20%,
+                rgba(1, 86, 122, 0.12),
+                transparent 50%);
+
+        pointer-events: none;
+    }
+
+    pointer-events: none;
 }
 
 
@@ -722,7 +716,6 @@ main {
     margin: 0 8px;
     vertical-align: middle;
 }
-
 
 @media (max-width: 900px) {
     main {

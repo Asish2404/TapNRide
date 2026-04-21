@@ -4,11 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>SmartBus – Profile</title>
     <link rel="stylesheet" href="/static/css/profile.css">
+    <link rel="shortcut icon" href="../static/source/SB.jpeg" type="image/x-icon">
 </head>
 
 <body>
+    <!-- ===== HEADER ===== -->
     <header class="header">
         <nav class="navbar">
 
@@ -40,15 +42,22 @@
         </nav>
     </header>
 
-    <div class="container">
+    <!-- ===== MAIN CONTAINER ===== -->
+    <main class="container">
+
+        <!-- ===== LEFT CARD ===== -->
         <div class="cards" style="--color:#FF00FD;">
+
             <div class="profile-block">
-                <img src="/{{ user.profile_pic or 'static/default.png' }}" class="avatar2" id="profile-pic">
+                <img src="/{{ user.profile_pic }}" onerror="this.onerror=null; this.src='/static/source/default.png';"
+                    class="avatar2" id="profile-pic" alt="Profile Picture">
+
                 <div>
                     <h2>{{user.first_name}} {{user.last_name}}</h2>
                     <p class="username">@smartbus_{{user.role.lower()}}</p>
+
                     <div class="video">
-                        <video autoplay muted loop>
+                        <video autoplay muted loop aria-label="SmartBus animation">
                             <source src="/static/source/Smart_bus_profile.mp4" type="video/mp4">
                         </video>
                     </div>
@@ -83,75 +92,122 @@
                 <span class="dot"></span>
                 <span id="statusText">System Active • All routes operational</span>
             </div>
+
         </div>
 
+        <!-- ===== RIGHT CARD ===== -->
         <div class="cards" style="--color: #00BFFF;">
+
+            <!-- HEADER -->
             <div class="header-row">
                 <h3 class="title">Account Details</h3>
                 <button type="button" class="button" id="editBtn">Edit</button>
             </div>
 
             <div class="description">
+
+                <!-- ===== FORM ===== -->
                 <form method="post" action="/profile" enctype="multipart/form-data">
 
+                    <!-- ===== GRID ===== -->
                     <div class="form-grid">
 
+                        <!-- BASIC DETAILS -->
                         <div class="input-group">
-                            <label>First Name</label>
-                            <input type="text" name="first_name" value="{{ user.first_name }}" readonly>
+                            <label for="first_name">First Name</label>
+                            <input type="text" id="first_name" name="first_name" class="editable"
+                                value="{{ user.first_name }}" readonly required>
                         </div>
 
                         <div class="input-group">
-                            <label>Last Name</label>
-                            <input type="text" name="last_name" value="{{ user.last_name }}" readonly>
+                            <label for="last_name">Last Name</label>
+                            <input type="text" id="last_name" name="last_name" class="editable"
+                                value="{{ user.last_name }}" readonly required>
                         </div>
 
                         <div class="input-group role-box">
-                            <label>Role</label>
-                            <input type="text" value="{{ user.role }}" readonly>
+                            <label for="role">Role</label>
+                            <input type="text" id="role" value="{{ user.role }}" readonly required>
                         </div>
 
                         <div class="input-group">
-                            <label>Email</label>
-                            <input type="email" name="email" value="{{ user.email }}" readonly>
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" class="editable" value="{{ user.email }}"
+                                readonly required>
                         </div>
 
                         <div class="input-group">
-                            <label>Card ID</label>
-                            <input type="text" value="{{ user.card_id }}" readonly>
+                            <label for="card_id">Card ID</label>
+                            <input type="text" id="card_id" value="{{ user.card_id }}" readonly required>
                         </div>
 
+                        <!-- SPECIAL FIELD -->
                         <div class="input-group highlight">
-                            <label>Current Balance</label>
-                            <input type="text" value="₹{{ user.balance }}" readonly>
+                            <label for="balance">Current Balance</label>
+                            <input type="text" id="balance" value="₹{{ user.balance }}" readonly>
                         </div>
 
-                        <div class="input-group highlight">
-                            <label for="input-file">Update Image</label>
-                            <input type="file" name="photo" id="input-file" accept="image/jpeg, image/png, image/jpg">
+                        <!-- DYNAMIC IMAGE BLOCK -->
+                        <div id="imageUploadGroup" style="display: none;">
+                            <div class="input-group highlight">
+                                <label>Update Image</label>
+
+                                <label class="custom-file">
+                                    <span>Choose Image</span>
+                                    <input type="file" name="photo" id="input-file" accept="image/*">
+                                </label>
+                            </div>
                         </div>
 
                     </div>
 
+                    <!-- SAVE BUTTON -->
                     <div class="save-area">
-                        <button type="submit" class="button" id="saveBtn">Save Changes</button>
+                        <button type="submit" class="button" id="saveBtn">
+                            Save Changes
+                        </button>
                     </div>
 
                 </form>
             </div>
         </div>
+
+    </main>
+
+    <!-- ===== ERROR HANDLING ===== -->
+    {% if error %}
+    <script>
+        window.profileError = "{{ error }}";
+    </script>
+    {% endif %}
+
+    <!-- ===== POPUP ===== -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <p id="popup-message"></p>
+            <button id="popupOK">OK</button>
+        </div>
     </div>
 
+    <!-- ===== SCRIPTS ===== -->
     <script>
         const editBtn = document.getElementById("editBtn");
         const saveBtn = document.getElementById("saveBtn");
+        const imageGroup = document.getElementById("imageUploadGroup");
+        const card = editBtn.closest(".cards");
 
-        const btn = document.querySelector(".profile-btn");
+        const profileBtn = document.querySelector(".profile-btn");
         const dropdown = document.querySelector(".dropdown-menu");
 
-        // 🔥 DROPDOWN FIX (same logic as your working one)
-        if (btn && dropdown) {
-            btn.addEventListener("click", function (e) {
+        const profilePic = document.getElementById("profile-pic");
+        const inputFile = document.getElementById("input-file");
+
+        const status = document.getElementById("systemStatus");
+        const statusText = document.getElementById("statusText");
+
+        // ===== DROPDOWN (CLICK BASED) =====
+        if (profileBtn && dropdown) {
+            profileBtn.addEventListener("click", function (e) {
                 e.stopPropagation();
 
                 const isVisible =
@@ -161,7 +217,7 @@
             });
 
             dropdown.addEventListener("click", function (e) {
-                e.stopPropagation(); // ✅ prevent closing when clicking inside
+                e.stopPropagation();
             });
 
             document.addEventListener("click", function () {
@@ -169,20 +225,36 @@
             });
         }
 
-        // EDIT BUTTON
-        editBtn.addEventListener("click", () => {
-            document.querySelectorAll("input[readonly]").forEach(input => {
-                input.removeAttribute("readonly");
+        // ===== EDIT MODE =====
+        if (editBtn) {
+            editBtn.addEventListener("click", () => {
+                document.querySelectorAll(".editable").forEach(input => {
+                    input.removeAttribute("readonly");
+                });
+
+                saveBtn.style.display = "inline-block";
+                editBtn.style.display = "none";
+
+                card.classList.add("edit-mode");
+                imageGroup.style.display = "block";
             });
+        }
 
-            saveBtn.style.display = "inline-block";
-            editBtn.style.display = "none";
-        });
+        // ===== PROFILE IMAGE PREVIEW =====
+        if (inputFile && profilePic) {
+            inputFile.addEventListener("change", () => {
+                const file = inputFile.files[0];
 
-        // STATUS SYSTEM
-        const status = document.getElementById("systemStatus");
-        const statusText = document.getElementById("statusText");
+                if (file) {
+                    profilePic.src = URL.createObjectURL(file);
+                    document.querySelector(".custom-file span").innerText = file.name;
+                } else {
+                    document.querySelector(".custom-file span").innerText = "Choose Image";
+                }
+            });
+        }
 
+        // ===== STATUS SYSTEM =====
         function setStatus(type, text) {
             status.className = "status " + type;
             statusText.innerText = text;
@@ -200,14 +272,37 @@
 
         }, 4000);
 
-        // PROFILE IMAGE PREVIEW
-        let profilePic = document.getElementById("profile-pic");
-        let inputFile = document.getElementById("input-file");
+        // ===== POPUP =====
+        function showPopup(message) {
+            const popup = document.getElementById("popup");
+            const msg = document.getElementById("popup-message");
 
-        inputFile.onchange = function () {
-            profilePic.src = URL.createObjectURL(inputFile.files[0]);
+            msg.innerText = message;
+            popup.style.display = "flex";
+        }
+
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+        }
+
+        const popupOk = document.getElementById("popupOK");
+
+        if (popupOk) {
+            popupOk.addEventListener("click", closePopup);
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            if (window.profileError) {
+                showPopup(window.profileError);
+            }
+        });
+
+        // ===== PREVENT RESUBMIT =====
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
         }
     </script>
+
 </body>
 
 </html>
