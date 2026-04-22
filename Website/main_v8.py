@@ -147,6 +147,7 @@ def home(request: Request, card_id: Optional[str] = None):
             "request": request,
             "user": request.session.get("user"),
             "balance": balance,
+            "Name": f"{request.session.get('user', {}).get('first_name', 'Guest')} {request.session.get('user', {}).get('last_name', '')}".strip(),
             "card_id": card["card_id"] if card else "N/A",
             "from_stop": trip["from_stop"] if trip else "N/A",
             "to_stop": trip["to_stop"] if trip else "N/A",
