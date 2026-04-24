@@ -311,37 +311,9 @@
                         <span class="hidden sm:inline text-white/80">Theme</span>
                       </button>
                       <!-- <a href="#"
-            class="hidden sm:inline-flex rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-glow hover:brightness-110 transition focus-ring">Get
-            the App</a> -->
+                        class="hidden sm:inline-flex rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-glow hover:brightness-110 transition focus-ring">Get
+                      the App</a> -->
                     </div>
-
-                  </div>
-                </div>
-
-                <!-- Role chips -->
-                <div class="mt-5">
-                  <label
-                    class="mb-2 block text-xs font-medium uppercase tracking-wider text-night-700/70 dark:text-white/60">Continue
-                    as</label>
-                  <div class="grid grid-cols-3 gap-2">
-                    <button data-role="passenger" class="role-chip active">
-                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 12a5 5 0 110-10 5 5 0 010 10zm-7 9a7 7 0 0114 0H5z" />
-                      </svg>
-                      Passenger
-                    </button>
-                    <button data-role="driver" class="role-chip">
-                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M4 14h16v4H4v-4zm2-8h12l2 6H4l2-6z" />
-                      </svg>
-                      Driver
-                    </button>
-                    <button data-role="admin" class="role-chip">
-                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2l9 4-9 4-9-4 9-4zm0 7l9 4-9 4-9-4 9-4zm0 7l9 4-9 4-9-4 9-4z" />
-                      </svg>
-                      Admin
-                    </button>
                   </div>
                 </div>
               </div>
@@ -485,21 +457,51 @@
                 </form>
 
                 <!-- Sign up form -->
-                <form id="signupForm" method="post" action="/signup" class="hidden space-y-4" novalidate>
+                <form id="signupForm" method="post" action="/signup" class="hidden space-y-4">
+
+                  <!-- Role chips -->
+                  <div class="mt-5">
+                    <label
+                      class="mb-2 block text-xs font-medium uppercase tracking-wider text-night-700/70 dark:text-white/60">Continue
+                      as</label>
+                    <div class="grid grid-cols-3 gap-2">
+                      <button data-role="passenger" class="role-chip active">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 12a5 5 0 110-10 5 5 0 010 10zm-7 9a7 7 0 0114 0H5z" />
+                        </svg>
+                        Passenger
+                      </button>
+                      <button data-role="driver" class="role-chip">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M4 14h16v4H4v-4zm2-8h12l2 6H4l2-6z" />
+                        </svg>
+                        Driver
+                      </button>
+                      <button data-role="admin" class="role-chip">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 2l9 4-9 4-9-4 9-4zm0 7l9 4-9 4-9-4 9-4zm0 7l9 4-9 4-9-4 9-4z" />
+                        </svg>
+                        Admin
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Hidden input (for backend) -->
+                  <input type="hidden" name="role" id="hiddenRole" value="passenger">
                   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
                     <div>
-                      <label for="suName" class="mb-2 block text-sm font-medium text-night-800 dark:text-white">First
+                      <label for="suFirstName" class="mb-2 block text-sm font-medium text-night-800 dark:text-white">First
                         Name</label>
-                      <input id="suName" name="first_name" type="text" placeholder="Aarav " class="input" required />
-                      <p class="mt-1 hidden text-xs text-rose-500" id="suNameErr">Please enter your first name.</p>
+                      <input id="suFirstName" name="first_name" type="text" placeholder="Aarav " class="input" required />
+                      <p class="mt-1 hidden text-xs text-rose-500" id="suFirstNameErr">Please enter your first name.</p>
                     </div>
 
                     <div>
-                      <label for="suName" class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Last
+                      <label for="suLastName" class="mb-2 block text-sm font-medium text-night-800 dark:text-white">Last
                         Name</label>
-                      <input id="suName" name="last_name" type="text" placeholder="Sharma" class="input" required />
-                      <p class="mt-1 hidden text-xs text-rose-500" id="suNameErr">Please enter your last name.</p>
+                      <input id="suLastName" name="last_name" type="text" placeholder="Sharma" class="input" required />
+                      <p class="mt-1 hidden text-xs text-rose-500" id="suLastNameErr">Please enter your last name.</p>
                     </div>
 
                     <div>
@@ -536,14 +538,12 @@
                     </div>
 
                     <div>
-                      <label class="mb-2 block text-sm font-medium text-gray-800 dark:text-white w-[100px]">Role</label>
+                      <label for="suRole" class="mb-2 block text-sm font-medium text-gray-800 dark:text-white w-[100px]">Role</label>
 
-                      <select name="role" class="input" required>
-                        <option value="">Select role</option>
-                        <option value="passenger">Passenger</option>
-                        <option value="driver">Driver</option>
-                        <option value="admin">Admin</option>
-                      </select>
+                      <!-- Fake select box -->
+                      <div class="input flex items-center justify-between" id="roleBox">
+                          <span id="roleText">Passenger</span>
+                      </div>
                     </div>
                   </div>
 
@@ -552,7 +552,7 @@
                     <input id="agree" type="checkbox" class="peer sr-only" />
 
                     <span class="inline-flex h-5 w-5 items-center justify-center rounded-md border border-black/15 bg-white shadow-sm transition
-    peer-checked:border-emerald-500 peer-checked:bg-emerald-500">
+                      peer-checked:border-emerald-500 peer-checked:bg-emerald-500">
 
                       <svg class="h-3.5 w-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="3" stroke-linecap="round" stroke-linejoin="round">

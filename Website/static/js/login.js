@@ -42,16 +42,32 @@
     goLogin.addEventListener('click', () => setActive('login'));
 
     // Role chips (login)
-    const roleChips = Array.from(document.querySelectorAll('.role-chip'));
+    const roleChips = Array.from(document.querySelectorAll('#signupForm .role-chip'));
     let selectedRole = 'passenger';
+
+    const hiddenRole = document.getElementById('hiddenRole');
+    const roleText = document.getElementById('roleText');
+
+    // set default
+    if (hiddenRole) hiddenRole.value = selectedRole;
+    if (roleText) roleText.textContent = "Passenger";
+
     roleChips.forEach(chip => {
         chip.addEventListener('click', () => {
+
             roleChips.forEach(c => c.classList.remove('active'));
             chip.classList.add('active');
+
             selectedRole = chip.getAttribute('data-role');
-            // Sync signup role
-            const suRole = document.getElementById('suRole');
-            if (suRole) suRole.value = selectedRole;
+
+            // update hidden input
+            if (hiddenRole) hiddenRole.value = selectedRole;
+
+            // update UI text
+            if (roleText) {
+                roleText.textContent =
+                    selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1);
+            }
         });
     });
 
@@ -77,7 +93,7 @@
         strengthText.textContent = ['Too short', 'Weak', 'Okay', 'Good', 'Strong'][score];
     });
     function calcStrength(v) {
-        if (!v || v.length < 6) return 0;
+        if (!v || v.length < 8) return 0;
         let s = 1;
         if (v.length >= 8) s++;
         if (/[A-Z]/.test(v) && /[a-z]/.test(v)) s++;
@@ -111,7 +127,7 @@
             return;
         }
 
-        if (passInput.value.length < 6) {
+        if (passInput.value.length < 8) {
             showErr(document.getElementById('loginPassErr'), true);
             e.preventDefault();
             return;
@@ -120,21 +136,31 @@
         // Allow default form behavior to handle valid submission.
     });
     // Sign up
+    const suFirstName = document.getElementById('suFirstName');
+    const suLastName = document.getElementById('suLastName');
+    const suEmail = document.getElementById('suEmail');
+    const suPhone = document.getElementById('suPhone');
+    const suPass = document.getElementById('suPass');
+    const suPass2 = document.getElementById('suPass2');
+    const agree = document.getElementById('agree');
+
     signupForm.addEventListener('submit', (e) => {
 
         let ok = true;
 
-        showErr(document.getElementById('suNameErr'), false);
+        showErr(document.getElementById('suFirstNameErr'), false);
+        showErr(document.getElementById('suLastNameErr'), false);
         showErr(document.getElementById('suEmailErr'), false);
         showErr(document.getElementById('suPhoneErr'), false);
         showErr(document.getElementById('suPassErr'), false);
         showErr(document.getElementById('suPass2Err'), false);
         showErr(document.getElementById('agreeErr'), false);
 
-        if (!suName.value.trim()) { showErr(document.getElementById('suNameErr'), true); ok = false; }
+        if (!suFirstName.value.trim()) { showErr(document.getElementById('suFirstNameErr'), true); ok = false; }
+        if (!suLastName.value.trim()) { showErr(document.getElementById('suLastNameErr'), true); ok = false; }
         if (!emailRe.test(suEmail.value.trim())) { showErr(document.getElementById('suEmailErr'), true); ok = false; }
         if (!phoneRe.test(suPhone.value.trim())) { showErr(document.getElementById('suPhoneErr'), true); ok = false; }
-        if (suPass.value.length < 6) { showErr(document.getElementById('suPassErr'), true); ok = false; }
+        if (suPass.value.length < 8) { showErr(document.getElementById('suPassErr'), true); ok = false; }
         if (suPass2.value !== suPass.value) { showErr(document.getElementById('suPass2Err'), true); ok = false; }
         if (!agree.checked) { showErr(document.getElementById('agreeErr'), true); ok = false; }
 
@@ -225,14 +251,14 @@
 
     // ✅ Show login error popup if exists
     window.addEventListener("DOMContentLoaded", () => {
-        if (window.loginError) {
-            showPopup(window.loginError);
-        }
-    });
+    if (window.loginError) {
+        showPopup(window.loginError);
 
-    // Prevent form resubmission popup on refresh/back
-    if (window.history.replaceState) {
-        window.history.replaceState(null, null, window.location.href);
+        // ✅ REMOVE error from URL after showing once
+        const url = new URL(window.location);
+        url.searchParams.delete("error");
+        window.history.replaceState({}, document.title, url.pathname);
     }
+});
 
 })();
