@@ -427,26 +427,40 @@
                   </div>
 
                   <div class="grid grid-cols-3 gap-2">
-                    <button type="button" class="oauth-btn">
-                      <svg class="h-5 w-5" viewBox="0 0 24 24">
+
+                    <!-- Google -->
+                    <button type="button" class="oauth-btn" onclick="signInWithGoogle()">
+                      <svg class="h-5 w-5" viewBox="0 0 48 48">
                         <path fill="#EA4335"
-                          d="M12 11.5v2.9h4.9c-.2 1.2-1.6 3.5-4.9 3.5-2.9 0-5.3-2.4-5.3-5.4s2.4-5.4 5.3-5.4c1.7 0 2.8.7 3.4 1.3l2.3-2.2C16.8 5 14.6 4 12 4 7.9 4 4.5 7.3 4.5 11.5S7.9 19 12 19c6.9 0 7.5-6.1 7-8.5H12z" />
+                          d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.7 30.2 0 24 0 14.6 0 6.5 5.4 2.5 13.3l7.8 6.1C12.2 13.4 17.6 9.5 24 9.5z" />
+                        <path fill="#4285F4"
+                          d="M46.5 24.5c0-1.7-.2-3.3-.5-4.9H24v9.3h12.7c-.5 3-2.2 5.5-4.7 7.2l7.3 5.7c4.2-3.9 7.2-9.7 7.2-17.3z" />
+                        <path fill="#FBBC05"
+                          d="M10.3 28.6A14.6 14.6 0 019.5 24c0-1.6.3-3.2.8-4.6l-7.8-6.1A24 24 0 000 24c0 3.8.9 7.3 2.5 10.7l7.8-6.1z" />
+                        <path fill="#34A853"
+                          d="M24 48c6.5 0 11.9-2.1 15.8-5.8l-7.3-5.7c-2 1.4-4.7 2.2-8.5 2.2-6.4 0-11.8-3.9-13.7-9.1l-7.8 6.1C6.5 42.6 14.6 48 24 48z" />
                       </svg>
                       Google
                     </button>
+
+                    <!-- Apple -->
                     <button type="button" class="oauth-btn">
                       <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                         <path
-                          d="M16.8 12c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.8-2-1.6-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5C2.9 10 2 12.4 2 14.9c0 3.7 2.4 5.7 4.7 5.7 1.1 0 2.4-.8 3.1-.8.7 0 2 .8 3.4.8 2.3 0 3.9-2 4.6-4 1.1-1.6 1.5-3.1 1.5-3.1-2.5-1-2.5-2.9-2.5-3.5zM14.6 4.2c.8-1 1.3-2.4 1.2-3.7-1.1.1-2.5.8-3.3 1.8-.7.8-1.3 2.2-1.1 3.5 1.2.1 2.5-.6 3.2-1.6z" />
+                          d="M17.05 20.28c-.98.95-2.05.8-3.08.36-1.09-.45-2.09-.47-3.24 0-1.44.61-2.2.43-3.06-.36C2.8 15.25 3.5 7.59 8.9 7.31c1.31.06 2.23.87 2.99.93.76-.06 1.98-.99 3.44-.84 1.76.14 3.09.84 3.97 2.12-3.46 2.08-2.9 6.97.59 8.39-.66 1.61-1.51 3.2-2.84 4.37zM12 7.2c-.15-2.39 1.77-4.36 4.04-4.55.3 2.54-1.94 4.61-4.04 4.55z" />
                       </svg>
                       Apple
                     </button>
+
+                    <!-- Phone Number -->
                     <button type="button" class="oauth-btn">
                       <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 12a5 5 0 110-10 5 5 0 010 10zm-7 9a7 7 0 0114 0H5z" />
+                        <path
+                          d="M6.62 10.79a15.054 15.054 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20a1 1 0 01-1 1C10.07 21 3 13.93 3 5a1 1 0 011-1h3.5c.55 0 1 .45 1 1 0 1.24.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
                       </svg>
-                      SSO
+                      Phone
                     </button>
+
                   </div>
 
                   <p class="text-center text-xs text-night-700/70 dark:text-white/60">
@@ -491,9 +505,11 @@
                   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
                     <div>
-                      <label for="suFirstName" class="mb-2 block text-sm font-medium text-night-800 dark:text-white">First
+                      <label for="suFirstName"
+                        class="mb-2 block text-sm font-medium text-night-800 dark:text-white">First
                         Name</label>
-                      <input id="suFirstName" name="first_name" type="text" placeholder="Aarav " class="input" required />
+                      <input id="suFirstName" name="first_name" type="text" placeholder="Aarav " class="input"
+                        required />
                       <p class="mt-1 hidden text-xs text-rose-500" id="suFirstNameErr">Please enter your first name.</p>
                     </div>
 
@@ -538,11 +554,12 @@
                     </div>
 
                     <div>
-                      <label for="suRole" class="mb-2 block text-sm font-medium text-gray-800 dark:text-white w-[100px]">Role</label>
+                      <label for="suRole"
+                        class="mb-2 block text-sm font-medium text-gray-800 dark:text-white w-[100px]">Role</label>
 
                       <!-- Fake select box -->
                       <div class="input flex items-center justify-between" id="roleBox">
-                          <span id="roleText">Passenger</span>
+                        <span id="roleText">Passenger</span>
                       </div>
                     </div>
                   </div>
@@ -679,6 +696,35 @@
     window.loginError = "{{ error }}";
   </script>
   {% endif %}
+
+  <!-- <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <script>
+    window.onload = function () {
+      google.accounts.id.initialize({
+        client_id: "720592181985-derk2grhfdpeapubm2dvod1i4q7d37to.apps.googleusercontent.com",
+        callback: handleCredentialResponse
+      });
+
+      // renders official Google button hidden (optional)
+      google.accounts.id.renderButton(
+        document.getElementById("googleBtn"),
+        {
+          theme: "outline",
+          size: "large"
+        }
+      );
+    };
+
+    function signInWithGoogle() {
+      google.accounts.id.prompt();
+    }
+
+    function handleCredentialResponse(response) {
+      console.log(response);
+      alert("Login successful");
+    }
+  </script> -->
 </body>
 
 </html>
