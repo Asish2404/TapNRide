@@ -24,15 +24,17 @@ stops = {0: "Stop A", 1: "Stop B", 2: "Stop C", 3: "Stop D"}
 
 
 # Database connection
+import os
+
 def get_db():
     return pymysql.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="smart_bus",
+        host=os.getenv("MYSQLHOST"),
+        user=os.getenv("MYSQLUSER"),
+        password=os.getenv("MYSQLPASSWORD"),
+        database=os.getenv("MYSQLDATABASE"),
+        port=int(os.getenv("MYSQLPORT")),
         cursorclass=pymysql.cursors.DictCursor,
     )
-
 # CHANGE-2:fare table (Matrix representation)
 fares = [[0, 8, 8, 10], [8, 0, 8, 10], [8, 8, 0, 8], [10, 10, 8, 0]]
 
