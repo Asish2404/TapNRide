@@ -4,3 +4,4 @@ pymysql
 python-multipart
 itsdangerous
 jinja2
+cryptography
