@@ -44,10 +44,10 @@ body {
 .middle {
     display: flex;
     justify-content: flex-end;
-    margin-right: 86px
-        /* align-items: center; */
-        /* min-height: 100vh; */
-        /* width: 100%; */
+    margin-right: 86px;
+    /* align-items: center; */
+    /* min-height: 100vh; */
+    /* width: 100%; */
 }
 
 .theme-btn {
@@ -74,9 +74,8 @@ body {
 }
 
 /* =========================
-   🔥 LIQUID GLASS NAVBAR
+    LIQUID GLASS NAVBAR
 ========================= */
-    
 .top-nav {
     z-index: 10000;
     display: flex;
@@ -149,13 +148,18 @@ body {
     margin-right: 12px;
 }
 
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
 .brand-text {
     font-weight: 600;
     font-size: 18px;
 }
 
 .brand-text-sub {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--muted);
 }
 
@@ -213,12 +217,12 @@ body {
     justify-content: center;
     font-weight: 600;
     font-size: 13px;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+    /* box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4); */
 }
 
 .arrow {
     color: rgba(148, 163, 184, 0.6);
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .dropdown-menu {
@@ -247,22 +251,8 @@ body {
     background: rgba(176, 170, 170, 0.1);
 }
 
-
-.profile-container:hover .dropdown-menu {
-    display: flex;
-}
-
-
-.nav-links {
-    display: flex;
-    gap: 6px;
-}
-
-/* 
-.link {
-    background: linear-gradient(135deg,
-            rgba(34, 211, 238, 0.12),
-            rgba(14, 165, 233, 0.08));
+/* .link {
+    background: linear-gradient(135deg,            rgba(34, 211, 238, 0.12),            rgba(14, 165, 233, 0.08));
     color: #7dd3fc;
     border: 1px solid rgba(56, 189, 248, 0.18);
     text-decoration: none;
@@ -431,24 +421,21 @@ main {
             rgba(167, 139, 250, 0.2),
             rgba(47, 171, 225, 0.18),
             transparent);
+    pointer-events: none;
+}
+/* SUBTLE INNER LIGHT */
+.smart-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
 
-    /* SUBTLE INNER LIGHT */
-    .smart-card::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: 22px;
-
-        background: radial-gradient(circle at 30% 20%,
-                rgba(1, 86, 122, 0.12),
-                transparent 50%);
-
-        pointer-events: none;
-    }
+    background: radial-gradient(circle at 30% 20%,
+            rgba(1, 86, 122, 0.12),
+            transparent 50%);
 
     pointer-events: none;
 }
-
 
 .card-top {
     position: relative;

@@ -4,7 +4,7 @@
     --accent: #22d3ee;
     --accent2: #0ea5e9;
     --text: #e5e7eb;
-    --muted: #9ca3af;
+    --muted: #94a3b8;
     --radius: 999px;
 }
 
@@ -27,7 +27,7 @@ body {
 /* NAVBAR */
 
 .top-nav {
-    /* z-index: 10000; */
+    z-index: 10000;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -98,13 +98,18 @@ body {
     margin-right: 12px;
 }
 
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
 .brand-text {
     font-weight: 600;
     font-size: 18px;
 }
 
 .brand-text-sub {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--muted);
 }
 
@@ -119,7 +124,7 @@ body {
 
 .link {
     padding: 6px 14px;
-    border-radius: 999px;
+    border-radius: var(--radius);
 
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(10px);
@@ -166,7 +171,7 @@ body {
 }
 
 .arrow {
-    color: rgb(255, 255, 255);
+    color: rgba(148, 163, 184, 0.6);
     font-size: 12px;
 }
 
@@ -204,7 +209,7 @@ body {
 }
 
 .subtitle {
-    color: #9ca3af;
+    color: #94a3b8;
     margin-bottom: 30px;
 }
 
@@ -265,21 +270,21 @@ body {
     font-weight: bold;
 }
 
-/* INFO GRID */
-.info-grid {
+/* info2 GRID */
+.info2-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
     margin-bottom: 20px;
 }
 
-.info {
+.info2 {
     background: #0f2f45;
     padding: 15px;
     border-radius: 6px;
 }
 
-.info p {
+.info2 p {
     margin: 0;
     font-size: 12px;
     color: #9ca3af;
@@ -372,6 +377,8 @@ tbody tr:hover {
     padding: 10px;
     border-radius: 4px;
     border: none;
+    background: #e9e9e9;
+
 }
 
 .tap-form button {
@@ -388,15 +395,11 @@ tbody tr:hover {
     cursor: pointer;
 }
 
-.tap-form input {
-    background: #e9e9e9;
-}
-
 .tap-form button:hover {
     background: #1aa3bb;
 }
 
-.info-grid {
+.info2-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 25px;
@@ -408,26 +411,17 @@ tbody tr:hover {
     overflow-y: auto;
 }
 
-.ride-history-scroll::-webkit-scrollbar {
-    width: 6px;
-}
-
-.ride-history-scroll::-webkit-scrollbar-thumb {
-    background: #2ec4d6;
-    border-radius: 6px;
-}
-
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, #06b6d4, #0ea5e9);
-    border-radius: 999px
+    border-radius: 999px;
 }
 
 ::-webkit-scrollbar-track {
-    background: transparent
+    background: transparent;
 }

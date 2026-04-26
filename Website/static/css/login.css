@@ -27,7 +27,7 @@ body {
 
 
 .top-nav {
-    /* z-index: 10000; */
+    z-index: 1000;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -54,7 +54,7 @@ body {
 
 
 
-/* 🌊 Flow animation */
+/* Flow animation */
 /* .top-nav::after {
     content: "";
     position: absolute;
@@ -98,13 +98,18 @@ body {
     margin-right: 12px;
 }
 
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
 .brand-text {
     font-weight: 600;
     font-size: 18px;
 }
 
 .brand-text-sub {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--muted);
 }
 
@@ -164,7 +169,7 @@ body {
 }
 
 .arrow {
-    color: rgb(255, 255, 255);
+    color: rgba(148, 163, 184, 0.6);
     font-size: 12px;
 }
 
@@ -333,17 +338,17 @@ body {
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, #06b6d4, #0ea5e9);
-    border-radius: 999px
+    border-radius: 999px;
 }
 
 ::-webkit-scrollbar-track {
-    background: transparent
+    background: transparent;
 }
 
 /* Input autofill fix */
