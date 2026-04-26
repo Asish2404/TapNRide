@@ -1045,7 +1045,7 @@ async def update_profile(
 
         if old_data and old_data.get("profile_pic"):
             old = old_data["profile_pic"]
-            if old != "static/default.png" and os.path.exists(old):
+            if old != "static/source/default.png" and os.path.exists(old):
                 os.remove(old)
 
         # save new image
