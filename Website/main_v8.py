@@ -34,6 +34,7 @@ def get_db():
         cursorclass=pymysql.cursors.DictCursor,
     )
 
+
 # CHANGE-2:fare table (Matrix representation)
 fares = [[0, 8, 8, 10], [8, 0, 8, 10], [8, 8, 0, 8], [10, 10, 8, 0]]
 
@@ -42,11 +43,13 @@ fares = [[0, 8, 8, 10], [8, 0, 8, 10], [8, 8, 0, 8], [10, 10, 8, 0]]
 def get_fare(from_stop, to_stop):
     return fares[from_stop][to_stop]
 
+
 # # CHANGE-4: current stop
 # curStopKey = random.choice(
 #     list(stops.keys())
 # )  # current stop will be updated from keypad
 # curStop = stops[curStopKey]
+
 
 # CHANGE-5: retrieving key of corresponding Stop name
 def retrieveKey(stopName):
@@ -54,6 +57,7 @@ def retrieveKey(stopName):
         if value == stopName:
             return key
     return None
+
 
 # CHANGE-6: balance updation after fare deduction
 # def balanceUpdate(card_id,fare):
@@ -83,6 +87,7 @@ def retrieveKey(stopName):
 #     db.commit()
 #     cursor.close()
 #     db.close()
+
 
 def get_current_user(request: Request):
     return request.session.get("user")
@@ -169,14 +174,17 @@ def home(request: Request):
         },
     )
 
+
 # ---------------- HOME REDIRECT ----------------
 # @app.get("/home", response_class=HTMLResponse)
 # def home_redirect(request: Request, card_id: Optional[str] = None):
 #     return RedirectResponse(url=f"/?card_id={card_id}", status_code=303)
 
+
 @app.get("/home")
 def home_redirect(request: Request):
     return RedirectResponse("/", status_code=303)
+
 
 # ------------------- SIGNUP ----------------
 @app.post("/signup")
@@ -195,16 +203,28 @@ def signup(
     cursor.execute("SELECT card_id FROM cards_in_stock WHERE status='OPEN' LIMIT 1")
 
     row = cursor.fetchone()
+
     if not row:
         return RedirectResponse(
             url="/login?error=No available cards in stock", status_code=303
         )
 
-    card_id = row["card_id"]  # allocate a unique card ID for the new user
+    card_id = row["card_id"]
+
+    # NEW CHECK
+    cursor.execute("SELECT id FROM login WHERE email=%s", (email,))
+
+    if cursor.fetchone():
+        cursor.close()
+        db.close()
+        return RedirectResponse("/login?error=Email already exists", status_code=303)
 
     cursor.execute(
         """
-        INSERT INTO login(card_id, first_name, last_name, email, phone, password, role, profile_pic)
+        INSERT INTO login(
+            card_id, first_name, last_name,
+            email, phone, password, role, profile_pic
+        )
         VALUES(%s,%s,%s,%s,%s,%s,%s,%s)
         """,
         (
@@ -215,7 +235,7 @@ def signup(
             phone,
             password,
             role,
-            "static/source/default.png"
+            "/static/source/default.png",
         ),
     )
 
@@ -235,13 +255,9 @@ def signup(
 @app.get("/login", response_class=HTMLResponse)
 def login_page(request: Request, error: str = None):
     return templates.TemplateResponse(
-        request=request,
-        name="login.html",
-        context={
-            "request": request,
-            "error": error
-        }
+        request=request, name="login.html", context={"request": request, "error": error}
     )
+
 
 @app.post("/login")
 def login_user(request: Request, email: str = Form(...), password: str = Form(...)):
@@ -267,7 +283,7 @@ def login_user(request: Request, email: str = Form(...), password: str = Form(..
             "email": user.get("email"),
             "role": (user.get("role") or "").strip().lower(),
             "card_id": user.get("card_id"),
-            "profile_pic": user.get("profile_pic") or "static/source/default.png",
+            "profile_pic": user.get("profile_pic") or "/static/source/default.png",
         }
 
         return RedirectResponse(url="/", status_code=303)
@@ -281,7 +297,9 @@ def login_user(request: Request, email: str = Form(...), password: str = Form(..
         },
     )
 
+
 # ---------------- SCAN ----------------
+
 
 @app.post("/scan")
 def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
@@ -370,8 +388,7 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
 
                 # Remove pending rides
                 cursor.execute(
-                    "DELETE FROM pending_rides WHERE id=%s",
-                    (pending["id"],)
+                    "DELETE FROM pending_rides WHERE id=%s", (pending["id"],)
                 )
                 db.commit()
 
@@ -460,26 +477,27 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
     # TAP-1 → START RIDE
     # =========================
     else:
-        cursor.execute(
-            "SELECT * FROM cards WHERE card_id=%s",
-            (card_id,)
-        )
+        cursor.execute("SELECT * FROM cards WHERE card_id=%s", (card_id,))
         existing_card = cursor.fetchone()
 
         if not existing_card:
             cursor.execute(
                 """
-                INSERT INTO cards(card_id, balance, status)
+                INSERT INTO cards(card_id,balance,status)
                 VALUES(%s,%s,%s)
                 """,
                 (card_id, 0.00, "active"),
             )
             db.commit()
+            balance = 0
+
         else:
             if existing_card["status"] != "active":
-                return {"error": "Card is inactive"}
+                return {"error": "Card inactive"}
 
-        balance = existing_card["balance"]
+            balance = existing_card["balance"]
+
+        # balance = existing_card["balance"]
 
         if balance <= 0:
             return {
@@ -512,11 +530,7 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
 
         db.commit()
 
-        return {
-            "status": "ride started",
-            "from": curStop,
-            "card_id": card_id
-        }
+        return {"status": "ride started", "from": curStop, "card_id": card_id}
 
 
 # # ---------------- TAP CARD ----------------
@@ -582,9 +596,9 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
 @app.post("/plan_ride")
 def plan_ride(
     card_id: str = Form(...),
-    Starting_place: str = Form(None),   # auto-detected
-    Ending_place: str = Form(...),      # passenger-selected to_stop
-    fare: float = Form(None),           # auto-calculated
+    Starting_place: str = Form(None),  # auto-detected
+    Ending_place: str = Form(...),  # passenger-selected to_stop
+    fare: float = Form(None),  # auto-calculated
 ):
     db = get_db()
     cursor = db.cursor(pymysql.cursors.DictCursor)
@@ -633,10 +647,8 @@ def plan_ride(
     cursor.close()
     db.close()
 
-    return RedirectResponse(
-        url=f"/dashboard?card_id={card_id}",
-        status_code=303
-    )
+    return RedirectResponse(url=f"/dashboard?card_id={card_id}", status_code=303)
+
 
 # -----------------------New addition for dashboard display-----------------------
 
@@ -655,6 +667,7 @@ def get_active_ride(card_id: str):
     db.close()
     return {"from_stop": active["from_stop"] if active else None}
 
+
 # ----------------------fetch fare for the active ride as per planned destination----------------------
 @app.get("/calculate_fare")
 def calculate_fare(card_id: str, to_stop: str):
@@ -662,7 +675,7 @@ def calculate_fare(card_id: str, to_stop: str):
     cursor = db.cursor(pymysql.cursors.DictCursor)
     cursor.execute(
         "SELECT from_stop FROM rides WHERE card_id=%s AND to_stop IS NULL LIMIT 1",
-        (card_id,)
+        (card_id,),
     )
     active = cursor.fetchone()
     if not active:
@@ -672,6 +685,7 @@ def calculate_fare(card_id: str, to_stop: str):
     cursor.close()
     db.close()
     return {"fare": fare}
+
 
 # ---------------- DASHBOARD ----------------
 @app.get("/dashboard", response_class=HTMLResponse)
@@ -692,10 +706,7 @@ def dashboard(request: Request, card_id: str = None):
     status = "Active"
 
     if card_id:
-        cursor.execute(
-            "SELECT balance, status FROM cards WHERE card_id=%s",
-            (card_id,)
-        )
+        cursor.execute("SELECT balance, status FROM cards WHERE card_id=%s", (card_id,))
         card = cursor.fetchone()
 
         if card:
@@ -737,6 +748,7 @@ def dashboard(request: Request, card_id: str = None):
             "status": status,
         },
     )
+
 
 # ---------------- ADMIN ----------------
 @app.get("/admin", response_class=HTMLResponse)
@@ -803,6 +815,7 @@ def admin_dashboard(request: Request):
         },
     )
 
+
 # ---------------- RECHARGE ----------------
 @app.get("/recharge", response_class=HTMLResponse)
 def recharge_page(request: Request):
@@ -815,10 +828,7 @@ def recharge_page(request: Request):
     cursor = db.cursor(pymysql.cursors.DictCursor)
 
     # FETCH BALANCE ALWAYS
-    cursor.execute(
-        "SELECT balance FROM cards WHERE card_id=%s",
-        (user["card_id"],)
-    )
+    cursor.execute("SELECT balance FROM cards WHERE card_id=%s", (user["card_id"],))
     card = cursor.fetchone()
 
     cursor.close()
@@ -835,6 +845,7 @@ def recharge_page(request: Request):
             "balance": balance,
         },
     )
+
 
 @app.post("/recharge")
 def recharge(request: Request, card_id: str = Form(...), amount: float = Form(...)):
@@ -858,10 +869,7 @@ def recharge(request: Request, card_id: str = Form(...), amount: float = Form(..
     cursor = db.cursor(pymysql.cursors.DictCursor)
 
     # check if card exists
-    cursor.execute(
-        "SELECT * FROM cards WHERE card_id=%s",
-        (card_id,)
-    )
+    cursor.execute("SELECT * FROM cards WHERE card_id=%s", (card_id,))
     card = cursor.fetchone()
 
     if not card:
@@ -904,11 +912,13 @@ def recharge(request: Request, card_id: str = Form(...), amount: float = Form(..
         },
     )
 
+
 # ---------------- LOGOUT ----------------
 @app.get("/logout")
 def logout(request: Request):
     request.session.clear()
     return RedirectResponse(url="/login", status_code=303)
+
 
 # ----profile profile ----
 @app.get("/profile")
@@ -949,8 +959,8 @@ def profile(request: Request):
     pic = user.get("profile_pic")
 
     # fallback if NULL or file deleted
-    if not pic or not os.path.exists(pic):
-        pic = "static/source/default.png"
+    if not pic:
+        pic = "/static/source/default.png"
 
     user = {
         "first_name": user.get("first_name", "Rahul"),
@@ -963,13 +973,9 @@ def profile(request: Request):
     }
 
     return templates.TemplateResponse(
-        request=request,
-        name="profile.html",
-        context={
-            "request": request,
-            "user": user
-        }
+        request=request, name="profile.html", context={"request": request, "user": user}
     )
+
 
 @app.post("/profile")
 async def update_profile(
@@ -978,7 +984,7 @@ async def update_profile(
     last_name: str = Form(...),
     email: str = Form(...),
     photo: UploadFile = File(None),
-    ):
+):
     session_user = request.session.get("user")
     if not session_user:
         return RedirectResponse("/login", status_code=303)
@@ -1038,24 +1044,24 @@ async def update_profile(
 
         # delete old image
         cursor.execute(
-            "SELECT profile_pic FROM login WHERE id=%s",
-            (session_user["id"],)
+            "SELECT profile_pic FROM login WHERE id=%s", (session_user["id"],)
         )
         old_data = cursor.fetchone()
 
         if old_data and old_data.get("profile_pic"):
             old = old_data["profile_pic"]
-            if old != "static/source/default.png" and os.path.exists(old):
+            if old != "/static/source/default.png" and os.path.exists(old):
                 os.remove(old)
 
         # save new image
         ext = photo.filename.split(".")[-1]
         filename = f"{uuid.uuid4()}.{ext}"
-        file_path = os.path.join(upload_dir, filename)
 
-        with open(file_path, "wb") as f:
+        disk_path = os.path.join("static/uploads", filename)
+        file_path = f"/static/uploads/{filename}"
+
+        with open(disk_path, "wb") as f:
             f.write(await photo.read())
-
     # UPDATE DATABASE
     if file_path:
         cursor.execute(
