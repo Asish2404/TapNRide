@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>SmartBus Passenger Dashboard</title>
@@ -12,59 +11,121 @@
     <link rel="shortcut icon" href="/static/source/SB.jpeg" type="image/x-icon">
 
 </head>
-
 <body>
     <header class="top-nav">
         <div class="brand">
-            <img src="/static/source/SB.jpeg" alt="SmartBus Logo" class="logo-img">
+            <img src="/static/source/SB.jpeg" alt="SmartBus Logo" class="logo-img" />
             <div class="info">
-                <div class="brand-text">SmartBus</div>
-                <div class="brand-text-sub">Tap • Travel • Secure</div>
+                <div class="brand-text">
+                    SmartBus
+                </div>
+                <div class="brand-text-sub">
+                    Tap • Travel • Secure
+                </div>
             </div>
         </div>
         <nav class="nav-links">
-            <a class="link" href="/home">Home</a>
-            <a class="link" href="/dashboard">Passenger</a>
-            <a class="link" href="/recharge">Recharge</a>
 
+            <a class="link" href="/home">
+                Home
+            </a>
+            <a class="link" href="/dashboard">
+                Passenger
+            </a>
+            <a class="link" href="/recharge">
+                Recharge
+            </a>
             {% if user %}
-
-            {% if user.role == "admin" %}
-            <a class="link" href="/admin">Admin</a>
+            {% if user.role=="admin" %}
+            <a class="link" href="/admin">
+                Admin
+            </a>
             {% endif %}
-
-            <!-- PROFILE -->
             <div class="profile-container">
                 <button id="profileBtn" class="profile-btn">
-                    <div class="avatar">{{ user.first_name[0] }}</div>
-                    <span class="arrow">▼</span>
+                    <div class="avatar">
+                        {{ user.first_name[0] }}
+                    </div>
+                    <span class="arrow">
+                        ▼
+                    </span>
                 </button>
-
                 <div id="dropdown" class="dropdown-menu">
-                    <a href="/profile">Profile </a>
-                    <a href="/recharge">Recharge</a>
-                    <a href="/logout">Logout</a>
+                    <a href="/profile">
+                        Profile
+                    </a>
+                    <a href="/recharge">
+                        Recharge
+                    </a>
+                    <a href="/logout">
+                        Logout
+                    </a>
                 </div>
             </div>
-
             {% else %}
-
-            <a class="link" href="/login">Login</a>
-
+            <a class="link" href="/login">
+                Login
+            </a>
             {% endif %}
         </nav>
+        <!-- MOBILE HAMBURGER -->
+        <button class="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </header>
-    <main class="container">
-        <h1>Passenger Dashboard</h1>
-        <p class="subtitle">
-            Check your SmartBus card balance, view ride history, and manage recharges.
-        </p>
+    <!-- MOBILE DRAWER -->
+    <div id="mobileMenu" class="mobile-menu">
 
+        <a href="/home">
+            Home
+        </a>
+        <a href="/dashboard">
+            Passenger
+        </a>
+
+        <a href="/recharge">
+            Recharge
+        </a>
+        {% if user %}
+
+        <a href="/profile">
+            Profile
+        </a>
+        {% if user.role=="admin" %}
+        <a href="/admin">
+            Admin
+        </a>
+        {% endif %}
+
+        <a href="/logout">
+            Logout
+        </a>
+
+        {% else %}
+
+        <a href="/login">
+            Login
+        </a>
+
+        {% endif %}
+
+    </div>
+    <main class="container">
+        <h1>
+            Passenger Dashboard
+        </h1>
+        <p class="subtitle">
+            Check your SmartBus card balance,
+            view ride history,
+            and manage recharges.
+        </p>
         <div class="grid">
-            <!-- LEFT CARD -->
             <div class="card">
-                <h3>Card Lookup</h3>
-                <!-- <label>Card ID</label> -->
+                <h3>
+                    Card Lookup
+                </h3>
                 <form action="/plan_ride" method="post" class="tap-form">
                     <input type="text" name="card_id" placeholder="Enter your Card ID"
                         value="{{ card_id if card_id else '' }}" required>
@@ -77,30 +138,41 @@
                     </button>
                 </form>
                 <div class="balance">
-                    Balance ₹ {{ "%.2f"|format(balance) if balance is not none else "0.00" }}
+                    Balance ₹
+                    {{ "%.2f"|format(balance) if balance is not none else "0.00" }}
                 </div>
                 <div class="info2-grid">
+
                     <div class="info2">
                         <p>Last Ride</p>
-                        <span>{{ last_ride if last_ride else "—" }}</span>
+                        <span>
+                            {{ last_ride if last_ride else "—" }}
+                        </span>
                     </div>
                     <div class="info2">
                         <p>Fare Deducted</p>
-                        <span>₹ {{ last_fare if last_fare else "0.00" }}</span>
+                        <span>
+                            ₹ {{ last_fare if last_fare else "0.00" }}
+                        </span>
                     </div>
                     <div class="info2">
                         <p>Total Rides</p>
-                        <span>{{ total_rides if total_rides else "0" }}</span>
+                        <span>
+                            {{ total_rides if total_rides else "0" }}
+                        </span>
                     </div>
                     <div class="info2">
                         <p>Status</p>
-                        <span>{{ status if status else "Active" }}</span>
+                        <span>
+                            {{ status if status else "Active" }}
+                        </span>
                     </div>
                 </div>
             </div>
-            <!-- RIDE HISTORY -->
             <div class="card">
-                <h3>Ride History</h3>
+                <h3>
+                    Ride History
+                </h3>
                 <div class="ride-history-scroll">
                     <table>
                         <tr>
@@ -112,17 +184,29 @@
                         {% if rides %}
                         {% for ride in rides %}
                         <tr>
-                            <td>{{ ride.transaction_time }}</td>
-                            {% set route = ride.description.split(" → ") %}
-                            <td>{{ route[0] }}</td>
-                            <td>{{ route[1] if route|length > 1 else "-" }}</td>
-                            <td>₹ {{ ride.amount }}</td>
+
+                            <td>
+                                {{ ride.transaction_time }}
+                            </td>
+                            {% set route =
+                            ride.description.split(" → ")
+                            %}
+                            <td>
+                                {{ route[0] }}
+                            </td>
+                            <td>
+                                {{ route[1] if route|length > 1 else "-" }}
+                            </td>
+                            <td>
+                                ₹ {{ ride.amount }}
+                            </td>
                         </tr>
                         {% endfor %}
                         {% else %}
                         <tr>
                             <td colspan="4" class="empty">
-                                Enter a valid Card ID to view ride history
+                                Enter a valid Card ID
+                                to view ride history
                             </td>
                         </tr>
                         {% endif %}
@@ -132,70 +216,172 @@
         </div>
     </main>
     <footer>
-        SmartBus – Tap • Travel • Secure • IoT Smart Bus Fare System
+        SmartBus –
+        Tap • Travel • Secure •
+        IoT Smart Bus Fare System
     </footer>
     <script>
-        const btn = document.getElementById("profileBtn");
-        const dropdown = document.getElementById("dropdown");
+
+        const btn =
+            document.getElementById(
+                "profileBtn"
+            );
+
+        const dropdown =
+            document.getElementById(
+                "dropdown"
+            );
 
         if (btn) {
-            btn.addEventListener("click", function (e) {
-                e.stopPropagation();
-                dropdown.style.display =
-                    dropdown.style.display === "block" ? "none" : "block";
+            btn.addEventListener(
+                "click",
+                function (e) {
+
+                    e.stopPropagation();
+
+                    dropdown.style.display =
+                        dropdown.style.display === "block"
+                            ? "none"
+                            : "block";
+
+                });
+
+            document.addEventListener(
+                "click",
+                function () {
+                    dropdown.style.display = "none";
+                });
+
+        }
+
+    </script>
+    <script>
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                const cardField =
+                    document.querySelector(
+                        "input[name='card_id']"
+                    );
+
+                const fromField =
+                    document.querySelector(
+                        "input[name='Starting_place']"
+                    );
+
+                const toField =
+                    document.querySelector(
+                        "input[name='Ending_place']"
+                    );
+
+                const fareField =
+                    document.querySelector(
+                        "input[name='fare']"
+                    );
+                cardField.addEventListener(
+                    "blur",
+                    async () => {
+
+                        let cardId =
+                            cardField.value;
+
+                        if (cardId) {
+
+                            let res =
+                                await fetch(
+                                    `/get_active_ride?card_id=${cardId}`
+                                );
+
+                            let data =
+                                await res.json();
+
+                            fromField.value =
+                                data.from_stop || "";
+
+                        }
+
+                    }
+                );
+                toField.addEventListener(
+                    "blur",
+                    async () => {
+
+                        let cardId =
+                            cardField.value;
+
+                        let toStop =
+                            toField.value;
+
+                        if (cardId && toStop) {
+
+                            let res =
+                                await fetch(
+                                    `/calculate_fare?card_id=${cardId}&to_stop=${toStop}`
+                                );
+
+                            let data =
+                                await res.json();
+
+                            fareField.value =
+                                data.fare || "";
+
+                        }
+
+                    }
+                );
+
             });
 
-            document.addEventListener("click", function () {
-                dropdown.style.display = "none";
-            });
+    </script>
+    <script>
+
+        const nav =
+            document.querySelector(
+                ".top-nav"
+            );
+
+        nav.addEventListener(
+            "mousemove",
+            (e) => {
+
+                const rect =
+                    nav.getBoundingClientRect();
+
+                const x =
+                    ((e.clientX - rect.left)
+                        / rect.width) * 100;
+
+                const y =
+                    ((e.clientY - rect.top)
+                        / rect.height) * 100;
+
+                nav.style.setProperty(
+                    "--x",
+                    x + "%"
+                );
+
+                nav.style.setProperty(
+                    "--y",
+                    y + "%"
+                );
+
+            }
+        );
+    </script>
+    <script>
+
+        function toggleMenu() {
+
+            document
+                .getElementById(
+                    "mobileMenu"
+                )
+                .classList.toggle(
+                    "show-menu"
+                );
         }
     </script>
-
-    <!-- New addition -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const cardField = document.querySelector("input[name='card_id']");
-            const fromField = document.querySelector("input[name='Starting_place']");
-            const toField = document.querySelector("input[name='Ending_place']");
-            const fareField = document.querySelector("input[name='fare']");
-
-            // When Card ID is typed → fetch from_stop
-            cardField.addEventListener("blur", async () => {
-                let cardId = cardField.value;
-                if (cardId) {
-                    let res = await fetch(`/get_active_ride?card_id=${cardId}`);
-                    let data = await res.json();
-                    fromField.value = data.from_stop || "";
-                }
-            });
-
-            // When Destination is typed → fetch fare
-            toField.addEventListener("blur", async () => {
-                let cardId = cardField.value;
-                let toStop = toField.value;
-                if (cardId && toStop) {
-                    let res = await fetch(`/calculate_fare?card_id=${cardId}&to_stop=${toStop}`);
-                    let data = await res.json();
-                    fareField.value = data.fare || "";
-                }
-            });
-        });
-    </script>
-
-    <script>
-        const nav = document.querySelector(".top-nav");
-
-        nav.addEventListener("mousemove", (e) => {
-            const rect = nav.getBoundingClientRect();
-            const x = ((e.clientX - rect.left) / rect.width) * 100;
-            const y = ((e.clientY - rect.top) / rect.height) * 100;
-
-            nav.style.setProperty("--x", x + "%");
-            nav.style.setProperty("--y", y + "%");
-        });
-    </script>
-
-
 </body>
 
 </html>

@@ -90,45 +90,102 @@
 
     <!-- Top bar -->
     <header class="top-nav">
+
       <div class="brand">
         <img src="/static/source/SB.jpeg" alt="SmartBus Logo" class="logo-img">
+
         <div class="info">
-          <div class="brand-text">SmartBus</div>
-          <div class="brand-text-sub">Tap • Travel • Secure</div>
+          <div class="brand-text">
+            SmartBus
+          </div>
+
+          <div class="brand-text-sub">
+            Tap • Travel • Secure
+          </div>
         </div>
       </div>
+
+
       <nav class="nav-links">
-        <a class="link" href="/home">Home</a>
-        <a class="link" href="/dashboard">Passenger</a>
-        <a class="link" href="/recharge">Recharge</a>
+
+        <a class="link" href="/home">
+          Home
+        </a>
+
+        <a class="link" href="/dashboard">
+          Passenger
+        </a>
+
+        <a class="link" href="/recharge">
+          Recharge
+        </a>
 
         {% if user %}
 
-          {% if user.role == "admin" %}
-            <a class="link" href="/admin">Admin</a>
-          {% endif %}
+        {% if user.role=="admin" %}
+        <a class="link" href="/admin">
+          Admin
+        </a>
+        {% endif %}
 
-          <!-- PROFILE -->
-          <!-- <div class="profile-container">
-            <button id="profileBtn" class="profile-btn">
-              <div class="avatar">{{ user.first_name }}</div>
-              <span class="arrow">▼</span>
-            </button>
+        {% else %}
 
-            <div id="dropdown" class="dropdown-menu">
-              <a href="/dashboard">Dashboard</a>
-              <a href="/recharge">Recharge</a>
-              <a href="/logout">Logout</a>
-            </div>
-          </div> -->
-
-          {% else %}
-
-          <a class="link" href="/login">Login</a>
+        <a class="link" href="/login">
+          Login
+        </a>
 
         {% endif %}
+
       </nav>
+
+
+      <!-- HAMBURGER -->
+      <button class="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
     </header>
+
+
+
+    <!-- MOBILE MENU -->
+    <div id="mobileMenu" class="mobile-menu">
+
+      <a href="/home">
+        Home
+      </a>
+
+      <a href="/dashboard">
+        Passenger
+      </a>
+
+      <a href="/recharge">
+        Recharge
+      </a>
+
+      {% if user %}
+
+      {% if user.role=="admin" %}
+      <a href="/admin">
+        Admin
+      </a>
+      {% endif %}
+
+      <a href="/logout">
+        Logout
+      </a>
+
+      {% else %}
+
+      <a href="/login">
+        Login
+      </a>
+
+      {% endif %}
+
+    </div>
 
     <!-- Main -->
     <main class="relative z-10">
@@ -696,35 +753,13 @@
     window.loginError = "{{ error }}";
   </script>
   {% endif %}
-
-  <!-- <script src="https://accounts.google.com/gsi/client" async defer></script>
-
   <script>
-    window.onload = function () {
-      google.accounts.id.initialize({
-        client_id: "720592181985-derk2grhfdpeapubm2dvod1i4q7d37to.apps.googleusercontent.com",
-        callback: handleCredentialResponse
-      });
-
-      // renders official Google button hidden (optional)
-      google.accounts.id.renderButton(
-        document.getElementById("googleBtn"),
-        {
-          theme: "outline",
-          size: "large"
-        }
-      );
-    };
-
-    function signInWithGoogle() {
-      google.accounts.id.prompt();
+    function toggleMenu() {
+      document
+        .getElementById("mobileMenu")
+        .classList.toggle("show-menu");
     }
-
-    function handleCredentialResponse(response) {
-      console.log(response);
-      alert("Login successful");
-    }
-  </script> -->
+  </script>
 </body>
 
 </html>

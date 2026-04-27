@@ -5,54 +5,160 @@
     <meta charset="UTF-8">
     <title>SmartBus – Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="/static/css/index.css">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap" rel="stylesheet">
+
     <link rel="shortcut icon" href="/static/source/SB.jpeg" type="image/x-icon">
+
 </head>
 
 <body>
+
+
     <header class="top-nav">
+
         <div class="brand">
-            <img src="/static/source/SB.jpeg" alt="SmartBus Logo" class="logo-img">
+            <img src="/static/source/SB.jpeg" alt="SmartBus Logo" class="logo-img" />
+
             <div class="info">
-                <div class="brand-text">SmartBus</div>
-                <div class="brand-text-sub">Tap • Travel • Secure</div>
+                <div class="brand-text">
+                    SmartBus
+                </div>
+
+                <div class="brand-text-sub">
+                    Tap • Travel • Secure
+                </div>
             </div>
         </div>
+
+
+
         <nav class="nav-links">
-            <a class="link" href="/home">Home</a>
-            <a class="link" href="/dashboard">Passenger</a>
-            <a class="link" href="/recharge">Recharge</a>
+
+            <a class="link" href="/home">
+                Home
+            </a>
+
+            <a class="link" href="/dashboard">
+                Passenger
+            </a>
+
+            <a class="link" href="/recharge">
+                Recharge
+            </a>
 
             {% if user %}
 
             {% if user.role == "admin" %}
-            <a class="link" href="/admin">Admin</a>
+            <a class="link" href="/admin">
+                Admin
+            </a>
             {% endif %}
 
-            <!-- PROFILE -->
+
             <div class="profile-container">
+
                 <button id="profileBtn" class="profile-btn">
-                    <div class="avatar">{{ user.first_name[0] }}</div>
-                    <span class="arrow">▼</span>
+
+                    <div class="avatar">
+                        {{ user.first_name[0] }}
+                    </div>
+
+                    <span class="arrow">
+                        ▼
+                    </span>
+
                 </button>
 
+
                 <div id="dropdown" class="dropdown-menu">
-                    <a href="/profile">Profile</a>
-                    <a href="/recharge">Recharge</a>
-                    <a href="/logout">Logout</a>
+
+                    <a href="/profile">
+                        Profile
+                    </a>
+
+                    <a href="/recharge">
+                        Recharge
+                    </a>
+
+                    <a href="/logout">
+                        Logout
+                    </a>
+
                 </div>
+
             </div>
 
             {% else %}
 
-            <a class="link" href="/login">Login</a>
+            <a class="link" href="/login">
+                Login
+            </a>
 
             {% endif %}
+
         </nav>
+
+
+
+        <!-- HAMBURGER -->
+        <button class="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
     </header>
+
+
+
+    <!-- MOBILE MENU -->
+    <div id="mobileMenu" class="mobile-menu">
+
+        <a href="/home">
+            Home
+        </a>
+
+        <a href="/dashboard">
+            Passenger
+        </a>
+
+        <a href="/recharge">
+            Recharge
+        </a>
+
+        {% if user %}
+
+        <a href="/profile">
+            Profile
+        </a>
+
+        {% if user.role=="admin" %}
+        <a href="/admin">
+            Admin
+        </a>
+        {% endif %}
+
+        <a href="/logout">
+            Logout
+        </a>
+
+        {% else %}
+
+        <a href="/login">
+            Login
+        </a>
+
+        {% endif %}
+
+    </div>
+
+
 
 
     <div class="middle">
@@ -61,24 +167,40 @@
         </button>
     </div>
 
+
+
     <main>
 
         <section class="page act">
-            <h1>SmartBus – Tap • Travel • Secure</h1>
+
+            <h1>
+                SmartBus – Tap • Travel • Secure
+            </h1>
+
             <p>
-                An IoT-powered RFID bus fare system where passengers tap cards,
-                track balance, and recharge online in real-time.
+                An IoT-powered RFID bus fare system
+                where passengers tap cards,
+                track balance,
+                and recharge online in real-time.
             </p>
 
+
             <div class="hero">
-                <a class="btn-first" href="/dashboard">Check Balance</a>
-                <a class="btn-second" href="/recharge">Recharge Card</a>
+
+                <a class="btn-first" href="/dashboard">
+                    Check Balance
+                </a>
+
+                <a class="btn-second" href="/recharge">
+                    Recharge Card
+                </a>
+
             </div>
 
         </section>
 
 
-        <!-- SMARTBUS CARD -->
+
 
         <section class="card-section">
 
@@ -87,10 +209,18 @@
                 <div class="card-top">
 
                     <div>
-                        <h3>SMARTBUS CARD</h3>
-                        <!-- <p class="card-sub">RFID • CLOUD CONNECTED</p> -->
-                         <br>
-                        <p class="card-sub">Cardholder name : {{ user.first_name }} {{ user.last_name }}</p>
+                        <h3>
+                            SMARTBUS CARD
+                        </h3>
+
+                        <br>
+
+                        <p class="card-sub">
+                            Cardholder name :
+                            {{ user.first_name }}
+                            {{ user.last_name }}
+                        </p>
+
                     </div>
 
                     <div class="chip"></div>
@@ -98,15 +228,26 @@
                 </div>
 
 
+
                 <div class="card-middle">
 
                     <div class="left">
 
-                        <p class="label">CURRENT BALANCE</p>
-                        <h2>₹ {{ "%.2f"|format(balance) }}</h2>
+                        <p class="label">
+                            CURRENT BALANCE
+                        </p>
 
-                        <p class="label">LAST TRIP</p>
-                        <p class="trip">{{ from_stop }} → {{ to_stop }}</p>
+                        <h2>
+                            ₹ {{ "%.2f"|format(balance) }}
+                        </h2>
+
+                        <p class="label">
+                            LAST TRIP
+                        </p>
+
+                        <p class="trip">
+                            {{ from_stop }} → {{ to_stop }}
+                        </p>
 
                         <div class="status">
                             <span class="dot"></span>
@@ -116,16 +257,28 @@
                     </div>
 
 
+
                     <div class="right">
 
-                        <p class="label">CARD ID</p>
-                        <p class="value">{{ card_id }}</p>
+                        <p class="label">
+                            CARD ID
+                        </p>
 
-                        <p class="label">LAST FARE</p>
-                        <p class="value">₹ {{ "%.2f"|format(fare) }}</p>
+                        <p class="value">
+                            {{ card_id }}
+                        </p>
+
+                        <p class="label">
+                            LAST FARE
+                        </p>
+
+                        <p class="value">
+                            ₹ {{ "%.2f"|format(fare) }}
+                        </p>
 
                         <p class="update">
-                            Updated: <b>{{ updated_time }}</b>
+                            Updated:
+                            <b>{{ updated_time }}</b>
                         </p>
 
                     </div>
@@ -135,26 +288,47 @@
             </div>
 
 
-            <!-- STATS -->
 
             <div class="stats">
 
                 <div class="stat">
-                    <p class="stat-title">Live Riders</p>
+                    <p class="stat-title">
+                        Live Riders
+                    </p>
+
                     <h3>128</h3>
-                    <p class="stat-sub">Across smart bus routes</p>
+
+                    <p class="stat-sub">
+                        Across smart bus routes
+                    </p>
                 </div>
 
+
+
                 <div class="stat">
-                    <p class="stat-title">Today's Rides</p>
+                    <p class="stat-title">
+                        Today's Rides
+                    </p>
+
                     <h3>3</h3>
-                    <p class="stat-sub">Auto-synced from IoT logs</p>
+
+                    <p class="stat-sub">
+                        Auto-synced from IoT logs
+                    </p>
                 </div>
 
+
+
                 <div class="stat">
-                    <p class="stat-title">System Uptime</p>
+                    <p class="stat-title">
+                        System Uptime
+                    </p>
+
                     <h3>99.7%</h3>
-                    <p class="stat-sub">Last 30 days</p>
+
+                    <p class="stat-sub">
+                        Last 30 days
+                    </p>
                 </div>
 
             </div>
@@ -163,38 +337,147 @@
 
     </main>
 
+
+
+
+    <section class="about_section">
+
+        <div class="about_container">
+
+            <div class="about_video">
+
+                <video autoplay muted loop playsinline>
+                    <source src="/static/source/smart_bus_about.mp4" type="video/mp4" />
+                </video>
+
+            </div>
+
+
+            <div class="about_content">
+
+                <span class="mini-label">
+                    Smart Mobility Platform
+                </span>
+
+                <h2 class="about_heading">
+                    SmartBus System
+                </h2>
+
+                <p class="about_text">
+                    SmartBus is an IoT-powered RFID-based
+                    transportation system designed to
+                    modernize public commuting.
+
+                    Passengers can tap,
+                    track balance,
+                    and recharge seamlessly
+                    in real-time.
+
+                    With smart nodes and cloud integration,
+                    the system ensures fast,
+                    secure,
+                    and efficient travel.
+                </p>
+
+
+                <div class="about_features">
+
+                    <span>
+                        RFID Enabled
+                    </span>
+
+                    <span>
+                        Secure Recharge
+                    </span>
+
+                    <span>
+                        Real-time Tracking
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+
     <div class="footer">
-        <div class="footer-brand">SmartBus IoT Smart Fare System</div>
+
+        <div class="footer-brand">
+            SmartBus IoT Smart Fare System
+        </div>
+
         <div class="footer-text">
             College Project
             <span class="footer-dot"></span>
             Built with RFID · Cloud · Real-time sync
         </div>
+
     </div>
+
+
+
     <script>
-        const btn = document.getElementById("profileBtn");
-        const dropdown = document.getElementById("dropdown");
+
+        const btn =
+            document.getElementById("profileBtn");
+
+        const dropdown =
+            document.getElementById("dropdown");
+
 
         if (btn && dropdown) {
-            btn.addEventListener("click", function (e) {
-                e.stopPropagation();
 
-                const isVisible =
-                    getComputedStyle(dropdown).display !== "none";
+            btn.addEventListener(
+                "click",
+                function (e) {
 
-                dropdown.style.display = isVisible ? "none" : "flex";
-            });
+                    e.stopPropagation();
 
-            document.addEventListener("click", function () {
-                dropdown.style.display = "none";
-            });
+                    const isVisible =
+                        getComputedStyle(dropdown)
+                            .display !== "none";
+
+                    dropdown.style.display =
+                        isVisible ? "none" : "flex";
+
+                });
+
+            document.addEventListener(
+                "click",
+                function () {
+                    dropdown.style.display = "none";
+                });
+
         }
 
+
+
+        /* theme */
         function ThemeChange() {
-            document.body.classList.toggle("light-bg");
-            document.body.classList.toggle("gradient-bg");
+            document.body.classList.toggle(
+                "light-bg"
+            );
+
+            document.body.classList.toggle(
+                "gradient-bg"
+            );
         }
 
+
+
+        /* hamburger */
+        function toggleMenu() {
+            document
+                .getElementById("mobileMenu")
+                .classList.toggle(
+                    "show-menu"
+                );
+        }
 
     </script>
 

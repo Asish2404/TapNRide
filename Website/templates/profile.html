@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <!-- ===== HEADER ===== -->
+
     <header class="header">
         <nav class="navbar">
 
@@ -19,10 +19,11 @@
                 <a class="link" href="/dashboard">Passenger</a>
                 <a class="link" href="/recharge">Recharge</a>
 
-                {% if user and user.role and user.role.lower() == "admin" %}
+                {% if user and user.role and user.role.lower()=="admin" %}
                 <a class="link" href="/admin">Admin</a>
                 {% endif %}
             </div>
+
 
             <div class="profile-container">
                 <button class="profile-btn">
@@ -39,268 +40,500 @@
                 </div>
             </div>
 
+
+            <!-- HAMBURGER -->
+            <button class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
         </nav>
     </header>
 
-    <!-- ===== MAIN CONTAINER ===== -->
+
+    <!-- MOBILE MENU -->
+    <div id="mobileMenu" class="mobile-menu">
+        <a href="/home">Home</a>
+        <a href="/dashboard">Passenger</a>
+        <a href="/recharge">Recharge</a>
+
+        {% if user and user.role and user.role.lower()=="admin" %}
+        <a href="/admin">Admin</a>
+        {% endif %}
+
+        <a href="/profile">Profile</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+
+
     <main class="container">
 
-        <!-- ===== LEFT CARD ===== -->
+
         <div class="cards" style="--color:#FF00FD;">
 
             <div class="profile-block">
-                <img src="{{ user.profile_pic }}" onerror="this.onerror=null; this.src='/static/source/default.png';"
+
+                <img src="{{ user.profile_pic }}" onerror="this.onerror=null;this.src='/static/source/default.png';"
                     class="avatar2" id="profile-pic" alt="Profile Picture">
 
                 <div>
-                    <h2>{{user.first_name}} {{user.last_name}}</h2>
-                    <p class="username">@smartbus_{{ (user.role or "user").lower() }}</p>
+
+                    <h2>
+                        {{user.first_name}} {{user.last_name}}
+                    </h2>
+
+                    <p class="username">
+                        @smartbus_{{ (user.role or "user").lower() }}
+                    </p>
 
                     <div class="video">
-                        <video autoplay muted loop aria-label="SmartBus animation">
+                        <video autoplay muted loop>
                             <source src="/static/source/Smart_bus_profile.mp4" type="video/mp4">
                         </video>
                     </div>
+
                 </div>
             </div>
 
+
             <div class="info3">
-                <h3>Welcome, {{ user.first_name }}! to Smart Bus System</h3>
+                <h3>
+                    Welcome, {{ user.first_name }}!
+                    to Smart Bus System
+                </h3>
             </div>
 
+
             <div class="stats">
+
                 <div class="stat">
                     <h3>48</h3>
                     <p>Active Buses</p>
                 </div>
+
                 <div class="stat">
                     <h3>12</h3>
                     <p>Routes</p>
                 </div>
+
                 <div class="stat">
                     <h3>98%</h3>
                     <p>On-Time</p>
                 </div>
+
             </div>
 
-            <!-- <div class="description">
-                Managing smart transportation systems with real-time tracking, optimizing routes, improving efficiency,
-                ensuring reliable service, monitoring performance metrics, and enhancing urban mobility.
-            </div> -->
 
             <div class="status active" id="systemStatus">
+
                 <span class="dot"></span>
-                <span id="statusText">System Active • All routes operational</span>
+
+                <span id="statusText">
+                    System Active • All routes operational
+                </span>
+
             </div>
 
         </div>
 
-        <!-- ===== RIGHT CARD ===== -->
-        <div class="cards" style="--color: #00BFFF;">
 
-            <!-- HEADER -->
+
+
+        <div class="cards" style="--color:#00BFFF;">
+
             <div class="header-row">
-                <h3 class="title">Account Details</h3>
-                <button type="button" class="button" id="editBtn">Edit</button>
+                <h3 class="title">
+                    Account Details
+                </h3>
+
+                <button type="button" class="button" id="editBtn">
+                    Edit
+                </button>
             </div>
+
+
 
             <div class="description">
 
-                <!-- ===== FORM ===== -->
                 <form method="post" action="/profile" enctype="multipart/form-data">
 
-                    <!-- ===== GRID ===== -->
                     <div class="form-grid">
 
-                        <!-- BASIC DETAILS -->
+
                         <div class="input-group">
-                            <label for="first_name">First Name</label>
+                            <label for="first_name">
+                                First Name
+                            </label>
+
                             <input type="text" id="first_name" name="first_name" class="editable"
                                 value="{{ user.first_name }}" readonly required>
                         </div>
 
+
+
                         <div class="input-group">
-                            <label for="last_name">Last Name</label>
+                            <label for="last_name">
+                                Last Name
+                            </label>
+
                             <input type="text" id="last_name" name="last_name" class="editable"
                                 value="{{ user.last_name }}" readonly required>
                         </div>
 
+
+
                         <div class="input-group role-box">
-                            <label for="role">Role</label>
+                            <label for="role">
+                                Role
+                            </label>
+
                             <input type="text" id="role" value="{{ user.role }}" readonly required>
                         </div>
 
+
+
                         <div class="input-group">
-                            <label for="email">Email</label>
+                            <label for="email">
+                                Email
+                            </label>
+
                             <input type="email" id="email" name="email" class="editable" value="{{ user.email }}"
                                 readonly required>
                         </div>
 
+
+
                         <div class="input-group">
-                            <label for="card_id">Card ID</label>
+                            <label for="card_id">
+                                Card ID
+                            </label>
+
                             <input type="text" id="card_id" value="{{ user.card_id }}" readonly required>
                         </div>
 
-                        <!-- SPECIAL FIELD -->
+
+
                         <div class="input-group highlight">
-                            <label for="balance">Current Balance</label>
+                            <label for="balance">
+                                Current Balance
+                            </label>
+
                             <input type="text" id="balance" value="₹{{ user.balance }}" readonly>
                         </div>
 
-                        <!-- DYNAMIC IMAGE BLOCK -->
-                        <div id="imageUploadGroup" style="display: none;">
+
+
+                        <div id="imageUploadGroup" style="display:none;">
+
                             <div class="input-group highlight">
-                                <label>Update Image</label>
+
+                                <label>
+                                    Update Image
+                                </label>
 
                                 <label class="custom-file">
-                                    <span>Choose Image</span>
+                                    <span>
+                                        Choose Image
+                                    </span>
+
                                     <input type="file" name="photo" id="input-file" accept="image/*">
                                 </label>
+
                             </div>
+
                         </div>
+
 
                     </div>
 
-                    <!-- SAVE BUTTON -->
+
                     <div class="save-area">
                         <button type="submit" class="button" id="saveBtn">
                             Save Changes
                         </button>
                     </div>
 
+
                 </form>
+
             </div>
         </div>
 
     </main>
 
-    <!-- ===== ERROR HANDLING ===== -->
+
+
     {% if error %}
     <script>
         window.profileError = "{{ error }}";
     </script>
     {% endif %}
 
-    <!-- ===== POPUP ===== -->
+
+
     <div id="popup" class="popup">
         <div class="popup-content">
             <p id="popup-message"></p>
-            <button id="popupOK">OK</button>
+            <button id="popupOK">
+                OK
+            </button>
         </div>
     </div>
 
-    <!-- ===== SCRIPTS ===== -->
+
+
     <script>
-        const editBtn = document.getElementById("editBtn");
-        const saveBtn = document.getElementById("saveBtn");
-        const imageGroup = document.getElementById("imageUploadGroup");
-        const card = editBtn.closest(".cards");
 
-        const profileBtn = document.querySelector(".profile-btn");
-        const dropdown = document.querySelector(".dropdown-menu");
+        const editBtn =
+            document.getElementById(
+                "editBtn"
+            );
 
-        const profilePic = document.getElementById("profile-pic");
-        const inputFile = document.getElementById("input-file");
+        const saveBtn =
+            document.getElementById(
+                "saveBtn"
+            );
 
-        const status = document.getElementById("systemStatus");
-        const statusText = document.getElementById("statusText");
+        const imageGroup =
+            document.getElementById(
+                "imageUploadGroup"
+            );
 
-        // ===== DROPDOWN (CLICK BASED) =====
+        const card =
+            editBtn.closest(
+                ".cards"
+            );
+
+        const profileBtn =
+            document.querySelector(
+                ".profile-btn"
+            );
+
+        const dropdown =
+            document.querySelector(
+                ".dropdown-menu"
+            );
+
+        const profilePic =
+            document.getElementById(
+                "profile-pic"
+            );
+
+        const inputFile =
+            document.getElementById(
+                "input-file"
+            );
+
+        const status =
+            document.getElementById(
+                "systemStatus"
+            );
+
+        const statusText =
+            document.getElementById(
+                "statusText"
+            );
+
+
+        /* dropdown */
         if (profileBtn && dropdown) {
-            profileBtn.addEventListener("click", function (e) {
-                e.stopPropagation();
 
-                const isVisible =
-                    getComputedStyle(dropdown).display !== "none";
+            profileBtn.addEventListener(
+                "click",
+                function (e) {
 
-                dropdown.style.display = isVisible ? "none" : "flex";
-            });
+                    e.stopPropagation();
 
-            dropdown.addEventListener("click", function (e) {
-                e.stopPropagation();
-            });
+                    const visible =
+                        getComputedStyle(dropdown)
+                            .display !== "none";
 
-            document.addEventListener("click", function () {
-                dropdown.style.display = "none";
-            });
-        }
+                    dropdown.style.display =
+                        visible ? "none" : "flex";
 
-        // ===== EDIT MODE =====
-        if (editBtn) {
-            editBtn.addEventListener("click", () => {
-                document.querySelectorAll(".editable").forEach(input => {
-                    input.removeAttribute("readonly");
                 });
 
-                saveBtn.style.display = "inline-block";
-                editBtn.style.display = "none";
+            dropdown.addEventListener(
+                "click",
+                function (e) {
+                    e.stopPropagation();
+                });
 
-                card.classList.add("edit-mode");
-                imageGroup.style.display = "block";
-            });
+            document.addEventListener(
+                "click",
+                function () {
+                    dropdown.style.display = "none";
+                });
+
         }
 
-        // ===== PROFILE IMAGE PREVIEW =====
+
+
+        /* edit mode */
+        if (editBtn) {
+
+            editBtn.addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .querySelectorAll(".editable")
+                        .forEach(input => {
+                            input.removeAttribute(
+                                "readonly"
+                            );
+                        });
+
+                    saveBtn.style.display =
+                        "inline-block";
+
+                    editBtn.style.display =
+                        "none";
+
+                    card.classList.add(
+                        "edit-mode"
+                    );
+
+                    imageGroup.style.display =
+                        "block";
+
+                });
+
+        }
+
+
+
+        /* image preview */
         if (inputFile && profilePic) {
-            inputFile.addEventListener("change", () => {
-                const file = inputFile.files[0];
 
-                if (file) {
-                    profilePic.src = URL.createObjectURL(file);
-                    document.querySelector(".custom-file span").innerText = file.name;
-                } else {
-                    document.querySelector(".custom-file span").innerText = "Choose Image";
-                }
-            });
+            inputFile.addEventListener(
+                "change",
+                () => {
+
+                    const file =
+                        inputFile.files[0];
+
+                    if (file) {
+                        profilePic.src =
+                            URL.createObjectURL(file);
+
+                        document.querySelector(
+                            ".custom-file span"
+                        ).innerText = file.name;
+                    }
+                    else {
+                        document.querySelector(
+                            ".custom-file span"
+                        ).innerText =
+                            "Choose Image";
+                    }
+
+                });
+
         }
 
-        // ===== STATUS SYSTEM =====
+
+
+        /* status */
         function setStatus(type, text) {
-            status.className = "status " + type;
+            status.className =
+                "status " + type;
+
             statusText.innerText = text;
         }
 
         setInterval(() => {
+
             const states = [
                 ["active", "System Active • All routes operational"],
                 ["warning", "Minor delays detected"],
                 ["offline", "System Offline"]
             ];
 
-            const random = states[Math.floor(Math.random() * states.length)];
-            setStatus(random[0], random[1]);
+            const random =
+                states[
+                Math.floor(
+                    Math.random() * states.length
+                )
+                ];
+
+            setStatus(
+                random[0],
+                random[1]
+            );
 
         }, 4000);
 
-        // ===== POPUP =====
+
+
         function showPopup(message) {
-            const popup = document.getElementById("popup");
-            const msg = document.getElementById("popup-message");
+            const popup =
+                document.getElementById(
+                    "popup"
+                );
+
+            const msg =
+                document.getElementById(
+                    "popup-message"
+                );
 
             msg.innerText = message;
             popup.style.display = "flex";
         }
 
         function closePopup() {
-            document.getElementById("popup").style.display = "none";
+            document.getElementById(
+                "popup"
+            ).style.display = "none";
         }
 
-        const popupOk = document.getElementById("popupOK");
+        const popupOk =
+            document.getElementById(
+                "popupOK"
+            );
 
         if (popupOk) {
-            popupOk.addEventListener("click", closePopup);
+            popupOk.addEventListener(
+                "click",
+                closePopup
+            );
         }
 
-        window.addEventListener("DOMContentLoaded", () => {
-            if (window.profileError) {
-                showPopup(window.profileError);
-            }
-        });
 
-        // ===== PREVENT RESUBMIT =====
+        window.addEventListener(
+            "DOMContentLoaded",
+            () => {
+                if (window.profileError) {
+                    showPopup(
+                        window.profileError
+                    );
+                }
+            });
+
+
         if (window.history.replaceState) {
-            window.history.replaceState(null, null, window.location.href);
+            window.history.replaceState(
+                null,
+                null,
+                window.location.href
+            );
         }
+
+
+
+        /* HAMBURGER */
+        function toggleMenu() {
+            document
+                .getElementById(
+                    "mobileMenu"
+                )
+                .classList.toggle(
+                    "show-menu"
+                );
+        }
+
     </script>
 
 </body>

@@ -572,7 +572,7 @@ label {
   border-radius: 10px;
   font-optical-sizing: auto;
   background: #02142a;
-  background-image: linear-gradient(135deg,      rgba(0, 212, 255, 0.05),      rgba(124, 58, 237, 0.05));
+  background-image: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(124, 58, 237, 0.05));
   color: #e2e8f0;
   font-weight: 500;
   outline: none;
@@ -771,15 +771,318 @@ input:-webkit-autofill:focus {
 }
 
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #06b6d4, #6366f1);
-    border-radius: 999px;
+  background: linear-gradient(180deg, #06b6d4, #6366f1);
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
+}
+
+/* =========================
+HAMBURGER + MOBILE DRAWER
+========================= */
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 5px;
+  padding: 4px;
+}
+
+.hamburger span {
+  width: 30px;
+  height: 3px;
+  background: #fff;
+  border-radius: 6px;
+  transition: .3s;
+}
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 85px;
+  left: 14px;
+  right: 14px;
+
+  background: rgba(10, 18, 40, .97);
+  backdrop-filter: blur(18px);
+
+  padding: 22px;
+  border-radius: 24px;
+
+  border: 1px solid rgba(255, 255, 255, .08);
+
+  z-index: 99999;
+
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, .45);
+}
+
+.mobile-menu a {
+  display: block;
+  padding: 15px;
+  text-decoration: none;
+  font-weight: 600;
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+}
+
+.mobile-menu a:last-child {
+  border: none;
+}
+
+.show-menu {
+  display: block;
+  animation: slideDown .35s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+/* =========================
+TABLET
+========================= */
+
+@media(max-width:1100px) {
+
+  .container {
+    flex-direction: column;
+    align-items: center;
+    gap: 35px;
+    padding: 110px 20px 30px;
+  }
+
+  .cards {
+    width: min(92vw, 700px);
+    height: auto;
+    min-height: unset;
+  }
+
+  .input-group input {
+    width: 100%;
+  }
+
+  .form-grid {
+    width: 100%;
+  }
+
+}
+
+
+
+/* =========================
+MOBILE
+========================= */
+
+@media(max-width:768px) {
+
+  body {
+    overflow-x: hidden;
+    align-items: flex-start;
+  }
+
+  /* NAVBAR FIX */
+  .navbar {
+    width: calc(100% - 22px);
+    padding: 12px 18px;
+    border-radius: 22px;
+    gap: 18px;
+  }
+
+  .nav-links,
+  .profile-container {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+    margin-left: auto;
+  }
+
+
+  /* MAIN LAYOUT */
+  .container {
+    margin-top: 100px;
+    padding: 10px 14px 30px;
+    gap: 25px;
+  }
+
+  .cards {
+    width: min(94vw, 390px);
+
+    /* smaller but content intact */
+    transform: scale(.94);
+    transform-origin: center;
+
+    padding: 22px;
+    border-radius: 24px;
+  }
+
+  .cards:hover {
+    transform: scale(.96);
+  }
+
+
+  /* PROFILE BLOCK */
+  .profile-block {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+
+  .profile-block h2 {
+    font-size: 22px;
+  }
+
+  .video video {
+    width: 100%;
+    max-width: 280px;
+  }
+
+
+  /* STATS STACK */
+  .stats {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .stat {
+    width: 100%;
+  }
+
+
+  /* FORM */
+  .header-row {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .cards .title {
+    margin-right: 0;
+    margin-left: 0;
+    font-size: 22px;
+    text-align: center;
+  }
+
+  .input-group input {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .button {
+    width: 100%;
+    max-width: 220px;
+  }
+
+  .button::before {
+    width: 100%;
+    left: 0;
+  }
+
+
+  /* popup */
+  .popup-content {
+    width: 90%;
+  }
+
+}
+
+
+
+/* =========================
+SMALL PHONES
+========================= */
+
+@media(max-width:480px) {
+
+  .navbar {
+    padding: 11px 15px;
+  }
+
+  .mobile-menu {
+    top: 78px;
+  }
+
+  .cards {
+    width: min(95vw, 330px);
+    padding: 18px;
+    transform: scale(.88);
+  }
+
+  .cards:hover {
+    transform: scale(.9);
+  }
+
+  .profile-block h2 {
+    font-size: 18px;
+  }
+
+  .cards .title {
+    font-size: 20px;
+  }
+
+  .video video {
+    max-width: 230px;
+  }
+
+  .input-group input {
+    padding: 14px;
+    font-size: 13px;
+  }
+
+  .stat {
+    padding: 12px;
+  }
+
+}
+
+
+
+/* =========================
+TINY PHONES
+========================= */
+
+@media(max-width:390px) {
+
+  .cards {
+    width: min(96vw, 300px);
+    padding: 15px;
+    transform: scale(.83);
+  }
+
+  .video video {
+    max-width: 200px;
+  }
+
+  .cards .title {
+    font-size: 18px;
+  }
+
 }
