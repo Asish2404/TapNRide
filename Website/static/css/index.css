@@ -997,27 +997,41 @@ main {
 
 @media(max-width:768px) {
 
+    body {
+        overflow-x: hidden;
+    }
+
+
+    /* force desktop nav off */
     .nav-links {
-        display: none;
+        display: none !important;
     }
 
     .hamburger {
-        display: flex;
+        display: flex !important;
     }
 
+
+    /* navbar */
     .top-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
         padding: 14px 18px;
         margin: 10px;
         border-radius: 22px;
     }
 
     .brand {
+        display: flex;
+        align-items: center;
         gap: 10px;
     }
 
     .logo-img {
-        width: 50px;
-        height: 50px;
+        width: 50px !important;
+        height: 50px !important;
     }
 
     .brand-text {
@@ -1028,15 +1042,19 @@ main {
         font-size: 12px;
     }
 
+
+    /* hero layout */
     main {
-        flex-direction: column;
-        padding: 25px 18px;
-        gap: 45px;
+        display: flex !important;
+        flex-direction: column !important;
+
+        padding: 25px 18px !important;
+        gap: 45px !important;
     }
 
     .page {
-        text-align: center;
-        max-width: 100%;
+        max-width: 100% !important;
+        text-align: center !important;
     }
 
     .page h1 {
@@ -1044,7 +1062,10 @@ main {
         line-height: 1.15;
     }
 
+
+    /* buttons */
     .hero {
+        display: flex;
         flex-direction: column;
         align-items: center;
         gap: 14px;
@@ -1056,21 +1077,55 @@ main {
         max-width: 300px;
     }
 
+
+    /* card section */
     .card-section {
-        width: 100%;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
     }
 
+    .smart-card {
+        width: 100% !important;
+    }
+
+
+    /* stats stack */
     .stats {
-        flex-direction: column;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px;
     }
 
     .stat {
         width: 100%;
     }
 
+
+    /* theme button */
     .middle {
         justify-content: center;
         margin: 20px 0;
+    }
+
+
+    /* about section mobile */
+    .about_container {
+        grid-template-columns: 1fr !important;
+        gap: 35px !important;
+        padding: 24px !important;
+    }
+
+    .about_video video {
+        height: 280px !important;
+    }
+
+    .about_content {
+        text-align: center;
+    }
+
+    .about_features {
+        grid-template-columns: 1fr !important;
     }
 
 }
