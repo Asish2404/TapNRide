@@ -104,27 +104,27 @@
 
         {% if user %}
 
-        {% if user.role == "admin" %}
-        <a class="link" href="/admin">Admin</a>
-        {% endif %}
+          {% if user.role == "admin" %}
+            <a class="link" href="/admin">Admin</a>
+          {% endif %}
 
-        <!-- PROFILE -->
-        <div class="profile-container">
-          <button id="profileBtn" class="profile-btn">
-            <div class="avatar">{{ user.first_name }}</div>
-            <span class="arrow">▼</span>
-          </button>
+          <!-- PROFILE -->
+          <!-- <div class="profile-container">
+            <button id="profileBtn" class="profile-btn">
+              <div class="avatar">{{ user.first_name }}</div>
+              <span class="arrow">▼</span>
+            </button>
 
-          <div id="dropdown" class="dropdown-menu">
-            <a href="/dashboard">Dashboard</a>
-            <a href="/recharge">Recharge</a>
-            <a href="/logout">Logout</a>
-          </div>
-        </div>
+            <div id="dropdown" class="dropdown-menu">
+              <a href="/dashboard">Dashboard</a>
+              <a href="/recharge">Recharge</a>
+              <a href="/logout">Logout</a>
+            </div>
+          </div> -->
 
-        {% else %}
+          {% else %}
 
-        <a class="link" href="/login">Login</a>
+          <a class="link" href="/login">Login</a>
 
         {% endif %}
       </nav>

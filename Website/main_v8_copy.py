@@ -188,24 +188,45 @@ def signup(
     db = get_db()
     cursor = db.cursor()
 
-    cursor.execute("SELECT card_id FROM cards_in_stock WHERE status='OPEN' LIMIT 1")
+    cursor.execute(
+        "SELECT card_id FROM cards_in_stock WHERE status='OPEN' LIMIT 1"
+    )
 
     row = cursor.fetchone()
     if not row:
         return RedirectResponse(
-            url="/login?error=No available cards in stock",status_code=303
+            url="/login?error=No available cards in stock",
+            status_code=303
         )
 
     card_id = row["card_id"]  # allocate a unique card ID for the new user
 
+    # NEW CHECK
     cursor.execute(
-        """
-        INSERT INTO login(card_id, first_name, last_name, email, phone, password, role, profile_pic)
-        VALUES(%s,%s,%s,%s,%s,%s,%s,%s)
-        """, (card_id, first_name, last_name, email, phone, password, role, "static/source/default.png"),
+        "SELECT id FROM login WHERE email=%s",
+        (email,)
     )
 
-    cursor.execute("UPDATE cards_in_stock SET status='CLOSED' WHERE card_id=%s", (card_id,))
+    if cursor.fetchone():
+        cursor.close()
+        db.close()
+        return RedirectResponse("/login?error=Email already exists", status_code=303)
+
+    cursor.execute(
+        """
+        INSERT INTO login(
+            card_id, first_name, last_name,
+            email, phone, password, role, profile_pic
+        )
+        VALUES(%s,%s,%s,%s,%s,%s,%s,%s)
+        """,
+        (card_id, first_name, last_name, email, phone, password, role, "/static/source/default.png"),
+    )
+
+    cursor.execute(
+        "UPDATE cards_in_stock SET status='CLOSED' WHERE card_id=%s",
+        (card_id,)
+    )
 
     db.commit()
 
@@ -250,7 +271,7 @@ def login_user(request: Request, email: str = Form(...), password: str = Form(..
             "email": user.get("email"),
             "role": (user.get("role") or "").strip().lower(),
             "card_id": user.get("card_id"),
-            "profile_pic": user.get("profile_pic") or "static/source/default.png"
+            "profile_pic": user.get("profile_pic") or "/static/source/default.png",
         }
 
         return RedirectResponse(url="/", status_code=303)
@@ -265,7 +286,6 @@ def login_user(request: Request, email: str = Form(...), password: str = Form(..
     )
 
 # ---------------- SCAN ----------------
-
 @app.post("/scan")
 def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
 
@@ -459,11 +479,12 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
 
             )
             db.commit()
+            balance = 0.00
+
         else:
             if existing_card["status"] != "active":
                 return {"error": "Card is inactive"}
-
-        balance = existing_card["balance"]
+            balance = existing_card["balance"]
 
         if balance <= 0:
             return {
@@ -564,11 +585,11 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
 # NEW ADDITION-------- plan rides before reaching destination ----------------
 @app.post("/plan_ride")
 def plan_ride(
-    card_id: str = Form(...),
-    Starting_place: str = Form(None),   # auto-detected
-    Ending_place: str = Form(...),      # passenger-selected to_stop
-    fare: float = Form(None),           # auto-calculated
-):
+        card_id: str = Form(...),
+        Starting_place: str = Form(None),
+        Ending_place: str = Form(...),
+        fare: float = Form(None),
+    ):
     db = get_db()
     cursor = db.cursor(pymysql.cursors.DictCursor)
 
@@ -904,7 +925,7 @@ def profile(request: Request):
         return RedirectResponse("/login", status_code=303)
 
     db = get_db()
-    cursor = db.cursor(pymysql.cursors.DictCursor)  # IMPORTANT
+    cursor = db.cursor(pymysql.cursors.DictCursor)
 
     cursor.execute(
         """
@@ -932,8 +953,23 @@ def profile(request: Request):
     pic = user.get("profile_pic")
 
     # fallback if NULL or file deleted
-    if not pic or not os.path.exists(pic):
-        pic = "static/source/default.png"
+    disk_path = pic.lstrip("/") if pic else None
+
+    if not pic or not os.path.exists(disk_path):
+
+        pic = "/static/source/default.png"
+
+        db2 = get_db()
+        cursor2 = db2.cursor()
+
+        cursor2.execute(
+            "UPDATE login SET profile_pic=%s WHERE id=%s",
+            (pic, session_user["id"])
+        )
+
+        db2.commit()
+        cursor2.close()
+        db2.close()
 
     user = {
         "first_name": user.get("first_name", "Rahul"),
@@ -942,7 +978,7 @@ def profile(request: Request):
         "email": user.get("email", "rahul@example.com"),
         "card_id": user.get("card_id", "123456"),
         "balance": user.get("balance", 250),
-        "profile_pic": pic
+        "profile_pic": pic,
     }
 
     return templates.TemplateResponse(
@@ -956,11 +992,11 @@ def profile(request: Request):
 
 @app.post("/profile")
 async def update_profile(
-    request: Request,
-    first_name: str = Form(...),
-    last_name: str = Form(...),
-    email: str = Form(...),
-    photo: UploadFile = File(None)
+        request: Request,
+        first_name: str = Form(...),
+        last_name: str = Form(...),
+        email: str = Form(...),
+        photo: UploadFile = File(None)
     ):
     session_user = request.session.get("user")
     if not session_user:
@@ -973,7 +1009,8 @@ async def update_profile(
 
     # VALIDATION (ONLY if file is selected)
     if photo and photo.filename:
-        if photo.content_type not in ["image/jpeg", "image/png", "image/jpg"]:
+        ext = photo.filename.split(".")[-1].lower()
+        if photo.content_type not in ["image/jpeg", "image/png"] or ext not in ["jpg", "jpeg", "png"]:
 
             cursor.execute(
                 """
@@ -1028,15 +1065,19 @@ async def update_profile(
 
         if old_data and old_data.get("profile_pic"):
             old = old_data["profile_pic"]
-            if old != "static/source/default.png" and os.path.exists(old):
-                os.remove(old)
+            disk_old = old.lstrip("/") if old else None
+
+            if old != "/static/source/default.png" and disk_old and os.path.exists(disk_old):
+                os.remove(disk_old)
 
         # save new image
         ext = photo.filename.split(".")[-1]
         filename = f"{uuid.uuid4()}.{ext}"
-        file_path = os.path.join(upload_dir, filename)
 
-        with open(file_path, "wb") as f:
+        disk_path = os.path.join("static/uploads", filename)
+        file_path = f"/static/uploads/{filename}"
+
+        with open(disk_path, "wb") as f:
             f.write(await photo.read())
 
     # UPDATE DATABASE

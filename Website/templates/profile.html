@@ -19,7 +19,7 @@
                 <a class="link" href="/dashboard">Passenger</a>
                 <a class="link" href="/recharge">Recharge</a>
 
-                {% if user.role.lower() == "admin" %}
+                {% if user and user.role and user.role.lower() == "admin" %}
                 <a class="link" href="/admin">Admin</a>
                 {% endif %}
             </div>
@@ -27,7 +27,7 @@
             <div class="profile-container">
                 <button class="profile-btn">
                     <div class="avatar">
-                        {{ user.first_name[0] }}
+                        {{ user.first_name[0] if user.first_name else "U" }}
                     </div>
                     <span class="arrow">▼</span>
                 </button>
@@ -49,12 +49,12 @@
         <div class="cards" style="--color:#FF00FD;">
 
             <div class="profile-block">
-                <img src="/{{ user.profile_pic }}" onerror="this.onerror=null; this.src='/static/source/default.png';"
+                <img src="{{ user.profile_pic }}" onerror="this.onerror=null; this.src='/static/source/default.png';"
                     class="avatar2" id="profile-pic" alt="Profile Picture">
 
                 <div>
                     <h2>{{user.first_name}} {{user.last_name}}</h2>
-                    <p class="username">@smartbus_{{user.role.lower()}}</p>
+                    <p class="username">@smartbus_{{ (user.role or "user").lower() }}</p>
 
                     <div class="video">
                         <video autoplay muted loop aria-label="SmartBus animation">
