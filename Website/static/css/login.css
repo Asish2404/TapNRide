@@ -440,7 +440,6 @@ RESPONSIVE
 
     .max-w-md {
         width: min(90vw, 430px) !important;
-        max-width: none !important;
         margin: auto !important;
     }
 
@@ -497,43 +496,55 @@ RESPONSIVE
         font-size: 12px;
     }
 
-
-    /* LOGIN CARD FIX */
     .max-w-md {
         width: calc(100vw - 32px) !important;
         max-width: 380px !important;
-        min-width: 0 !important;
         margin: auto !important;
-        transform: none !important;
     }
 
     .auth-card {
         width: 100% !important;
-        max-width: 100% !important;
         padding: 20px !important;
         overflow: hidden;
     }
 
-    /* role buttons */
+    /* ROLE BUTTON FIX */
+    .role-group,
     .flex.gap-3 {
-        flex-wrap: wrap;
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr);
         gap: 10px;
+        width: 100%;
     }
 
-    /* form controls */
+    .role-chip {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        padding: 10px 8px;
+    }
+
+    .role-icon,
+    .role-chip svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+    }
+
     input,
     button,
     select {
         max-width: 100%;
     }
 
-    /* stop glow overflow */
     .rounded-\[32px\] {
         overflow: hidden;
     }
 
-
-    /* if any outer wrappers */
     main,
     section,
     div {
@@ -541,6 +552,8 @@ RESPONSIVE
     }
 
 }
+
+
 
 /* SMALL PHONES */
 @media(max-width:480px) {
@@ -576,26 +589,35 @@ RESPONSIVE
     .max-w-md {
         width: 94% !important;
         max-width: 360px !important;
-        margin: auto !important;
     }
 
     .auth-card {
-        width: 100% !important;
         padding: 18px !important;
     }
 
+    .role-group,
     .flex.gap-3 {
-        flex-wrap: wrap;
         gap: 8px;
     }
 
     .role-chip {
-        font-size: 14px;
-        padding: 10px 12px;
+        font-size: 12px;
+        padding: 9px 6px;
+        gap: 5px;
     }
 
-    h1 {
-        font-size: 1.9rem;
+    .role-icon,
+    .role-chip svg {
+        width: 12px;
+        height: 12px;
+    }
+
+    h1,
+    .welcome-title {
+        font-size: 1.45rem !important;
+        line-height: 1.2 !important;
+        white-space: nowrap;
+        letter-spacing: -0.02em;
     }
 
     p {
@@ -609,7 +631,6 @@ RESPONSIVE
 
     input,
     button {
-        max-width: 100%;
         font-size: 14px;
     }
 
@@ -637,8 +658,11 @@ RESPONSIVE
         font-size: 9px;
     }
 
-    h1 {
-        font-size: 1.7rem;
+    h1,
+    .welcome-title {
+        font-size: 1.25rem !important;
+        line-height: 1.15 !important;
+        white-space: nowrap;
     }
 
     p {
@@ -646,8 +670,14 @@ RESPONSIVE
     }
 
     .role-chip {
-        font-size: 13px;
-        padding: 8px 10px;
+        font-size: 11px;
+        padding: 8px 5px;
+    }
+
+    .role-icon,
+    .role-chip svg {
+        width: 11px;
+        height: 11px;
     }
 
     input {
@@ -666,17 +696,82 @@ RESPONSIVE
         font-size: 13px;
     }
 
-    h1 {
-        font-size: 1.5rem;
+    h1,
+    .welcome-title {
+        font-size: 1.1rem !important;
+        white-space: nowrap;
     }
 
     .role-chip {
-        font-size: 12px;
-        padding: 7px 8px;
+        font-size: 10px;
+        padding: 7px 4px;
+        gap: 4px;
+    }
+
+    .role-icon,
+    .role-chip svg {
+        width: 10px;
+        height: 10px;
     }
 
     input {
         font-size: 12px;
+    }
+
+}
+
+@media(max-width:480px) {
+    .flex.items-start.justify-between {
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: space-between !important;
+        gap: 14px;
+    }
+
+    .flex.items-start.justify-between>div:first-child {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .welcome-title,
+    h1 {
+        font-size: 1.8rem !important;
+        line-height: 1.15 !important;
+        white-space: nowrap !important;
+        display: block;
+    }
+
+    .flex.items-start.justify-between p {
+        font-size: 13px;
+        line-height: 1.45;
+        max-width: 220px;
+    }
+
+    .theme-toggle {
+        width: 42px !important;
+        height: 42px !important;
+        flex-shrink: 0;
+    }
+
+}
+
+
+@media(max-width:390px) {
+
+    .welcome-title,
+    h1 {
+        font-size: 1.6rem !important;
+        white-space: nowrap !important;
+    }
+
+    .flex.items-start.justify-between p {
+        font-size: 12px;
+        max-width: 200px;
+    }
+
+    .theme-toggle {
+        width: 38px !important;
+        height: 38px !important;
     }
 
 }
