@@ -192,6 +192,7 @@ body {
 .dropdown-menu a:hover {
     background: rgba(176, 170, 170, 0.1);
 }
+
 .arrow {
     color: rgba(148, 163, 184, 0.6);
     font-size: 12px;
@@ -347,4 +348,249 @@ tbody tr:hover {
 
 ::-webkit-scrollbar-track {
     background: transparent;
+}
+
+/* =========================
+HAMBURGER
+========================= */
+
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 6px;
+    padding: 4px;
+}
+
+.hamburger span {
+    width: 28px;
+    height: 3px;
+    background: white;
+    border-radius: 6px;
+}
+
+
+/* FLOATING MOBILE MENU */
+
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: 90px;
+    left: 14px;
+    right: 14px;
+    padding: 22px;
+
+    background: rgba(10, 18, 40, .96);
+    backdrop-filter: blur(18px);
+
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, .08);
+
+    z-index: 9999;
+}
+
+.mobile-menu a {
+    display: block;
+    padding: 16px;
+    text-decoration: none;
+    font-weight: 600;
+    color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, .06);
+}
+
+.mobile-menu a:last-child {
+    border: none;
+}
+
+.show-menu {
+    display: block;
+    animation: slideDown .3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
+/* =========================
+TABLETS
+========================= */
+
+@media(max-width:1024px) {
+
+    .container {
+        padding: 35px 30px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .top-nav {
+        padding: 14px 18px;
+        margin: 14px;
+    }
+
+}
+
+
+
+/* =========================
+MOBILE
+========================= */
+
+@media(max-width:768px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
+    .nav-links {
+        display: none !important;
+    }
+
+    .hamburger {
+        display: flex !important;
+    }
+
+    .top-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 18px;
+        margin: 10px;
+        border-radius: 22px;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .logo-img {
+        width: 50px !important;
+        height: 50px !important;
+    }
+
+    .brand-text {
+        font-size: 18px;
+    }
+
+    .brand-text-sub {
+        font-size: 12px;
+    }
+
+    .container {
+        padding: 20px 16px;
+    }
+
+    .title h1 {
+        font-size: 24px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .stat {
+        padding: 18px;
+    }
+
+    .transactions {
+        padding: 18px;
+        overflow-x: hidden;
+    }
+
+    table {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+        white-space: normal;
+    }
+
+    th {
+        font-size: 13px;
+        padding: 8px 6px;
+    }
+
+    td {
+        font-size: 12px;
+        padding: 8px 6px;
+        word-break: break-word;
+    }
+
+    footer {
+        padding: 20px 12px;
+        font-size: 12px;
+    }
+
+}
+
+
+
+/* =========================
+SMALL PHONES
+========================= */
+
+@media(max-width:480px) {
+
+    .top-nav {
+        padding: 14px;
+    }
+
+    .brand {
+        gap: 8px;
+    }
+
+    .brand-text {
+        font-size: 16px;
+    }
+
+    .brand-text-sub {
+        font-size: 11px;
+    }
+
+    .container {
+        padding: 14px;
+    }
+
+    .title h1 {
+        font-size: 22px;
+    }
+
+    .title p {
+        font-size: 14px;
+    }
+
+    .stat-value {
+        font-size: 20px;
+    }
+
+    .transactions {
+        padding: 14px;
+    }
+
+    th {
+        font-size: 11px;
+    }
+
+    td {
+        font-size: 10.5px;
+        padding: 7px 5px;
+    }
+
 }
