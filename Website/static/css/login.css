@@ -419,74 +419,264 @@ input[type="text"]::-webkit-textfield-decoration-container {
     }
 }
 
+/* =========================
+RESPONSIVE
+========================= */
 
-/* ================= RESPONSIVE ================= */
 
-/* Tablet */
+/* TABLET */
 @media(max-width:1024px) {
 
+    html,
+    body {
+        overflow-x: hidden;
+        max-width: 100%;
+    }
+
+    .top-nav {
+        margin: 14px;
+        padding: 14px 18px;
+    }
+
     .max-w-md {
-        width: min(92vw, 460px) !important;
+        width: min(90vw, 430px) !important;
         max-width: none !important;
-        margin: auto;
+        margin: auto !important;
     }
 
 }
 
 
-/* Mobile */
+
+/* MOBILE */
 @media(max-width:768px) {
+
+    html,
+    body {
+        overflow-x: hidden !important;
+        max-width: 100%;
+    }
+
+    * {
+        min-width: 0;
+    }
 
     .top-nav {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding: 14px 16px;
+        margin: 10px;
+        border-radius: 22px;
     }
 
     .nav-links {
-        display: none;
+        display: none !important;
     }
 
     .hamburger {
+        display: flex !important;
+    }
+
+    .brand {
         display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .logo-img {
+        width: 50px !important;
+        height: 50px !important;
+    }
+
+    .brand-text {
+        font-size: 18px;
+    }
+
+    .brand-text-sub {
+        font-size: 12px;
     }
 
 
-    /* ONLY BOX SHRINKS */
+    /* LOGIN CARD FIX */
     .max-w-md {
-        width: min(92vw, 390px) !important;
-        max-width: none !important;
-        margin: auto;
-
-        /* keep design intact */
+        width: calc(100vw - 32px) !important;
+        max-width: 380px !important;
+        min-width: 0 !important;
+        margin: auto !important;
         transform: none !important;
     }
 
-    /* leave content untouched */
     .auth-card {
-        padding: inherit;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 20px !important;
+        overflow: hidden;
+    }
+
+    /* role buttons */
+    .flex.gap-3 {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    /* form controls */
+    input,
+    button,
+    select {
+        max-width: 100%;
+    }
+
+    /* stop glow overflow */
+    .rounded-\[32px\] {
+        overflow: hidden;
+    }
+
+
+    /* if any outer wrappers */
+    main,
+    section,
+    div {
+        max-width: 100%;
     }
 
 }
 
-
-
-/* Small phones */
+/* SMALL PHONES */
 @media(max-width:480px) {
 
+    html,
+    body {
+        overflow-x: hidden;
+    }
+
+    .top-nav {
+        padding: 12px 14px;
+        margin: 8px;
+        border-radius: 20px;
+    }
+
+    .brand {
+        gap: 8px;
+    }
+
+    .logo-img {
+        width: 42px !important;
+        height: 42px !important;
+    }
+
+    .brand-text {
+        font-size: 15px;
+    }
+
+    .brand-text-sub {
+        font-size: 10px;
+    }
+
     .max-w-md {
-        width: min(92vw, 340px) !important;
+        width: 94% !important;
+        max-width: 360px !important;
+        margin: auto !important;
+    }
+
+    .auth-card {
+        width: 100% !important;
+        padding: 18px !important;
+    }
+
+    .flex.gap-3 {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .role-chip {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+
+    h1 {
+        font-size: 1.9rem;
+    }
+
+    p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    label {
+        font-size: 14px;
+    }
+
+    input,
+    button {
+        max-width: 100%;
+        font-size: 14px;
     }
 
 }
 
 
 
-/* Tiny phones */
+/* VERY SMALL PHONES */
 @media(max-width:390px) {
 
     .max-w-md {
-        width: min(92vw, 300px) !important;
+        width: 95% !important;
+        max-width: 330px !important;
+    }
+
+    .auth-card {
+        padding: 15px !important;
+    }
+
+    .brand-text {
+        font-size: 14px;
+    }
+
+    .brand-text-sub {
+        font-size: 9px;
+    }
+
+    h1 {
+        font-size: 1.7rem;
+    }
+
+    p {
+        font-size: 13px;
+    }
+
+    .role-chip {
+        font-size: 13px;
+        padding: 8px 10px;
+    }
+
+    input {
+        font-size: 13px;
+        padding: 13px 15px;
+    }
+
+}
+
+
+
+/* EXTRA TINY */
+@media(max-width:320px) {
+
+    .brand-text {
+        font-size: 13px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .role-chip {
+        font-size: 12px;
+        padding: 7px 8px;
+    }
+
+    input {
+        font-size: 12px;
     }
 
 }
