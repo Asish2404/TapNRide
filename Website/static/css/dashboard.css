@@ -53,7 +53,6 @@ body {
 }
 
 
-
 /* 🌊 Flow animation */
 /* .top-nav::after {
     content: "";
@@ -82,9 +81,7 @@ body {
     transform: translateY(-3px);
 }
 
-/* =========================
-   BRAND
-========================= */
+/* BRAND */
 
 .brand {
     display: flex;
@@ -113,9 +110,7 @@ body {
     color: var(--muted);
 }
 
-/* =========================
-   NAV LINKS (GLASS)
-========================= */
+/* NAV LINKS (GLASS) */
 
 .nav-links {
     display: flex;
@@ -296,7 +291,7 @@ body {
     gap: 10px;
 }
 
-/* Recharge Button */
+/* RECHARGE BUTTON */
 .recharge {
     background: linear-gradient(135deg, #22d3ee, #0ea5e9);
     border: none;
@@ -315,7 +310,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* Refund Button */
+/* REFUND BUTTON */
 .refund {
     background: transparent;
     border: 1px solid #22d3ee;
@@ -411,7 +406,7 @@ tbody tr:hover {
     overflow-y: auto;
 }
 
-/* Custom scrollbar */
+/* CUSTOM SCROLLBAR */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -426,11 +421,9 @@ tbody tr:hover {
     background: transparent;
 }
 
-/* =========================
-   RESPONSIVE DESIGN
-========================= */
+/* RESPONSIVE DESIGN */
 
-/* Large Tablets */
+/* LARGE TABLETS */
 @media (max-width: 1024px) {
 
     .container {
@@ -459,7 +452,7 @@ tbody tr:hover {
 }
 
 
-/* Mobile */
+/* MOBILE */
 @media (max-width:768px) {
 
     .top-nav {
@@ -553,8 +546,7 @@ tbody tr:hover {
 
 }
 
-
-/* Small Phones */
+/* SMALL PHONES */
 @media (max-width:480px) {
 
     .brand-text {
@@ -597,7 +589,7 @@ tbody tr:hover {
 
 }
 
-/* hamburger */
+/* HAMBURGER MENU */
 .hamburger {
     display: none;
     background: none;
@@ -615,7 +607,7 @@ tbody tr:hover {
 }
 
 
-/* mobile menu */
+/* MOBILE MENU */
 .mobile-menu {
     display: none;
     position: fixed;
@@ -673,7 +665,6 @@ tbody tr:hover {
     /* FIX NAVBAR */
     .top-nav {
         flex-direction: row;
-        /* was column -> wrong */
         justify-content: space-between;
         align-items: center;
 
@@ -684,7 +675,6 @@ tbody tr:hover {
         text-align: left;
     }
 
-    /* keep logo + text horizontal */
     .brand {
         flex-direction: row;
         align-items: center;
@@ -710,26 +700,21 @@ tbody tr:hover {
         font-size: 12px;
     }
 
-    /* hide desktop nav */
     .nav-links {
         display: none;
     }
 
-    /* show hamburger right side */
     .hamburger {
         display: flex;
         margin-left: auto;
     }
 
-    /* hamburger lines */
     .hamburger span {
         width: 32px;
         height: 4px;
         border-radius: 8px;
     }
 
-
-    /* dropdown menu lower */
     .mobile-menu {
         top: 95px;
         left: 10px;
@@ -737,8 +722,6 @@ tbody tr:hover {
         border-radius: 28px;
     }
 
-
-    /* rest responsive */
     .container {
         padding: 18px;
     }

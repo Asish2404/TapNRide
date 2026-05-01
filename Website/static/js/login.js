@@ -48,7 +48,7 @@
     const hiddenRole = document.getElementById('hiddenRole');
     const roleText = document.getElementById('roleText');
 
-    // set default
+    // Set default
     if (hiddenRole) hiddenRole.value = selectedRole;
     if (roleText) roleText.textContent = "Passenger";
 
@@ -92,6 +92,7 @@
         strengthBar.style.width = pct + '%';
         strengthText.textContent = ['Too short', 'Weak', 'Okay', 'Good', 'Strong'][score];
     });
+
     function calcStrength(v) {
         if (!v || v.length < 8) return 0;
         let s = 1;
@@ -135,6 +136,7 @@
 
         // Allow default form behavior to handle valid submission.
     });
+
     // Sign up
     const suFirstName = document.getElementById('suFirstName');
     const suLastName = document.getElementById('suLastName');
@@ -165,10 +167,10 @@
         if (!agree.checked) { showErr(document.getElementById('agreeErr'), true); ok = false; }
 
         if (!ok) {
-            e.preventDefault();   // ❗ only block if invalid
+            e.preventDefault();   // only block if invalid
         }
 
-        // ✅ otherwise allow normal POST /signup
+        // otherwise allow normal POST /signup
     });
 
     // Forgot modal
@@ -249,7 +251,7 @@
     // Footer year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // ✅ Show login error popup if exists
+    // Show login error popup if exists
     window.addEventListener("DOMContentLoaded", () => {
     if (window.loginError) {
         showPopup(window.loginError);

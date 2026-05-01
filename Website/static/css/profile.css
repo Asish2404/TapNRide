@@ -259,7 +259,6 @@ body {
   margin-top: 10px;
 }
 
-/* Responsive Design */
 @media (max-width: 1100px) {
   .container {
     flex-direction: column;
@@ -280,7 +279,7 @@ body {
   margin-bottom: 25px;
 }
 
-/* Profile Image */
+/* PROFILE IMAGE */
 .avatar2 {
   width: 40px !important;
   height: 40px !important;
@@ -296,7 +295,7 @@ body {
   /* color: black; */
 }
 
-/* Right content */
+/* RIGHT CONTENT */
 .profile-block h2 {
   margin: 0;
   font-size: 20px;
@@ -321,7 +320,7 @@ body {
   margin-bottom: 20px;
 }
 
-/* Video Container */
+/* VIDEO CONTAINER */
 .video {
   margin-top: 12px;
   position: relative;
@@ -334,7 +333,7 @@ body {
   animation: borderGlow 6s linear infinite;
 }
 
-/* Video Styling */
+/* VIDEO STYLING */
 .video video {
   width: 280px;
   height: auto;
@@ -345,13 +344,12 @@ body {
   transition: transform 0.4s ease, filter 0.4s ease;
 }
 
-/* Hover Effect */
 .video:hover video {
   transform: scale(1.04);
   filter: brightness(1.1) contrast(1.05);
 }
 
-/* Floating Glow */
+/* FLOATING GLOW */
 .video::after {
   content: "";
   position: absolute;
@@ -420,7 +418,7 @@ body {
   box-shadow: 0 0 10px #ef4444;
 }
 
-/* Animated Border */
+/* ANIMATED BORDER */
 @keyframes borderGlow {
   0% {
     background-position: 0% 50%;
@@ -784,9 +782,7 @@ input:-webkit-autofill:focus {
   background: transparent;
 }
 
-/* =========================
-HAMBURGER + MOBILE DRAWER
-========================= */
+/* HAMBURGER + MOBILE DRAWER */
 
 .hamburger {
   display: none;
@@ -857,11 +853,7 @@ HAMBURGER + MOBILE DRAWER
   }
 }
 
-
-
-/* =========================
-TABLET
-========================= */
+/* TABLET */
 
 @media(max-width:1100px) {
 
@@ -888,11 +880,7 @@ TABLET
 
 }
 
-
-
-/* =========================
-MOBILE
-========================= */
+/* MOBILE */
 
 @media(max-width:768px) {
 
@@ -919,7 +907,6 @@ MOBILE
     margin-left: auto;
   }
 
-
   /* MAIN LAYOUT */
   .container {
     margin-top: 100px;
@@ -942,7 +929,6 @@ MOBILE
     transform: scale(.96);
   }
 
-
   /* PROFILE BLOCK */
   .profile-block {
     flex-direction: column;
@@ -960,7 +946,6 @@ MOBILE
     max-width: 280px;
   }
 
-
   /* STATS STACK */
   .stats {
     flex-direction: column;
@@ -970,7 +955,6 @@ MOBILE
   .stat {
     width: 100%;
   }
-
 
   /* FORM */
   .header-row {
@@ -1014,11 +998,7 @@ MOBILE
 
 }
 
-
-
-/* =========================
-SMALL PHONES
-========================= */
+/* SMALL PHONES */
 
 @media(max-width:480px) {
 
@@ -1063,11 +1043,7 @@ SMALL PHONES
 
 }
 
-
-
-/* =========================
-TINY PHONES
-========================= */
+/* TINY PHONES */
 
 @media(max-width:390px) {
 

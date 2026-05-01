@@ -58,8 +58,6 @@ body {
     transition: 0.4s ease;
 }
 
-
-
 /* Flow animation */
 /* .top-nav::after {
     content: "";
@@ -88,9 +86,7 @@ body {
     transform: translateY(-3px);
 }
 
-/* =========================
-   BRAND
-========================= */
+/* BRAND */
 
 .brand {
     display: flex;
@@ -120,9 +116,7 @@ body {
     color: var(--muted);
 }
 
-/* =========================
-   NAV LINKS (GLASS)
-========================= */
+/* NAV LINKS (GLASS) */
 
 .nav-links {
     display: flex;
@@ -172,7 +166,7 @@ body {
     mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .85), rgba(0, 0, 0, 1) 28%, rgba(0, 0, 0, 1) 72%, rgba(0, 0, 0, .6));
 }
 
-/* Focus ring */
+/* FOCUS RING */
 .focus-ring:focus-visible {
     box-shadow: var(--ring);
     outline: none;
@@ -295,7 +289,7 @@ body {
     background: rgba(15, 23, 42, .75)
 }
 
-/* Custom scrollbar */
+/* CUSTOM SCROLLBAR */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -310,7 +304,6 @@ body {
     background: transparent;
 }
 
-/* Input autofill fix */
 input:-webkit-autofill {
     -webkit-text-fill-color: #0b1020;
     transition: background-color 5000s ease-in-out 0s;
@@ -419,10 +412,7 @@ input[type="text"]::-webkit-textfield-decoration-container {
     }
 }
 
-/* =========================
-RESPONSIVE
-========================= */
-
+/* RESPONSIVE */
 
 /* TABLET */
 @media(max-width:1024px) {
@@ -444,7 +434,6 @@ RESPONSIVE
     }
 
 }
-
 
 
 /* MOBILE */
@@ -508,7 +497,6 @@ RESPONSIVE
         overflow: hidden;
     }
 
-    /* ROLE BUTTON FIX */
     .role-group,
     .flex.gap-3 {
         display: grid !important;
@@ -552,7 +540,6 @@ RESPONSIVE
     }
 
 }
-
 
 
 /* SMALL PHONES */
@@ -637,7 +624,6 @@ RESPONSIVE
 }
 
 
-
 /* VERY SMALL PHONES */
 @media(max-width:390px) {
 
@@ -686,7 +672,6 @@ RESPONSIVE
     }
 
 }
-
 
 
 /* EXTRA TINY */

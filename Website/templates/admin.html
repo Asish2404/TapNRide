@@ -41,7 +41,7 @@
         </button>
 
 
-        <!-- DESKTOP NAV -->
+        <!-- DESKTOP NAVBAR -->
         <nav class="nav-links">
 
             <a class="link" href="/home">
@@ -149,7 +149,6 @@
     </header>
 
 
-
     <main class="container">
 
         <div class="title">
@@ -161,7 +160,6 @@
                 Monitor total revenue, rides, and transaction logs.
             </p>
         </div>
-
 
 
         <div class="stats">
@@ -199,7 +197,6 @@
             </div>
 
         </div>
-
 
 
         <div class="transactions">
@@ -247,62 +244,12 @@
     </main>
 
 
-
     <footer>
         SmartBus – Tap • Travel • Secure • IoT Smart Bus Fare System
     </footer>
 
 
-
-    <script>
-        const btn = document.getElementById("profileBtn");
-        const dropdown = document.getElementById("dropdown");
-
-        if (btn) {
-            btn.addEventListener("click", function (e) {
-                e.stopPropagation();
-
-                dropdown.style.display =
-                    dropdown.style.display === "block"
-                        ? "none"
-                        : "block";
-            });
-
-            document.addEventListener("click", function () {
-                dropdown.style.display = "none";
-            });
-        }
-
-
-
-        /* FLOATING HAMBURGER MENU */
-
-        const hamburger = document.getElementById("hamburger");
-        const mobileMenu = document.getElementById("mobileMenu");
-
-        hamburger.addEventListener("click", function (e) {
-            e.stopPropagation();
-            mobileMenu.classList.toggle("show-menu");
-        });
-
-
-        document.addEventListener("click", function (e) {
-            if (
-                !mobileMenu.contains(e.target) &&
-                !hamburger.contains(e.target)
-            ) {
-                mobileMenu.classList.remove("show-menu");
-            }
-        });
-
-
-        window.addEventListener("resize", function () {
-            if (window.innerWidth > 768) {
-                mobileMenu.classList.remove("show-menu");
-                hamburger.classList.remove("active");
-            }
-        });
-    </script>
+    <script src="/static/js/admin.js"></script>
 
 </body>
 

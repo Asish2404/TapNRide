@@ -81,9 +81,7 @@ body {
     transform: translateY(-3px);
 }
 
-/* =========================
-   BRAND
-========================= */
+/* BRAND */
 
 .brand {
     display: flex;
@@ -107,9 +105,7 @@ body {
     color: var(--muted);
 }
 
-/* =========================
-   NAV LINKS (GLASS)
-========================= */
+/* NAV LINKS (GLASS) */
 
 .nav-links {
     display: flex;
@@ -136,7 +132,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* PROFILE DROPDOWN FIX */
+/* PROFILE DROPDOWN */
 
 .profile-container {
     position: relative;
@@ -165,7 +161,7 @@ body {
     font-size: 13px;
 }
 
-/* MAIN FIX */
+/* MAIN */
 .dropdown-menu {
     display: none;
     position: absolute;
@@ -180,7 +176,6 @@ body {
 
 }
 
-/* FIX TEXT ISSUE */
 .dropdown-menu a {
     display: block;
     padding: 8px 10px;
@@ -241,7 +236,7 @@ body {
     cursor: pointer;
 }
 
-/* Hover */
+/* HOVER */
 
 .stat:hover {
     transform: translateY(-6px);
@@ -266,7 +261,7 @@ body {
     box-shadow: 0 0 8px rgba(34, 211, 238, 0.15);
 }
 
-/* Hover */
+/* HOVER */
 
 .transactions:hover {
     transform: translateY(-6px);
@@ -335,7 +330,7 @@ tbody tr:hover {
     transition: 0.2s;
 }
 
-/* Custom scrollbar */
+/* CUSTOM SCROLLBAR */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -350,9 +345,7 @@ tbody tr:hover {
     background: transparent;
 }
 
-/* =========================
-HAMBURGER
-========================= */
+/* HAMBURGER MENU*/
 
 .hamburger {
     display: none;
@@ -370,7 +363,6 @@ HAMBURGER
     background: white;
     border-radius: 6px;
 }
-
 
 /* FLOATING MOBILE MENU */
 
@@ -421,11 +413,7 @@ HAMBURGER
     }
 }
 
-
-
-/* =========================
-TABLETS
-========================= */
+/* TABLETS */
 
 @media(max-width:1024px) {
 
@@ -445,11 +433,7 @@ TABLETS
 
 }
 
-
-
-/* =========================
-MOBILE
-========================= */
+/* MOBILE */
 
 @media(max-width:768px) {
 
@@ -540,11 +524,7 @@ MOBILE
 
 }
 
-
-
-/* =========================
-SMALL PHONES
-========================= */
+/* SMALL PHONES */
 
 @media(max-width:480px) {
 
