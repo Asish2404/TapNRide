@@ -19,7 +19,9 @@
     <header class="top-nav">
 
         <div class="brand">
-            <img src="/static/source/SB.jpeg" class="logo-img">
+            <a href="/home">
+                <img src="/static/source/SB.jpeg" alt="SmartBus Logo" class="logo-img" />
+            </a>
             <div class="info">
                 <div class="brand-text">SmartBus</div>
                 <div class="brand-text-sub">Tap • Travel • Secure</div>
@@ -85,6 +87,8 @@
         {% endif %}
     </div>
 
+
+
     <main>
         <div class="container">
             <div class="glass-card">
@@ -122,7 +126,7 @@
                         <button type="button" onclick="setAmount(1000)">₹1000</button>
                     </div>
 
-                    <button class="btn" type="submit">
+                    <button class="btn" type="button" onclick="openPaymentPopup()">
                         Recharge Now
                     </button>
 
@@ -157,6 +161,48 @@
             </button>
         </div>
     </div>
+    <div id="paymentPopup" class="popup hidden">
+        <div class="popup-box">
+
+            <h2>Select Payment Method</h2>
+
+            <button class="pay-btn" onclick="openUPIPopup()">
+                 UPI
+            </button>
+
+            <button class="pay-btn" onclick="openCardPopup()">
+                 Debit / Credit Card
+            </button>
+
+            <button class="pay-btn" onclick="openNetBankingPopup()">
+                 Net Banking
+            </button>
+
+            <button onclick="closePaymentPopup()">
+                Cancel
+            </button>
+
+        </div>
+    </div>
+    <div id="upiPopup" class="popup hidden">
+        <div class="popup-box">
+
+            <h2>UPI Payment</h2>
+
+            <input type="text" id="upiId" placeholder="example@paytm">
+
+            <br><br>
+
+            <button onclick="processUPI()">
+                Pay Now
+            </button>
+
+            <button onclick="closeUPIPopup()">
+                Cancel
+            </button>
+
+        </div>
+    </div>
     {% if error %}
     <script>
         window.popupError = "{{ error }}";
@@ -171,8 +217,7 @@
     <footer>
         SmartBus – Tap • Travel • Secure
     </footer>
-    
     <script src="/static/js/recharge.js"></script>
-
 </body>
+
 </html>

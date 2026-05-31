@@ -7,11 +7,43 @@ import pymysql
 import random  # just for testing with random bus stop key
 import threading
 import os, uuid
+import google.generativeai as genai
 
 # 🔴 ADD SESSION
 from starlette.middleware.sessions import SessionMiddleware
 
 app = FastAPI()
+#ADD YOUR GOOGLE GEN AI API KEY HERE
+genai.configure(api_key="AQ.Ab8RN6KBqbl_0g7Vki6XgcgiALMBUKkBA87l5T8qJFIFTwaCLg")
+model = genai.GenerativeModel("gemini-2.5-flash")
+
+#------------------System prompt for Gen AI------------------
+SYSTEM_PROMPT = """
+You are Smart Bus Assistant.
+
+Project Information:
+
+- Users receive a smart card after signup.
+- Cards must be recharged before travel.
+- Recharge is done through Razorpay.
+- First scan starts a ride.
+- Second scan ends a ride.
+- Fare depends on the number of stops travelled.
+
+Stops:
+- Stop A
+- Stop B
+- Stop C
+- Stop D
+
+Important Rules:
+- Do not claim to know user balance.
+- Do not claim to know ride history.
+- Do not claim to know account details.
+- If asked personal information, tell the user to check the dashboard.
+
+Answer only Smart Bus related questions.
+"""
 
 # 🔴 SESSION MIDDLEWARE
 app.add_middleware(SessionMiddleware, secret_key="supersecretkey")
@@ -34,7 +66,12 @@ def get_db():
     )
 
 # CHANGE-2:fare table (Matrix representation)
-fares = [[0, 8, 8, 10], [8, 0, 8, 10], [8, 8, 0, 8], [10, 10, 8, 0]]
+fares = [
+    [0, 8, 16, 24],
+    [8, 0, 8, 16],
+    [16, 8, 0, 8],
+    [24, 16, 8, 0]
+]
 
 
 # CHANGE-3: searching the fare between two stops
@@ -223,10 +260,26 @@ def signup(
         (card_id, first_name, last_name, email, phone, password, role, "/static/source/default.png"),
     )
 
+    # Close card in stock
     cursor.execute(
         "UPDATE cards_in_stock SET status='CLOSED' WHERE card_id=%s",
         (card_id,)
     )
+
+    # Check if card already exists
+    cursor.execute(
+        "SELECT card_id FROM cards WHERE card_id=%s",
+        (card_id,)
+    )
+
+    if not cursor.fetchone():
+        cursor.execute(
+            """
+            INSERT INTO cards(card_id, balance, status)
+            VALUES(%s,%s,%s)
+            """,
+            (card_id, 0.00, "active")
+        )
 
     db.commit()
 
@@ -459,69 +512,53 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
                 "required": fare,
             }
 
+    
     # =========================
     # TAP-1 → START RIDE
     # =========================
     else:
+
         cursor.execute(
-            "SELECT * FROM cards WHERE card_id=%s",
+            "SELECT balance, status FROM cards WHERE card_id=%s",
             (card_id,)
         )
+
         existing_card = cursor.fetchone()
 
+        # Card must already exist
         if not existing_card:
-            cursor.execute(
-                """
-                INSERT INTO cards(card_id, balance, status)
-                VALUES(%s,%s,%s)
-                """,
-                (card_id, 0.00, "active"),
+            return {"error": "Card not found"}
 
-            )
-            db.commit()
-            balance = 0.00
+        # Card must be active
+        if existing_card["status"] != "active":
+            return {"error": "Card is inactive"}
 
-        else:
-            if existing_card["status"] != "active":
-                return {"error": "Card is inactive"}
-            balance = existing_card["balance"]
+        balance = existing_card["balance"]
 
         if balance <= 0:
             return {
                 "status": "low balance",
                 "card_id": card_id,
                 "balance": balance,
-                "message": "Please recharge your card to start a ride"
+                "message": "Please recharge your card"
             }
 
-        # Extra safety
-        cursor.execute(
-            """
-            SELECT * FROM rides
-            WHERE card_id=%s AND to_stop IS NULL
-            """,
-            (card_id,),
-        )
-
-        if cursor.fetchone():
-            return {"error": "Ride already in progress"}
-
-        # Start ride
+        # Start Ride
         cursor.execute(
             """
             INSERT INTO rides(card_id, from_stop, to_stop, fare)
             VALUES(%s,%s,%s,%s)
             """,
-            (card_id, curStop, None, 0),
+            (card_id, curStop, None, 0)
         )
 
         db.commit()
 
         return {
             "status": "ride started",
-            "from": curStop,
-            "card_id": card_id
-            }
+            "card_id": card_id,
+            "from": curStop
+        }
 
 # # ---------------- TAP CARD ----------------
 # @app.post("/tap_card")
@@ -1112,5 +1149,29 @@ async def update_profile(
 
     cursor.close()
     db.close()
-
     return RedirectResponse("/profile", status_code=303)
+
+@app.post("/chat")
+def chat(message: str = Form(...)):
+
+    try:
+
+        prompt = (
+            SYSTEM_PROMPT
+            + f"\n\nUser Question:\n{message}"
+        )
+
+        response = model.generate_content(
+            prompt
+        )
+
+        return {
+            "reply": response.text
+        }
+
+    except Exception as e:
+
+        return {
+            "reply":
+            "SmartBus Assistant is currently unavailable."
+        }

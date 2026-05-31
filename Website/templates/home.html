@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/index.css?v=12">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap" rel="stylesheet">
     <link rel="shortcut icon" href="/static/source/SB.jpeg" type="image/x-icon">
@@ -17,7 +18,9 @@
 
         <div class="brand">
 
-            <img src="/static/source/SB.jpeg" alt="SmartBus Logo" class="logo-img" />
+            <a href="/home">
+                <img src="/static/source/SB.jpeg" alt="SmartBus Logo" class="logo-img" />
+            </a>
 
             <div class="info">
 
@@ -111,7 +114,7 @@
 
     <!-- MOBILE MENU -->
     <div id="mobileMenu" class="mobile-menu">
-        
+
         <a href="/home">
             Home
         </a>
@@ -396,6 +399,82 @@
 
     </div>
 
+
+    <!-- SMARTBUS CHATBOT -->
+
+    <div class="chat-card" id="chatWindow">
+
+        <div class="chat-head">
+
+            <div class="head-info">
+
+                <div class="head-name">
+                    SmartBus Assistant
+                </div>
+
+                <div class="head-status">
+
+                    <div class="pulse-dot"></div>
+
+                    <span>
+                        Online
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="chat-body" id="chatBody">
+
+            <div class="bot-message">
+                Hello! I am SmartBus Assistant.
+                Ask me anything about recharge,
+                fare, routes, or travel.
+            </div>
+
+        </div>
+
+        <div class="suggestion-row" id="suggestions">
+
+            <button class="sug-btn" onclick="sendSuggestion('How do I recharge?')">
+                How do I recharge?
+            </button>
+
+            <button class="sug-btn" onclick="sendSuggestion('How is fare calculated?')">
+                How is fare calculated?
+            </button>
+
+            <button class="sug-btn" onclick="sendSuggestion('Available stops')">
+                Available stops
+            </button>
+
+        </div>
+
+        <div class="chat-foot">
+
+            <input type="text" id="chatInput" placeholder="Type your question...">
+
+            <button id="sendBtn" onclick="sendMessage()">
+                Send
+            </button>
+
+        </div>
+
+    </div>
+
+    <button id="chatToggle">
+
+        <span class="chat-icon">
+            <i class="fa-solid fa-comment"></i>
+        </span>
+
+        <span class="chat-text">
+            Chat with Assistant
+        </span>
+
+    </button>
 
     <script src="/static/js/home.js"></script>
 
