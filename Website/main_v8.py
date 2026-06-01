@@ -7,12 +7,42 @@ import pymysql
 import random  # just for testing with random bus stop key
 import threading
 import os, uuid
+import google.generativeai as genai
+from datetime import datetime, timedelta
 
 # 🔴 ADD SESSION
 from starlette.middleware.sessions import SessionMiddleware
 
 app = FastAPI()
+genai.configure(api_key="AQ.Ab8RN6KBqbl_0g7Vki6XgcgiALMBUKkBA87l5T8qJFIFTwaCLg")
+model = genai.GenerativeModel("gemini-2.5-flash")
 
+SYSTEM_PROMPT = """
+You are Smart Bus Assistant.
+
+Project Information:
+
+- Users receive a smart card after signup.
+- Cards must be recharged before travel.
+- Recharge is done through Razorpay.
+- First scan starts a ride.
+- Second scan ends a ride.
+- Fare depends on the number of stops travelled.
+
+Stops:
+- Stop A
+- Stop B
+- Stop C
+- Stop D
+
+Important Rules:
+- Do not claim to know user balance.
+- Do not claim to know ride history.
+- Do not claim to know account details.
+- If asked personal information, tell the user to check the dashboard.
+
+Answer only Smart Bus related questions.
+"""
 # 🔴 SESSION MIDDLEWARE
 app.add_middleware(SessionMiddleware, secret_key="supersecretkey")
 
@@ -34,7 +64,6 @@ def get_db():
         cursorclass=pymysql.cursors.DictCursor,
     )
 
-
 # CHANGE-2:fare table (Matrix representation)
 fares = [[0, 8, 8, 10], [8, 0, 8, 10], [8, 8, 0, 8], [10, 10, 8, 0]]
 
@@ -43,13 +72,11 @@ fares = [[0, 8, 8, 10], [8, 0, 8, 10], [8, 8, 0, 8], [10, 10, 8, 0]]
 def get_fare(from_stop, to_stop):
     return fares[from_stop][to_stop]
 
-
 # # CHANGE-4: current stop
 # curStopKey = random.choice(
 #     list(stops.keys())
 # )  # current stop will be updated from keypad
 # curStop = stops[curStopKey]
-
 
 # CHANGE-5: retrieving key of corresponding Stop name
 def retrieveKey(stopName):
@@ -57,7 +84,6 @@ def retrieveKey(stopName):
         if value == stopName:
             return key
     return None
-
 
 # CHANGE-6: balance updation after fare deduction
 # def balanceUpdate(card_id,fare):
@@ -88,17 +114,14 @@ def retrieveKey(stopName):
 #     cursor.close()
 #     db.close()
 
-
 def get_current_user(request: Request):
     return request.session.get("user")
-
 
 def require_login(request: Request):
     user = get_current_user(request)
     if not user:
         return RedirectResponse("/login", status_code=303)
     return user
-
 
 def require_admin(request: Request):
     user = get_current_user(request)
@@ -109,7 +132,6 @@ def require_admin(request: Request):
         return HTMLResponse("Access Denied: Admins only", status_code=403)
 
     return user
-
 
 # ---------------- HOME ----------------
 @app.get("/", response_class=HTMLResponse)
@@ -174,17 +196,14 @@ def home(request: Request):
         },
     )
 
-
 # ---------------- HOME REDIRECT ----------------
 # @app.get("/home", response_class=HTMLResponse)
 # def home_redirect(request: Request, card_id: Optional[str] = None):
 #     return RedirectResponse(url=f"/?card_id={card_id}", status_code=303)
 
-
 @app.get("/home")
 def home_redirect(request: Request):
     return RedirectResponse("/", status_code=303)
-
 
 # ------------------- SIGNUP ----------------
 @app.post("/signup")
@@ -211,7 +230,7 @@ def signup(
             status_code=303
         )
 
-    card_id = row["card_id"]    # allocate a unique card ID for the new user
+    card_id = row["card_id"]  # allocate a unique card ID for the new user
 
     # NEW CHECK
     cursor.execute(
@@ -232,11 +251,7 @@ def signup(
         )
         VALUES(%s,%s,%s,%s,%s,%s,%s,%s)
         """,
-        (
-            card_id, first_name, last_name,
-            email, phone, password, role,
-            "/static/source/default.png",
-        ),
+        (card_id, first_name, last_name, email, phone, password, role, "/static/source/default.png"),
     )
 
     cursor.execute(
@@ -244,13 +259,24 @@ def signup(
         (card_id,)
     )
 
+     # Check if card already exists
+    cursor.execute(
+        "SELECT card_id FROM cards WHERE card_id=%s",
+        (card_id,)
+    )
+
+    if not cursor.fetchone():
+        cursor.execute(
+            "INSERT INTO cards(card_id, balance, status) VALUES(%s,%s,%s)",
+            (card_id, 0.00, "active")
+        )
+
     db.commit()
 
     cursor.close()
     db.close()
 
     return RedirectResponse("/login", status_code=303)
-
 
 # ---------------- LOGIN ----------------
 @app.get("/login", response_class=HTMLResponse)
@@ -261,9 +287,8 @@ def login_page(request: Request, error: str = None):
         context={
             "request": request,
             "error": error
-        },
+        }
     )
-
 
 @app.post("/login")
 def login_user(request: Request, email: str = Form(...), password: str = Form(...)):
@@ -299,14 +324,13 @@ def login_user(request: Request, email: str = Form(...), password: str = Form(..
         name="login.html",
         context={
             "request": request,
-            "error": "Invalid credentials",
+            "error": "Invalid credentials"
         },
     )
 
-
 # ---------------- SCAN ----------------
 @app.post("/scan")
-def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
+def scan_card(card_id: str = Form(...), keyStop: int = Form(...), device_id: str = Form("100.0.0.3")):
 
     db = get_db()
     cursor = db.cursor()
@@ -317,7 +341,14 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
 
     curStop = stops[keyStop]
 
-    print("SCAN:", card_id, keyStop)
+    # device_id and bus_no mapping
+    cursor.execute(""" SELECT b.bus_no FROM devices d JOIN buses b ON d.bus_id = b.bus_id WHERE d.device_id=%s """, (device_id,))
+    bus_row = cursor.fetchone()
+    if not bus_row:
+        return {"error": "Invalid device ID"}
+    bus_no = bus_row["bus_no"]
+
+    print("SCAN:", card_id, keyStop, "Device:", device_id, "Bus No:", bus_no)
 
     # Check for active ride
     cursor.execute(
@@ -328,7 +359,7 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
         WHERE r.card_id=%s AND r.to_stop IS NULL
         LIMIT 1
         """,
-        (card_id,),
+        (card_id,)
     )
 
     active_ride = cursor.fetchone()
@@ -358,7 +389,7 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
         # check pending rides for the same card_id
         cursor.execute(
             "SELECT id, to_stop,fare FROM pending_rides WHERE card_id=%s LIMIT 1",
-            (card_id,),
+            (card_id,)
         )
         pending = cursor.fetchone()
 
@@ -373,21 +404,21 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
                 new_balance = balance - fare
                 # Update ride
                 cursor.execute(
-                    "UPDATE rides SET to_stop=%s, fare=%s WHERE card_id=%s AND to_stop IS NULL",
-                    (to_stop, fare, card_id),
+                    "UPDATE rides SET to_stop=%s, fare=%s, bus_no=%s, device_id=%s WHERE card_id=%s AND to_stop IS NULL",
+                    (to_stop, fare, bus_no, device_id, card_id)
                 )
 
                 # Update balance
                 cursor.execute(
                     "UPDATE cards SET balance=%s WHERE card_id=%s",
-                    (new_balance, card_id),
+                    (new_balance, card_id)
                 )
 
                 # Store transaction
                 description = f"{from_stop} → {to_stop}"
                 cursor.execute(
-                    "INSERT INTO transactions(type, card_id, description, amount) VALUES(%s,%s,%s,%s)",
-                    ("ride", card_id, description, fare),
+                    "INSERT INTO transactions(type, card_id, description, amount, bus_no, device_id) VALUES(%s,%s,%s,%s,%s,%s)",
+                    ("ride", card_id, description, fare, bus_no, device_id)
                 )
 
                 # Remove pending rides
@@ -403,7 +434,7 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
                     "from": from_stop,
                     "to": to_stop,
                     "fare": fare,
-                    "balance": new_balance,
+                    "balance": new_balance
                 }
 
             else:
@@ -411,10 +442,10 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
                     "status": "insufficient balance",
                     "card_id": card_id,
                     "balance": balance,
-                    "required": fare,
+                    "required": fare
                 }
 
-        # normal fare calculation - no pending rides(through plan_ride)
+        #normal fare calculation - no pending rides(through plan_ride)
         from_key = retrieveKey(from_stop)
 
         # additional safety
@@ -433,10 +464,10 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
             cursor.execute(
                 """
                 UPDATE rides
-                SET to_stop=%s, fare=%s
+                SET to_stop=%s, fare=%s, bus_no=%s, device_id=%s
                 WHERE card_id=%s AND to_stop IS NULL
                 """,
-                (to_stop, fare, card_id),
+                (to_stop, fare, bus_no, device_id, card_id),
             )
 
             # Update balance
@@ -453,10 +484,10 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
             description = f"{from_stop} → {to_stop}"
             cursor.execute(
                 """
-                INSERT INTO transactions(type, card_id, description, amount)
-                VALUES(%s,%s,%s,%s)
+                INSERT INTO transactions(type, card_id, description, amount, bus_no, device_id)
+                VALUES(%s,%s,%s,%s,%s,%s)
                 """,
-                ("ride", card_id, description, fare),
+                ("ride", card_id, description, fare, bus_no, device_id)
             )
 
             db.commit()
@@ -488,28 +519,22 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
         )
         existing_card = cursor.fetchone()
 
+        #exist card check
         if not existing_card:
-            cursor.execute(
-                """
-                INSERT INTO cards(card_id,balance,status)
-                VALUES(%s,%s,%s)
-                """,
-                (card_id, 0.00, "active"),
-            )
-            db.commit()
-            balance = 0.00
+            return {"error": "Card not found"}
 
-        else:
-            if existing_card["status"] != "active":
-                return {"error": "Card inactive"}
-            balance = existing_card["balance"]
+        #active card check
+        if existing_card["status"] != "active":
+            return {"error": "Card is inactive"}
+            
+        balance = existing_card["balance"]
 
         if balance <= 0:
             return {
                 "status": "low balance",
                 "card_id": card_id,
                 "balance": balance,
-                "message": "Please recharge your card to start a ride",
+                "message": "Please recharge your card to start a ride"
             }
 
         # Extra safety
@@ -527,10 +552,10 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
         # Start ride
         cursor.execute(
             """
-            INSERT INTO rides(card_id, from_stop, to_stop, fare)
-            VALUES(%s,%s,%s,%s)
+            INSERT INTO rides(card_id, from_stop, to_stop, fare, bus_no, device_id)
+            VALUES(%s,%s,%s,%s,%s,%s)
             """,
-            (card_id, curStop, None, 0),
+            (card_id, curStop, None, 0, bus_no, device_id),
         )
 
         db.commit()
@@ -538,8 +563,8 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
         return {
             "status": "ride started",
             "from": curStop,
-            "card_id": card_id,}
-
+            "card_id": card_id
+            }
 
 # # ---------------- TAP CARD ----------------
 # @app.post("/tap_card")
@@ -599,6 +624,80 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...)):
 
 #     return RedirectResponse(url=f"/dashboard?card_id={card_id}", status_code=303)
 
+#----------------------------------------------------------------
+# fine/ penalty apply and deduction
+@app.post("/apply_penalty")
+def apply_penalty(card_id: str, bus_no: str, device_id: str):
+    db = get_db()
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+
+    # Find incomplete ride
+    cursor.execute("""
+        SELECT ride_id, from_stop, ride_time, bus_no, device_id
+        FROM rides
+        WHERE card_id=%s AND to_stop IS NULL
+        LIMIT 1
+    """, (card_id,))
+    ride = cursor.fetchone()
+
+    if not ride:
+        return {"status": "no penalty", "card_id": card_id}
+
+    # Check if 24 hrs have passed
+    start_time = ride["ride_time"]
+    now = datetime.now()
+    if (now - start_time).total_seconds() < 40:
+        return {"status": "grace period", "card_id": card_id}
+
+    # check if pending rides present
+    cursor.execute(""" SELECT to_stop, fare FROM pending_rides WHERE card_id=%s LIMIT 1""", (card_id,))
+    pending = cursor.fetchone()
+    if pending:
+        fine_amount = pending["fare"]
+        fine_reason = f"Pending ride fare deduction ({ride['from_stop']} → {pending['to_stop']})"
+        cursor.execute("DELETE FROM pending_rides WHERE card_id=%s", (card_id,))
+    else:
+        fine_amount = 50  # Dummy fine
+        fine_reason = "No tap out within 24 hrs"
+
+    # Deduct balance
+    cursor.execute("SELECT balance FROM cards WHERE card_id=%s", (card_id,))
+    card = cursor.fetchone()
+    if not card:
+        return {"error": "Card not found"}
+
+    balance = card["balance"]
+
+    if balance < fine_amount:
+        return {
+            "status": "insufficient balance for fine",
+            "card_id": card_id,
+            "balance": balance,
+            "fine": fine_amount
+        }
+
+    new_balance = balance - fine_amount
+
+    cursor.execute("UPDATE cards SET balance=%s WHERE card_id=%s", (new_balance, card_id))
+
+    # Store fine transaction
+    cursor.execute("""
+        INSERT INTO transactions(type, card_id, description, amount, bus_no, device_id, fine_reason)
+        VALUES(%s, %s, %s, %s, %s, %s, %s)
+    """, ("fine", card_id, f"Penalty: Incomplete ride from {ride['from_stop']}", fine_amount, bus_no, device_id, fine_reason))
+
+    # Close ride with penalty
+    cursor.execute("UPDATE rides SET to_stop='Penalty', fare=%s WHERE ride_id=%s", (fine_amount, ride["ride_id"]))
+    db.commit()
+
+    return {
+        "status": "fine imposed",
+        "card_id": card_id,
+        "fine": fine_amount,
+        "balance": new_balance
+    }
+
+#------------------------------------------------------------------------------------
 
 # NEW ADDITION-------- plan rides before reaching destination ----------------
 @app.post("/plan_ride")
@@ -618,7 +717,7 @@ def plan_ride(
         WHERE card_id=%s AND to_stop IS NULL
         LIMIT 1
         """,
-        (card_id,),
+        (card_id,)
     )
 
     active = cursor.fetchone()
@@ -634,7 +733,7 @@ def plan_ride(
             "status": "duplicate stop",
             "message": "Please select a different destination than your starting point",
             "from_stop": from_stop,
-            "to_stop": Ending_place,
+            "to_stop": Ending_place
         }
 
     # Calculate fare automatically
@@ -648,7 +747,7 @@ def plan_ride(
         INSERT INTO pending_rides(card_id, from_stop, to_stop, fare)
         VALUES(%s,%s,%s,%s)
         """,
-        (card_id, from_stop, Ending_place, fare),
+        (card_id, from_stop, Ending_place, fare)
     )
     db.commit()
 
@@ -660,33 +759,31 @@ def plan_ride(
         status_code=303
     )
 
+#-----------------------New addition for dashboard display-----------------------
 
-# -----------------------New addition for dashboard display-----------------------
 
-
-# ---------------------- fetch active ride details - source stop of corresponding card_id----------------------
+#---------------------- fetch active ride details - source stop of corresponding card_id----------------------
 @app.get("/get_active_ride")
 def get_active_ride(card_id: str):
     db = get_db()
     cursor = db.cursor(pymysql.cursors.DictCursor)
     cursor.execute(
         "SELECT from_stop FROM rides WHERE card_id=%s AND to_stop IS NULL LIMIT 1",
-        (card_id,),
+        (card_id,)
     )
     active = cursor.fetchone()
     cursor.close()
     db.close()
     return {"from_stop": active["from_stop"] if active else None}
 
-
-# ----------------------fetch fare for the active ride as per planned destination----------------------
+#----------------------fetch fare for the active ride as per planned destination----------------------
 @app.get("/calculate_fare")
 def calculate_fare(card_id: str, to_stop: str):
     db = get_db()
     cursor = db.cursor(pymysql.cursors.DictCursor)
     cursor.execute(
         "SELECT from_stop FROM rides WHERE card_id=%s AND to_stop IS NULL LIMIT 1",
-        (card_id,),
+        (card_id,)
     )
     active = cursor.fetchone()
     if not active:
@@ -696,7 +793,6 @@ def calculate_fare(card_id: str, to_stop: str):
     cursor.close()
     db.close()
     return {"fare": fare}
-
 
 # ---------------- DASHBOARD ----------------
 @app.get("/dashboard", response_class=HTMLResponse)
@@ -763,55 +859,116 @@ def dashboard(request: Request, card_id: str = None):
         },
     )
 
-
 # ---------------- ADMIN ----------------
 @app.get("/admin", response_class=HTMLResponse)
-def admin_dashboard(request: Request):
-
+def admin_dashboard(
+    request: Request,
+    card_id: str = None,
+    day: str = None,
+    date: str = None,
+    month: str = None,
+    year: str = None,
+    bus_no: str = None,
+    device_id: str = None,
+    from_date: str = None,
+    to_date: str = None,
+    page: int = 1,
+    all : str = None
+):
     user = request.session.get("user")
-
     if not user:
         return RedirectResponse("/login", status_code=303)
 
     db = get_db()
     cursor = db.cursor(pymysql.cursors.DictCursor)
 
-    cursor.execute(
-        """
-        SELECT transaction_id, type, card_id, description, amount, transaction_time
+    # Pagination setup
+    limit = 10
+    offset = (page - 1) * limit
+
+    # Build filter clause once
+    filter_sql = ""
+    params = []
+
+    if card_id:
+        filter_sql += " AND card_id=%s"
+        params.append(card_id)
+    if day:
+        filter_sql += " AND DAY(transaction_time)=%s"
+        params.append(day)
+    if date:
+        filter_sql += " AND DAY(transaction_time)=%s"
+        params.append(date)
+    if month:
+        filter_sql += " AND MONTH(transaction_time)=%s"
+        params.append(month)
+    if year:
+        filter_sql += " AND YEAR(transaction_time)=%s"
+        params.append(year)
+    if bus_no:
+        filter_sql += " AND description LIKE %s"
+        params.append(f"%{bus_no}%")
+    if device_id:
+        filter_sql += " AND description LIKE %s"
+        params.append(f"%{device_id}%")
+    if from_date and to_date:
+        filter_sql += " AND DATE(transaction_time) BETWEEN %s AND %s"
+        params.extend([from_date, to_date])
+
+    filter_query = "&".join([
+        f"{k}={v}" for k, v in {
+            "card_id": card_id,
+            "day": day,
+            "date": date,
+            "month": month,
+            "year": year,
+            "bus_no": bus_no,
+            "device_id": device_id,
+            "from_date": from_date,
+            "to_date": to_date
+        }.items() if v
+    ])
+
+    # Main query with pagination
+    query = f"""
+        SELECT transaction_id, type, card_id, description, amount, transaction_time, bus_no, device_id
         FROM transactions
+        WHERE 1=1 {filter_sql}
         ORDER BY transaction_time DESC
-        """
-    )
+        LIMIT %s OFFSET %s
+    """
+    cursor.execute(query, tuple(params + [limit, offset]))
     rides = cursor.fetchall()
 
-    cursor.execute(
-        """
-        SELECT COUNT(DISTINCT card_id) AS active_cards
-        FROM cards
-        WHERE status = 'active'
-        """
-    )
-    active_cards = cursor.fetchone()["active_cards"]
+    # Count query for total pages
+    count_query = f"SELECT COUNT(*) AS total_count FROM transactions WHERE 1=1 {filter_sql}"
+    cursor.execute(count_query, tuple(params))
+    total_count = cursor.fetchone()["total_count"]
+    total_pages = (total_count + limit - 1) // limit  # ceil division
 
-    cursor.execute(
-        """
-        SELECT SUM(amount) AS total_fare
-        FROM transactions
-        WHERE type='ride' AND DATE(transaction_time) = CURDATE()
-        """
-    )
-    result = cursor.fetchone()
-    total_fare = result["total_fare"] if result["total_fare"] else 0
+    filters_applied = bool(card_id or day or date or month or year or bus_no or device_id or (from_date and to_date))
+    show_all = bool(all)
 
-    cursor.execute(
-        """
-        SELECT COUNT(*) AS rides_today
+    # Stats query (same filters, but type='ride')
+    stats_query = f"""
+        SELECT 
+            COUNT(DISTINCT card_id) AS active_cards,
+            SUM(amount) AS total_fare,
+            COUNT(*) AS rides_count
         FROM transactions
-        WHERE type='ride' AND DATE(transaction_time) = CURDATE()
-        """
-    )
-    rides_today = cursor.fetchone()["rides_today"]
+        WHERE type='ride' {filter_sql}
+    """
+    if not filters_applied and not show_all:
+        stats_query += " AND DATE(transaction_time) = CURDATE()"
+    elif show_all:
+        pass # no filter applied here, all transactions shown
+
+    cursor.execute(stats_query, tuple(params))
+    stats = cursor.fetchone()
+
+    active_cards = stats["active_cards"] or 0
+    total_fare = stats["total_fare"] or 0
+    rides_today = stats["rides_count"] or 0
 
     cursor.close()
     db.close()
@@ -826,8 +983,14 @@ def admin_dashboard(request: Request):
             "active_cards": active_cards,
             "total_fare": total_fare,
             "rides_today": rides_today,
+            "page": page,
+            "total_pages": total_pages,
+            "filter_query": filter_query,
+            "filters_applied": filters_applied,
+            "show_all": show_all
         },
     )
+
 
 
 # ---------------- RECHARGE ----------------
@@ -859,10 +1022,9 @@ def recharge_page(request: Request):
         context={
             "request": request,
             "user": user,
-            "balance": balance,
-        },
+            "balance": balance
+        }
     )
-
 
 @app.post("/recharge")
 def recharge(request: Request, card_id: str = Form(...), amount: float = Form(...)):
@@ -878,8 +1040,8 @@ def recharge(request: Request, card_id: str = Form(...), amount: float = Form(..
             context={
                 "request": request,
                 "user": user,
-                "error": "Invalid Card ID",
-            },
+                "error": "Invalid Card ID"
+            }
         )
 
     db = get_db()
@@ -901,8 +1063,8 @@ def recharge(request: Request, card_id: str = Form(...), amount: float = Form(..
             context={
                 "request": request,
                 "user": request.session.get("user"),
-                "error": "Card not found",
-            },
+                "error": "Card not found"
+            }
         )
 
     cursor.execute(
@@ -928,17 +1090,15 @@ def recharge(request: Request, card_id: str = Form(...), amount: float = Form(..
             "user": request.session.get("user"),
             "card_id": card["card_id"],
             "balance": card["balance"],
-            "success": True,
+            "success": True
         },
     )
-
 
 # ---------------- LOGOUT ----------------
 @app.get("/logout")
 def logout(request: Request):
     request.session.clear()
     return RedirectResponse(url="/login", status_code=303)
-
 
 # ----profile profile ----
 @app.get("/profile")
@@ -1016,14 +1176,13 @@ def profile(request: Request):
         }
     )
 
-
 @app.post("/profile")
 async def update_profile(
         request: Request,
         first_name: str = Form(...),
         last_name: str = Form(...),
         email: str = Form(...),
-        photo: UploadFile = File(None),
+        photo: UploadFile = File(None)
     ):
     session_user = request.session.get("user")
     if not session_user:
@@ -1050,7 +1209,7 @@ async def update_profile(
                 LEFT JOIN cards c ON l.card_id = c.card_id
                 WHERE l.id=%s
                 """,
-                (session_user["id"],),
+                (session_user["id"],)
             )
 
             user = cursor.fetchone()
@@ -1062,7 +1221,7 @@ async def update_profile(
                 "email": user.get("email", ""),
                 "card_id": user.get("card_id", ""),
                 "balance": user.get("balance", 0),
-                "profile_pic": user.get("profile_pic", None),
+                "profile_pic": user.get("profile_pic", None)
             }
 
             cursor.close()
@@ -1074,8 +1233,8 @@ async def update_profile(
                 context={
                     "request": request,
                     "user": user,
-                    "error": "Only JPG/PNG/JPEG allowed",
-                },
+                    "error": "Only JPG/PNG/JPEG allowed"
+                }
             )
 
     # SAVE IMAGE (ONLY if selected)
@@ -1115,7 +1274,7 @@ async def update_profile(
             SET first_name=%s, last_name=%s, email=%s, profile_pic=%s
             WHERE id=%s
             """,
-            (first_name, last_name, email, file_path, session_user["id"]),
+            (first_name, last_name, email, file_path, session_user["id"])
         )
     else:
         cursor.execute(
@@ -1124,7 +1283,7 @@ async def update_profile(
             SET first_name=%s, last_name=%s, email=%s
             WHERE id=%s
             """,
-            (first_name, last_name, email, session_user["id"]),
+            (first_name, last_name, email, session_user["id"])
         )
 
     db.commit()
@@ -1141,3 +1300,29 @@ async def update_profile(
     db.close()
 
     return RedirectResponse("/profile", status_code=303)
+
+# Chatbot functionality
+@app.post("/chat")
+def chat(message: str = Form(...)):
+
+    try:
+
+        prompt = (
+            SYSTEM_PROMPT
+            + f"\n\nUser Question:\n{message}"
+        )
+
+        response = model.generate_content(
+            prompt
+        )
+
+        return {
+            "reply": response.text
+        }
+
+    except Exception as e:
+
+        return {
+            "reply":
+            "SmartBus Assistant is currently unavailable."
+        }
