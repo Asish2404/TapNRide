@@ -21,7 +21,7 @@
 
         <div class="brand">
             <a href="/home">
-                <img src="/static/source/SB.jpeg" alt="SmartBus Logo" class="logo-img" />
+                <img src="/static/source/SB.jpeg" alt="SmartBus Logo" class="logo-img">
             </a>
 
             <div class="info">
@@ -165,10 +165,10 @@
 
 
         <div class="stats">
-
+            {% if not filters_applied and not show_all %}
             <div class="stat">
                 <p>
-                    Total Fare Collected
+                    Total Fare Collected Today
                 </p>
 
                 <div class="stat-value" id="totalFare">
@@ -197,7 +197,63 @@
                     {{ active_cards }}
                 </div>
             </div>
+            {% elif filters_applied %}
+            <div class="stat">
+                <p>
+                    Total Fare (Filtered)
+                </p>
 
+                <div class="stat-value">
+                    ₹{{ total_fare }}
+                </div>
+            </div>
+            <div class="stat">
+                <p>
+                    Total Rides (Filtered)
+                </p>
+
+                <div class="stat-value">
+                    {{ rides_today }}
+                </div>
+            </div>
+            <div class="stat">
+                <p>
+                    Active Cards (Filtered)
+                </p>
+
+                <div class="stat-value">
+                    {{ active_cards }}
+                </div>
+            </div>
+            {% elif show_all %}
+            <div class="stat">
+                <p>
+                    Total Fare (All Time)
+                </p>
+
+                <div class="stat-value">
+                    ₹{{ total_fare }}
+                </div>
+            </div>
+            <div class="stat">
+                <p>
+                    Total Rides (All Time)
+                </p>
+
+                <div class="stat-value">
+                    {{ rides_today }}
+                </div>
+            </div>
+            <div class="stat">
+                <p>
+                    Active Cards (All Time)
+                </p>
+
+                <div class="stat-value">
+                    {{ active_cards }}
+                </div>
+            </div>
+            {% endif %}
         </div>
 
 
@@ -211,6 +267,87 @@
                 Ride fares and recharge logs
             </p>
 
+            <!-- New addition filter -->
+            <div class="filter-bar">
+                <!-- Row 1: Identifiers -->
+                <div class="filter-row">
+                    <input type="text" id="filterCardID" placeholder="Card ID">
+
+                    <select id="filterDay">
+                    <option value="" disabled selected>Select Day</option>
+                    <option value="1">Monday</option>
+                    <option value="2">Tuesday</option>
+                    <option value="3">Wednesday</option>
+                    <option value="4">Thursday</option>
+                    <option value="5">Friday</option>
+                    <option value="6">Saturday</option>
+                    <option value="0">Sunday</option>
+                    </select>
+
+                    <select id="filterDate">
+                    <option value="" disabled selected>Select Date</option>
+                    {% for d in range(1,32) %}
+                        <option value="{{ d }}">{{ d }}</option>
+                    {% endfor %}
+                    </select>
+
+                    <select id="filterMonth">
+                    <option value="" disabled selected>Select Month</option>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                    </select>
+
+                    <select id="filterYear">
+                    <option value="" disabled selected>Select Year</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    </select>
+
+                    <select id="filterBusNo">
+                    <option value="" disabled selected>Select Bus</option>
+                    <option value="Bus 1">Bus 1</option>
+                    <option value="Bus 2">Bus 2</option>
+                    <option value="Bus 3">Bus 3</option>
+                    <option value="Bus 4">Bus 4</option>
+                    </select>
+
+                    <select id="filterDeviceID">
+                    <option value="" disabled selected>Select Device</option>
+                    <option value="Device 1">Device 1</option>
+                    <option value="Device 2">Device 2</option>
+                    <option value="Device 3">Device 3</option>
+                    <option value="Device 4">Device 4</option>
+                    </select>
+                </div>
+
+                <!-- Row 2: Date Range -->
+                <div class="filter-row range">
+                    <label for="fromDate">From:</label>
+                    <input type="date" id="fromDate">
+                    <label for="toDate">To:</label>
+                    <input type="date" id="toDate">
+                </div>
+
+                <!-- Row 3: Actions -->
+                <div class="filter-actions">
+                    <button id="applyFilters">Apply Filter</button>
+                    <button id="resetFilters">Check All</button>
+                </div>
+            </div>
+
+
             <table>
 
                 <thead>
@@ -220,6 +357,8 @@
                         <th>Description</th>
                         <th>Amount</th>
                         <th>Date</th>
+                        <th>Bus No.</th>
+                        <th>Device ID</th>
                     </tr>
                 </thead>
 
@@ -233,6 +372,8 @@
                         <td>{{ r.description }}</td>
                         <td>₹{{ r.amount }}</td>
                         <td>{{ r.transaction_time }}</td>
+                        <td>{{ r.bus_no }}</td>
+                        <td>{{ r.device_id }}</td>
                     </tr>
 
                     {% endfor %}
@@ -240,7 +381,15 @@
                 </tbody>
 
             </table>
-
+            
+            <div class="pagination">
+                {% if page > 1 %}
+                <a href="/admin?page={{ page - 1 }}{% if filter_query %}&{{ filter_query }}{% endif %}">Previous</a>
+                {% endif %}
+                {% if page < total_pages %}
+                <a href="/admin?page={{ page + 1 }}{% if filter_query %}&{{ filter_query }}{% endif %}">Next</a>
+                {% endif %}
+            </div>
         </div>
 
     </main>

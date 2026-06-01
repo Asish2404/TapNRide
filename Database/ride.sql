@@ -5,6 +5,8 @@ CREATE TABLE rides (
     to_stop VARCHAR(100),
     fare DECIMAL(10,2) NOT NULL,
     ride_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    device_id VARCHAR(150),
+    bus_no VARCHAR(20),
     FOREIGN KEY (card_id) REFERENCES cards(card_id)
 );
 

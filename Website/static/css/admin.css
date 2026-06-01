@@ -1,6 +1,6 @@
 :root {
-    --bg: #020617;
-    --bg-elevated: rgba(15, 23, 42, 0.9);
+    --bg: #020818;
+    --bg-elevated: rgba(10, 18, 40, 0.75);
     --accent: #22d3ee;
     --accent2: #0ea5e9;
     --text: #e5e7eb;
@@ -17,9 +17,10 @@
 body {
     font-family: "Inter", sans-serif;
     background:
-        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.14), transparent 55%),
-        radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.16), transparent 55%),
-        #020617;
+        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(56, 189, 248, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 90% 10%, rgba(99, 102, 241, 0.1) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 60% at 50% 100%, rgba(14, 165, 233, 0.07) 0%, transparent 60%),
+        #020818;
     color: var(--text);
     min-height: 100vh;
 }
@@ -574,3 +575,117 @@ tbody tr:hover {
     }
 
 }
+
+/* new addition  - filters*/
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.filter-bar input,.filter-bar select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #1e3a5f;
+  background: #0f2f45;
+  color: #e5e7eb;
+  font-size: 13px;
+}
+.filter-bar button {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #1e3a5f;
+  background: #0f2f45;
+  color: #e5e7eb;
+  font-size: 13px;
+}
+
+.filter-bar button {
+  cursor: pointer;
+  background: #22d3ee;
+  color: #020617;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.filter-bar button:hover {
+  background: #0ea5e9;
+  color: white;
+}
+
+.filter-bar label {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 5px;
+    font-weight: 500;
+}
+
+.filter-bar input[type="date"]{
+    vertical-align: middle;
+    margin-right: 15px;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.filter-row input, .filter-row select {
+  flex: 1;
+  min-width: 120px;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.filter-row.range {
+    justify-content: center;
+}
+
+.filter-row.range input {
+    flex: none;
+    max-width: 180px;
+}
+
+select:has(option:disabled:checked) {
+    color: #7d7e81;
+}
+
+select option:not([disabled]) {
+    color: #e5e7eb;
+}
+
+/*Pagination - new*/
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.pagination a {
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: #22d3ee;      
+  color: #020617;           
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.pagination a:hover {
+  background: #0ea5e9;    
+  color: white;
+}
+
