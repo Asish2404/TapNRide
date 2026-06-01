@@ -1,6 +1,6 @@
 CREATE TABLE devices (
-    device_id VARCHAR(150) PRIMARY KEY,   
-    bus_id INT,  
+    device_id VARCHAR(150) PRIMARY KEY,
+    bus_id INT,
     FOREIGN KEY (bus_id) REFERENCES buses(bus_id)
 );
 

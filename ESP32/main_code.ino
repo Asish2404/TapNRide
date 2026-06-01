@@ -23,18 +23,18 @@ TinyGPSPlus gps;
 #define TXD2 17
 
 // ---------------- KEYPAD ----------------
-const byte ROWS = 4; 
-const byte COLS = 4; 
+const byte ROWS = 4;
+const byte COLS = 4;
 
 char keys[ROWS][COLS] = {
-  {'D','C','B','A'},
-  {'#','9','6','3'},
-  {'0','8','5','2'},
-  {'*','7','4','1'}
+  {'1','2','3','A'},
+  {'4','5','6','B'},
+  {'7','8','9','C'},
+  {'*','0','#','D'}
 };
 
-byte rowPins[ROWS] = {12, 13, 14, 15}; 
-byte colPins[COLS] = {26, 25, 33, 32}; 
+byte rowPins[ROWS] = {12, 13, 14, 15};
+byte colPins[COLS] = {26, 25, 33, 32};
 
 Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 
@@ -105,7 +105,7 @@ void loop()
             lcd.clear();
             lcd.print("Scan Card...");
         }
-        else if (key >= '0' && key <= '9')   // ✅ only numbers
+        else if (key >= '0' && key <= '9')   // only numbers
         {
             input += key;
 
@@ -124,7 +124,7 @@ void loop()
     if (!mfrc522.PICC_ReadCardSerial())
         return;
 
-    // ❌ Do NOT proceed if ID not entered
+    // Do NOT proceed if ID not entered
     if (ip == "")
     {
         Serial.println("ERROR:EMPTY_ID");
@@ -148,10 +148,10 @@ void loop()
 
     uid.toUpperCase();
 
-    // ✅ ONLY VALID OUTPUT FORMAT
+    // ONLY VALID OUTPUT FORMAT
     Serial.print(uid);
     Serial.print(",");
-    Serial.println(ip);   // 🔥 ONLY THIS PRINT
+    Serial.println(ip);
 
     // -------- BUZZER --------
     digitalWrite(BUZZER, HIGH);
@@ -173,7 +173,7 @@ void loop()
     lcd.clear();
     lcd.print("Enter ID");
 
-    ip = "";  // ✅ reset after use
+    ip = "";
 
     mfrc522.PICC_HaltA();
 }

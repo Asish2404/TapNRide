@@ -1,8 +1,8 @@
 CREATE TABLE buses (
-bus_id INT AUTO_INCREMENT PRIMARY KEY,
-bus_no VARCHAR(20),
-owner_id int,
-route VARCHAR(150)
+    bus_id INT AUTO_INCREMENT PRIMARY KEY,
+    bus_no VARCHAR(20),
+    owner_id int,
+    route VARCHAR(150)
 );
 
 -- DUMMY DATA

@@ -14,35 +14,108 @@ from datetime import datetime, timedelta
 from starlette.middleware.sessions import SessionMiddleware
 
 app = FastAPI()
-genai.configure(api_key="AQ.Ab8RN6KBqbl_0g7Vki6XgcgiALMBUKkBA87l5T8qJFIFTwaCLg")
+#ADD YOUR GOOGLE GEN AI API KEY HERE
+genai.configure(api_key="AQ.Ab8RN6LTABdT_apjKnXmLlwtXXr3Z0rImCMrIGhbkD9B6CNeDg")
 model = genai.GenerativeModel("gemini-2.5-flash")
 
+#------------------System prompt for Gen AI------------------
 SYSTEM_PROMPT = """
-You are Smart Bus Assistant.
+You are Smart Bus Assistant, an AI assistant for a Smart Bus Ticketing System.
+Your role is to help users understand how the Smart Bus service works and answer questions related to bus travel, smart cards, fares, recharges, and system usage.
 
-Project Information:
+## Smart Bus System Information
 
-- Users receive a smart card after signup.
-- Cards must be recharged before travel.
-- Recharge is done through Razorpay.
-- First scan starts a ride.
-- Second scan ends a ride.
-- Fare depends on the number of stops travelled.
+Smart Card:
 
-Stops:
-- Stop A
-- Stop B
-- Stop C
-- Stop D
+-Every registered user receives a Smart Bus Card.
+-The card must have sufficient balance before travel.
+-Users can recharge their card online.
 
-Important Rules:
-- Do not claim to know user balance.
-- Do not claim to know ride history.
-- Do not claim to know account details.
-- If asked personal information, tell the user to check the dashboard.
+Recharge Process:
 
-Answer only Smart Bus related questions.
+-Card recharges are processed through Recharge page.
+-Users can recharge using supported payment methods available in recharge page.
+-If a payment issue occurs, advise users to retry or contact support.
+
+Ride Process:
+
+-The first card scan when boarding starts a journey.
+-The second card scan when exiting ends the journey.
+-Fare is calculated automatically based on the number of stops traveled.
+
+Bus Stops:
+
+1. Stop A
+2. Stop B
+3. Stop C
+4. Stop D
+
+## Important Restrictions
+
+Never:
+
+-Claim to know a user's card balance.
+-Claim to know a user's ride history.
+-Claim to know a user's personal account details.
+-Invent transaction information.
+-Assume a recharge was successful unless explicitly confirmed by the system.
+
+If users ask about:
+
+-Card balance
+-Recharge history
+-Ride history
+-Personal account information
+
+Respond:
+"Please check your dashboard or account portal for this information."
+
+## Scope
+
+Answer only questions related to:
+
+-Smart Bus cards
+-Bus travel process
+-Recharge procedures
+-Fare calculation rules
+-Bus stops
+-Smart Bus system usage
+
+For questions unrelated to the Smart Bus system, politely respond:
+"I can only assist with Smart Bus related queries."
+
 """
+
+FAQS = {
+    "recharge": "You can recharge your SmartBus card through the Recharge page.",
+
+    "fare": "Fare is calculated based on the number of stops travelled.",
+
+    "stops": "Available stops are Stop A, Stop B, Stop C and Stop D.",
+
+    "start ride": "Tap your card once while boarding.",
+
+    "end ride": "Tap your card again before leaving the bus.",
+
+    "low balance": "Please recharge your card before travelling.",
+
+    "card": "Every user receives a SmartBus card during signup.",
+
+    "dashboard": "The dashboard shows balance, recent rides and transactions."
+}
+
+def get_faq_answer(message):
+
+    msg = message.lower()
+
+    for keyword, answer in FAQS.items():
+
+        if keyword in msg:
+
+            return answer
+
+    return None
+
 # 🔴 SESSION MIDDLEWARE
 app.add_middleware(SessionMiddleware, secret_key="supersecretkey")
 
@@ -65,7 +138,12 @@ def get_db():
     )
 
 # CHANGE-2:fare table (Matrix representation)
-fares = [[0, 8, 8, 10], [8, 0, 8, 10], [8, 8, 0, 8], [10, 10, 8, 0]]
+fares = [
+    [0, 8, 16, 24],
+    [8, 0, 8, 16],
+    [16, 8, 0, 8],
+    [24, 16, 8, 0]
+]
 
 
 # CHANGE-3: searching the fare between two stops
@@ -526,7 +604,7 @@ def scan_card(card_id: str = Form(...), keyStop: int = Form(...), device_id: str
         #active card check
         if existing_card["status"] != "active":
             return {"error": "Card is inactive"}
-            
+
         balance = existing_card["balance"]
 
         if balance <= 0:
@@ -1303,13 +1381,34 @@ async def update_profile(
 
 # Chatbot functionality
 @app.post("/chat")
-def chat(message: str = Form(...)):
+def chat(request: Request, message: str = Form(...)):
 
+    # CHECK LOGIN FIRST
+    user = request.session.get("user")
+
+    if not user:
+
+        return {
+            "reply":
+            "Please login to use the SmartBus AI Assistant."
+        }
+
+    # FAQ FOR LOGGED-IN USERS
+    faq_answer = get_faq_answer(message)
+
+    if faq_answer:
+
+        return {
+            "reply": faq_answer
+        }
+
+    # GEMINI FOR OTHER QUESTIONS
     try:
 
         prompt = (
             SYSTEM_PROMPT
-            + f"\n\nUser Question:\n{message}"
+            + "\n\nUser Question:\n"
+            + message
         )
 
         response = model.generate_content(
@@ -1320,9 +1419,9 @@ def chat(message: str = Form(...)):
             "reply": response.text
         }
 
-    except Exception as e:
+    except Exception:
 
         return {
             "reply":
-            "SmartBus Assistant is currently unavailable."
+            "Sorry, I couldn't process your question at the moment."
         }

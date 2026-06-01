@@ -9,4 +9,3 @@ CREATE TABLE rides (
     bus_no VARCHAR(20),
     FOREIGN KEY (card_id) REFERENCES cards(card_id)
 );
-
