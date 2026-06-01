@@ -1,0 +1,77 @@
+[
+  {
+    "bus_no": "DN43",
+    "route": ["Barasat", "Madhyamgram", "Airport", "Chinar Park", "Technopolis", "Sector V"],
+    "eta": "18 mins"
+  },
+  {
+    "bus_no": "DN47",
+    "route": ["Barasat", "Madhyamgram", "Airport", "Chinar Park", "Karunamoyee"],
+    "eta": "24 mins"
+  },
+  {
+    "bus_no": "S12D",
+    "route": ["Barasat", "Madhyamgram", "Ultadanga", "Karunamoyee", "Sector V"],
+    "eta": "30 mins"
+  },
+  {
+    "bus_no": "AC12",
+    "route": ["Barasat", "Airport", "New Town", "Eco Park", "Sector V"],
+    "eta": "20 mins"
+  },
+  {
+    "bus_no": "AC47",
+    "route": ["Barasat", "Airport", "New Town", "Karunamoyee"],
+    "eta": "15 mins"
+  },
+  {
+    "bus_no": "VS1",
+    "route": ["Barasat", "Madhyamgram", "Airport", "Salt Lake Stadium", "Sector V"],
+    "eta": "25 mins"
+  },
+  {
+    "bus_no": "215A",
+    "route": ["Barasat", "Hridaypur", "Madhyamgram", "Airport", "Ultadanga", "Howrah"],
+    "eta": "35 mins"
+  },
+  {
+    "bus_no": "211",
+    "route": ["Barasat", "Madhyamgram", "Airport", "Lake Town", "Shyambazar", "Esplanade"],
+    "eta": "40 mins"
+  },
+  {
+    "bus_no": "78/1",
+    "route": ["Barasat", "Airport", "Ultadanga", "Sealdah"],
+    "eta": "28 mins"
+  },
+  {
+    "bus_no": "L238",
+    "route": ["Barasat", "Airport", "New Town", "Eco Space", "Sector V"],
+    "eta": "22 mins"
+  },
+  {
+    "bus_no": "L20B",
+    "route": ["Barasat", "Madhyamgram", "Airport", "Chinar Park", "New Town"],
+    "eta": "26 mins"
+  },
+  {
+    "bus_no": "KB16",
+    "route": ["Barasat", "Airport", "Rajarhat", "New Town", "Sector V"],
+    "eta": "19 mins"
+  },
+  {
+    "bus_no": "KB22",
+    "route": ["Barasat", "Airport", "Eco Park", "Karunamoyee"],
+    "eta": "23 mins"
+  },
+  {
+    "bus_no": "ST6",
+    "route": ["Barasat", "Madhyamgram", "Airport", "Salt Lake", "Karunamoyee"],
+    "eta": "17 mins"
+  },
+  {
+    "bus_no": "WBTC1",
+    "route": ["Barasat", "Airport", "New Town", "Eco Space", "Sector V", "Karunamoyee"],
+    "eta": "14 mins"
+  }
+]

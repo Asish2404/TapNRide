@@ -1,0 +1,119 @@
+let buses = [];
+
+const sourceSelect = document.getElementById("source");
+const destinationSelect = document.getElementById("destination");
+
+async function loadBusData() {
+    try {
+        const response = await fetch("/static/data/buses.json");
+
+        if (!response.ok) {
+            throw new Error("Failed to load bus data");
+        }
+
+        buses = await response.json();
+
+        const stops = new Set();
+
+        buses.forEach(bus => {
+            bus.route.forEach(stop => {
+                stops.add(stop);
+            });
+        });
+
+        sourceSelect.innerHTML =
+            '<option value="">Select Source</option>';
+
+        destinationSelect.innerHTML =
+            '<option value="">Select Destination</option>';
+
+        stops.forEach(stop => {
+            sourceSelect.innerHTML +=
+                `<option value="${stop}">${stop}</option>`;
+
+            destinationSelect.innerHTML +=
+                `<option value="${stop}">${stop}</option>`;
+        });
+
+    } catch (error) {
+        console.error("Error loading bus data:", error);
+
+        document.getElementById("busResults").innerHTML = `
+            <div class="bus-card">
+                <h3>Error</h3>
+                <p>Could not load bus data.</p>
+            </div>
+        `;
+    }
+}
+
+function swapStops() {
+    const temp = sourceSelect.value;
+    sourceSelect.value = destinationSelect.value;
+    destinationSelect.value = temp;
+}
+
+function searchBus() {
+
+    const source = sourceSelect.value;
+    const destination = destinationSelect.value;
+
+    if (!source || !destination) {
+        alert("Please select source and destination.");
+        return;
+    }
+
+    if (source === destination) {
+        alert("Source and destination cannot be the same.");
+        return;
+    }
+
+    let html = "";
+
+    buses.forEach(bus => {
+
+        if (
+            bus.route.includes(source) &&
+            bus.route.includes(destination)
+        ) {
+
+            html += `
+                <div class="bus-card">
+                    <h3>${bus.bus_no}</h3>
+
+                    <p>
+                        <strong>Journey:</strong>
+                        ${source} → ${destination}
+                    </p>
+
+                    <p>
+                        <strong>Route:</strong>
+                        ${bus.route.join(" → ")}
+                    </p>
+
+                    <p>
+                        <strong>ETA:</strong>
+                        ${bus.eta}
+                    </p>
+
+                    <button class="search-btn">
+                        Track Bus
+                    </button>
+                </div>
+            `;
+        }
+    });
+
+    if (html === "") {
+        html = `
+            <div class="bus-card">
+                <h3>No buses found</h3>
+                <p>No buses are available on this route.</p>
+            </div>
+        `;
+    }
+
+    document.getElementById("busResults").innerHTML = html;
+}
+
+window.onload = loadBusData;

@@ -1425,3 +1425,14 @@ def chat(request: Request, message: str = Form(...)):
             "reply":
             "Sorry, I couldn't process your question at the moment."
         }
+
+
+
+@app.get("/search-bus", response_class=HTMLResponse)
+def search_bus_page(request: Request):
+
+    return templates.TemplateResponse(
+        request=request,
+        name="search_bus.html",
+        context={"request": request, "user": request.session.get("user")},
+    )
