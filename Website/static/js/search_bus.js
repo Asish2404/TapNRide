@@ -48,7 +48,12 @@ async function loadBusData() {
 }
 
 function swapStops() {
-    const temp = sourceSelect.value;
+
+    const swapBtn = document.getElementById("swapBtn");
+    swapBtn.classList.remove("swap-rotate");
+    void swapBtn.offsetWidth;
+    swapBtn.classList.add("swap-rotate");
+    let temp = sourceSelect.value;
     sourceSelect.value = destinationSelect.value;
     destinationSelect.value = temp;
 }
@@ -72,23 +77,43 @@ function searchBus() {
 
     buses.forEach(bus => {
 
-        if (
-            bus.route.includes(source) &&
-            bus.route.includes(destination)
-        ) {
-
+        if (bus.route.includes(source) && bus.route.includes(destination)) {
+            let routeDisplay;
+            if (bus.route.indexOf(source) < bus.route.indexOf(destination)) {
+                routeDisplay = bus.route.join(" → ");
+            }
+            else {
+                routeDisplay = [...bus.route].reverse().join(" → ");
+            }
             html += `
-                <div class="bus-card">
-                    <h3>🚌 ${bus.bus_no}</h3>
+            <div class="bus-card">
 
-                    <p>${source} → ${destination}</p>
+                <div class="bus-header">
 
-                    <p>Route: ${bus.route.join(" → ")}</p>
+                    <h3>
+                        🚌 ${bus.bus_no}
+                    </h3>
 
-                    <p>ETA: ${bus.eta}</p>
+                    <span class="eta">
+                        ${bus.eta}
+                    </span>
+
+                </div>
+
+                <p>
+                    <strong>Journey:</strong>
+                    ${source} → ${destination}
+                </p>
+
+                <br>
+
+                <p>
+                    <strong>Route:</strong>
+                    ${routeDisplay}
+                </p>
 
                     <button
-                        class="search-btn"
+                        class="track-btn"
                         onclick="trackBus('${bus.bus_no}')">
                         Track Bus
                     </button>

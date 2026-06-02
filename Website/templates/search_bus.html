@@ -3,24 +3,30 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Search Bus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBus Search Bus</title>
 
     <link rel="stylesheet" href="/static/css/search_bus.css">
+
     <link rel="shortcut icon" href="/static/source/SB.jpeg">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
 
+    <div class="bg-animation"></div>
+
+    <!-- NAVBAR -->
     <header class="top-nav">
 
         <div class="brand">
-
             <a href="/home">
-                <img src="/static/source/SB.jpeg" alt="SmartBus Logo" class="logo-img">
+                <img src="/static/source/SB.jpeg" alt="logo" class="logo-img">
             </a>
 
             <div class="info">
-
                 <div class="brand-text">
                     SmartBus
                 </div>
@@ -28,30 +34,27 @@
                 <div class="brand-text-sub">
                     Tap • Travel • Secure
                 </div>
-
             </div>
-
         </div>
 
         <nav class="nav-links">
 
-            <a class="link" href="/home">
+            <a href="/home" class="link">
                 Home
             </a>
 
-            <a class="link" href="/dashboard">
+            <a href="/dashboard" class="link">
                 Passenger
             </a>
 
-
-            <a class="link" href="/recharge">
+            <a href="/recharge" class="link">
                 Recharge
             </a>
 
             {% if user %}
 
             {% if user.role == "admin" %}
-            <a class="link" href="/admin">
+            <a href="/admin" class="link">
                 Admin
             </a>
             {% endif %}
@@ -90,7 +93,7 @@
 
             {% else %}
 
-            <a class="link" href="/login">
+            <a href="/login" class="link">
                 Login
             </a>
 
@@ -106,103 +109,134 @@
 
     </header>
 
+    <!-- MOBILE MENU -->
+
     <div id="mobileMenu" class="mobile-menu">
 
-        <a href="/home">
-            Home
-        </a>
-
-        <a href="/dashboard">
-            Passenger
-        </a>
-
-        <a href="/search-bus">
-            Search Bus
-        </a>
-
-        <a href="/recharge">
-            Recharge
-        </a>
+        <a href="/home">Home</a>
+        <a href="/dashboard">Passenger</a>
+        <a href="/recharge">Recharge</a>
 
         {% if user %}
 
-        <a href="/profile">
-            Profile
-        </a>
+        <a href="/profile">Profile</a>
 
         {% if user.role=="admin" %}
-        <a href="/admin">
-            Admin
-        </a>
+        <a href="/admin">Admin</a>
         {% endif %}
 
-        <a href="/logout">
-            Logout
-        </a>
+        <a href="/logout">Logout</a>
 
         {% else %}
 
-        <a href="/login">
-            Login
-        </a>
+        <a href="/login">Login</a>
 
         {% endif %}
 
     </div>
 
-    <div class="search-container">
+    <!-- MAIN -->
 
-        <h1>Find Your Bus</h1>
+    <main>
 
-        <div class="search-box">
+        <section class="hero">
 
-            <select id="source">
-                <option value="">
-                    Select Source
-                </option>
-            </select>
+            <h1>
+                Find Your Bus
+            </h1>
 
-            <button class="swap-btn" onclick="swapStops()">
-                ⇅
-            </button>
+            <p>
+                Search routes, check ETA and travel smarter
+            </p>
 
-            <select id="destination">
-                <option value="">
-                    Select Destination
-                </option>
-            </select>
+        </section>
 
-            <button onclick="searchBus()" class="search-btn">
-                Search Buses
-            </button>
+        <section class="search-container">
 
-        </div>
+            <div class="search-box">
 
-        <div id="busResults"></div>
+                <div class="input-group">
 
-    </div>
+                    <label>
+                        Source Stop
+                    </label>
+
+                    <select id="source">
+                        <option value="">
+                            Select Source
+                        </option>
+                    </select>
+
+                </div>
+
+                <button id="swapBtn" class="swap-btn" onclick="swapStops()">
+                    ⇅
+                </button>
+
+                <div class="input-group">
+
+                    <label>
+                        Destination Stop
+                    </label>
+
+                    <select id="destination">
+                        <option value="">
+                            Select Destination
+                        </option>
+                    </select>
+
+                </div>
+
+                <button class="search-btn" onclick="searchBus()">
+                    Search Buses
+                </button>
+
+            </div>
+
+        </section>
+
+        <section id="busResults"></section>
+
+    </main>
 
     <script>
+
         function toggleMenu() {
-            document.getElementById("mobileMenu").classList.toggle("show-menu");
+            document
+                .getElementById("mobileMenu")
+                .classList
+                .toggle("show-menu");
         }
 
-        const profileBtn = document.getElementById("profileBtn");
-        const dropdown = document.getElementById("dropdown");
+        const btn=
+            document.getElementById("profileBtn");
 
-        if (profileBtn) {
-            profileBtn.addEventListener("click", function (e) {
-                e.stopPropagation();
-                dropdown.style.display =
-                    dropdown.style.display === "flex"
-                        ? "none"
-                        : "flex";
-            });
+        const dropdown =
+            document.getElementById("dropdown");
 
-            document.addEventListener("click", function () {
-                dropdown.style.display = "none";
-            });
+        if (btn) {
+
+            btn.addEventListener(
+                "click",
+                function (e) {
+
+                    e.stopPropagation();
+
+                    dropdown.style.display =
+                        dropdown.style.display === "block"
+                            ? "none"
+                            : "block";
+                }
+            );
+
+            document.addEventListener(
+                "click",
+                function () {
+                    dropdown.style.display = "none";
+                }
+            );
         }
+
     </script>
 
     <script src="/static/js/search_bus.js"></script>
