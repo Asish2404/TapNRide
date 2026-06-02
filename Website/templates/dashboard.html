@@ -15,7 +15,7 @@
     <header class="top-nav">
         <div class="brand">
             <a href="/home">
-                <img src="/static/source/SB.jpeg" alt="SmartBus Logo" class="logo-img" />
+                <img src="/static/source/SB.jpeg" alt="TapNRide Logo" class="logo-img" />
             </a>
             <div class="info">
                 <div class="brand-text">
@@ -36,6 +36,9 @@
             </a>
             <a class="link" href="/recharge">
                 Recharge
+            </a>
+            <a class="link" href="/myrides">
+                My Rides
             </a>
             {% if user %}
             {% if user.role=="admin" %}
@@ -119,7 +122,7 @@
             Passenger Dashboard
         </h1>
         <p class="subtitle">
-            Check your SmartBus card balance,
+            Check your TapNRide card balance,
             view ride history,
             and manage recharges.
         </p>
@@ -218,7 +221,7 @@
         </div>
     </main>
     <footer>
-        SmartBus –
+        TapNRide –
         Tap • Travel • Secure •
         IoT Smart Bus Fare System
     </footer>

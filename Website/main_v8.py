@@ -405,6 +405,40 @@ def login_user(request: Request, email: str = Form(...), password: str = Form(..
         context={"request": request, "error": "Invalid credentials"},
     )
 
+# ------------------------------------new my rides------------------------------------------
+
+@app.get("/myrides", response_class=HTMLResponse)
+def myrides_page(request: Request):
+    user = request.session.get("user")
+    if not user:
+        return RedirectResponse("/login", status_code=303)
+        
+    return templates.TemplateResponse("myrides.html", {"request": request, "user": user})
+
+
+@app.get("/api/myrides/{card_id}")
+def myrides(card_id: str):
+    db = get_db()
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+
+    cursor.execute(
+        "SELECT from_stop, to_stop, fare, ride_time, bus_no FROM rides WHERE card_id=%s ORDER BY ride_time DESC LIMIT 4",
+        (card_id,)
+    )
+    rides = cursor.fetchall()
+
+    cursor.execute(
+        "SELECT description, amount, transaction_time, bus_no FROM transactions WHERE card_id=%s AND type='fine' ORDER BY transaction_time DESC LIMIT 4",
+        (card_id,)
+    )
+    penalties = cursor.fetchall()
+
+    cursor.close()
+    db.close()
+    return {"rides": rides, "penalties": penalties}
+
+#------------------------------------------------
+
 
 # ---------------- SCAN ----------------
 @app.post("/scan")
