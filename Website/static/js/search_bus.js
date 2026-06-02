@@ -79,24 +79,17 @@ function searchBus() {
 
             html += `
                 <div class="bus-card">
-                    <h3>${bus.bus_no}</h3>
+                    <h3>🚌 ${bus.bus_no}</h3>
 
-                    <p>
-                        <strong>Journey:</strong>
-                        ${source} → ${destination}
-                    </p>
+                    <p>${source} → ${destination}</p>
 
-                    <p>
-                        <strong>Route:</strong>
-                        ${bus.route.join(" → ")}
-                    </p>
+                    <p>Route: ${bus.route.join(" → ")}</p>
 
-                    <p>
-                        <strong>ETA:</strong>
-                        ${bus.eta}
-                    </p>
+                    <p>ETA: ${bus.eta}</p>
 
-                    <button class="search-btn">
+                    <button
+                        class="search-btn"
+                        onclick="trackBus('${bus.bus_no}')">
                         Track Bus
                     </button>
                 </div>
@@ -117,3 +110,10 @@ function searchBus() {
 }
 
 window.onload = loadBusData;
+
+function trackBus(busNo) {
+
+    window.location.href =
+        `/track-bus?bus=${busNo}`;
+
+}

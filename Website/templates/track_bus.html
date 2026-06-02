@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="SmartCity Bus Tracker — Live Tracking Dashboard" />
+    <title>Track Bus | SmartCity Transit</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <!-- App Stylesheet -->
+    <link rel="stylesheet" href="/static/css/track_bus.css" />
+
+
+    <!-- LEAFLET.JS — Uncomment when ready for live map integration -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+</head>
+
+<body>
+
+    <!-- ══════════════════════════════════════════════════════════
+     ANIMATED BACKGROUND
+     ══════════════════════════════════════════════════════════ -->
+    <div class="bg-canvas" aria-hidden="true">
+        <div class="bg-gradient-orb orb-1"></div>
+        <div class="bg-gradient-orb orb-2"></div>
+        <div class="bg-gradient-orb orb-3"></div>
+        <div class="bg-grid"></div>
+        <div class="bg-scanline"></div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+     NAVBAR
+     ══════════════════════════════════════════════════════════ -->
+    <nav class="navbar" role="navigation" aria-label="Main Navigation">
+        <div class="brand">
+
+            <a href="/home">
+                <img src="/static/source/SB.jpeg" alt="SmartBus Logo" class="logo-img">
+            </a>
+
+            <div class="info">
+
+                <div class="brand-text">
+                    SmartBus
+                </div>
+
+                <div class="brand-text-sub">
+                    Tap • Travel • Secure
+                </div>
+
+            </div>
+
+        </div>
+
+        <ul class="nav-links" id="nav-links">
+            <li><a href="/"> Home</a></li>
+            <li><a href="/dashboard"> Passenger</a></li>
+            <li><a href="/search-bus""> Search Bus</a></li>
+            <li><a href=" /track_bus" class="active"> Track Bus</a></li>
+            <li><a href="/recharge">Recharge</a></li>
+            <li><a href="/profile"> Profile</a></li>
+        </ul>
+
+        <div class="nav-status">
+            <div class="status-dot"></div>
+            <span>LIVE</span>
+        </div>
+
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- ══════════════════════════════════════════════════════════
+     MAIN PAGE
+     ══════════════════════════════════════════════════════════ -->
+    <main class="page-container">
+
+        <!-- ── PAGE HEADER ── -->
+        <header class="page-header">
+            <div class="page-title-block">
+                <div class="page-breadcrumb">SmartCity Transit › <span>Live Tracker</span></div>
+                <h1 class="page-title">Bus Live <span class="highlight">Tracker</span></h1>
+                <p class="page-subtitle">Real-time bus position, ETA, occupancy &amp; route analytics</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-ghost" id="refresh-btn" title="Refresh all data">
+                    <i class="fas fa-rotate-right"></i> Refresh
+                </button>
+                <a href="/search-bus" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Find Another Bus
+                </a>
+            </div>
+        </header>
+
+        <!-- ── SEARCH BAR ── -->
+        <div class="bus-search-bar">
+            <div class="search-input-wrapper">
+                <i class="fas fa-bus search-input-icon"></i>
+                <input type="text" class="search-input" id="bus-search-input"
+                    placeholder="Enter Bus Number (e.g. MH-01-4521) or Route ID (e.g. RT-42)" autocomplete="off"
+                    spellcheck="false" />
+            </div>
+            <button class="btn btn-primary" id="bus-search-btn">
+                <i class="fas fa-location-dot"></i> Track
+            </button>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════
+       TOP ROW: BUS INFO | LIVE TRACKING | MAP
+       ══════════════════════════════════════════════════ -->
+        <div class="dashboard-grid">
+            <div class="grid-top">
+
+                <!-- ── BUS INFORMATION CARD ── -->
+                <div class="glass-card bus-info-card animate-in delay-1" data-skeleton>
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <div class="card-icon"><i class="fas fa-id-card"></i></div>
+                            <span class="card-title">Bus Information</span>
+                        </div>
+                        <span class="card-badge badge-ac" id="bi-type-chip">❄ AC</span>
+                    </div>
+
+                    <div class="bus-number-hero">
+                        <div class="bus-number-tag" id="bi-number">MH-01-4521</div>
+                        <div class="bus-route-tag" id="bi-route">Andheri ↔ CSMT</div>
+                        <div class="bus-type-chips">
+                            <span class="chip chip-ac">AC Express</span>
+                            <span class="chip chip-running">🟢 Running</span>
+                            <span class="chip chip-express">Route RT-42</span>
+                        </div>
+                    </div>
+
+                    <div class="info-rows">
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-hashtag"></i> Reg. No.</span>
+                            <span class="info-value mono" id="bi-regnum">MH01EZ4521</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-user-tie"></i> Driver</span>
+                            <span class="info-value" id="bi-driver">Ramesh Kumar</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-phone"></i> Contact</span>
+                            <span class="info-value clickable" id="bi-contact">+91 98765 43210</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-circle-check"></i> Status</span>
+                            <span class="info-value" id="bi-status" style="color:var(--green-bright)">Running</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-route"></i> Route</span>
+                            <span class="info-value" id="bi-routename">Andheri ↔ CSMT</span>
+                        </div>
+                    </div>
+
+                    <div class="update-bar">
+                        <span>Last Updated</span>
+                        <span id="last-updated">—</span>
+                    </div>
+                </div>
+
+                <!-- ── LIVE TRACKING CARD ── -->
+                <div class="glass-card live-tracking-card animate-in delay-2" data-skeleton>
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <div class="card-icon"><i class="fas fa-satellite-dish"></i></div>
+                            <span class="card-title">Live Tracking</span>
+                        </div>
+                        <span class="card-badge badge-live">LIVE</span>
+                    </div>
+
+                    <div class="live-tracking-grid">
+                        <!-- Current Location -->
+                        <div class="tracking-metric">
+                            <div class="tm-label"> Current Location</div>
+                            <div class="tm-value neon" id="lt-location" style="font-size:1rem;">Dadar West</div>
+                        </div>
+
+                        <!-- Next Stop -->
+                        <div class="tracking-metric">
+                            <div class="tm-label"> Next Stop</div>
+                            <div class="tm-value" id="lt-nextstop" style="font-size:1rem;">Matunga Rd</div>
+                            <div class="tm-unit">ETA <span id="lt-eta-next" style="color:var(--neon)">6 min</span></div>
+                        </div>
+
+                        <!-- ETA Destination -->
+                        <div class="tracking-metric">
+                            <div class="tm-label"> ETA Destination</div>
+                            <div class="tm-value green" id="lt-eta">28 min</div>
+                            <div class="tm-unit" id="lt-destination">CSMT</div>
+                        </div>
+
+                        <!-- Distance Remaining -->
+                        <div class="tracking-metric">
+                            <div class="tm-label"> Distance Left</div>
+                            <div class="tm-value neon" id="lt-distance">8.4 km</div>
+                        </div>
+
+                        <!-- Current Speed -->
+                        <div class="tracking-metric">
+                            <div class="tm-label"> Speed</div>
+                            <div class="tm-value amber" id="lt-speed">32</div>
+                            <div class="tm-unit">km/h</div>
+                        </div>
+
+                        <!-- Traffic -->
+                        <div class="tracking-metric">
+                            <div class="tm-label"> Traffic</div>
+                            <div class="tm-value amber" id="lt-traffic" style="font-size:1rem;">Moderate</div>
+                        </div>
+
+                        <!-- Delay -->
+                        <div class="tracking-metric">
+                            <div class="tm-label">Delay Status</div>
+                            <div class="tm-value amber" id="lt-delay" style="font-size:1rem;">4 min late</div>
+                        </div>
+
+                        <!-- Last Updated -->
+                        <div class="tracking-metric">
+                            <div class="tm-label"> Last Update</div>
+                            <div class="tm-value" id="lt-updated" style="font-size:0.95rem;">—</div>
+                        </div>
+                    </div>
+
+                    <div class="tracking-alert">
+                        <i class="fas fa-triangle-exclamation"></i>
+                        <span>Moderate traffic detected near Matunga — expect minor delays</span>
+                    </div>
+                </div>
+
+                <!-- ── MAP CARD ── -->
+                <div class="glass-card map-card animate-in delay-3">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <div class="card-icon"><i class="fas fa-map"></i></div>
+                            <span class="card-title">Live Map</span>
+                        </div>
+                        <span class="card-badge badge-live">GPS</span>
+                    </div>
+
+                    <div class="map-container" id="decorative-map">
+                        <!-- Decorative map (replaced by Leaflet when ready) -->
+                        <div class="map-bg"></div>
+                        <div class="map-road road-h1"></div>
+                        <div class="map-road road-h2"></div>
+                        <div class="map-road road-v1"></div>
+                        <div class="map-road road-v2"></div>
+                        <div class="map-road road-d1"></div>
+
+                        <!-- Route polyline -->
+                        <div class="map-route-line"></div>
+
+                        <!-- Stop markers -->
+                        <div class="stop-marker stop-done" title="Andheri Station">
+                            <div class="stop-tooltip">Andheri Stn.</div>
+                        </div>
+                        <div class="stop-marker stop-done-2" title="Bandra Station">
+                            <div class="stop-tooltip">Bandra Stn.</div>
+                        </div>
+                        <div class="stop-marker stop-current" title="Dadar West — Current">
+                            <div class="stop-tooltip">Dadar West</div>
+                        </div>
+                        <div class="stop-marker stop-next" title="Matunga Road">
+                            <div class="stop-tooltip">Matunga Rd</div>
+                        </div>
+                        <div class="stop-marker stop-future" title="CSMT">
+                            <div class="stop-tooltip"> CSMT</div>
+                        </div>
+
+                        <!-- Animated bus marker -->
+                        <div class="bus-marker">
+                            <div class="bus-marker-inner">🚌</div>
+                            <div class="bus-marker-label" id="lt-coords">19.0189°N, 72.8438°E</div>
+                        </div>
+
+                        <!-- Map Controls -->
+                        <div class="map-controls">
+                            <button class="map-ctrl-btn" id="map-center" title="Center on bus">
+                                <i class="fas fa-crosshairs"></i>
+                            </button>
+                            <button class="map-ctrl-btn" title="Zoom In">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="map-ctrl-btn" title="Zoom Out">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button class="map-ctrl-btn" id="map-refresh" title="Refresh location">
+                                <i class="fas fa-rotate-right"></i>
+                            </button>
+                        </div>
+
+                        <div class="map-leaflet-badge">🗺 Leaflet.js Ready | OpenStreetMap</div>
+                        <div class="map-coords" id="map-coords">19.0189°N, 72.8438°E</div>
+                    </div>
+
+                    <!-- Leaflet container (hidden until Leaflet is loaded) -->
+                    <div id="leaflet-map" style="display:none;height:340px;width:100%;"></div>
+                </div>
+            </div><!-- /grid-top -->
+
+            <!-- ══════════════════════════════════════════════════
+         MID ROW: ROUTE TIMELINE | OCCUPANCY
+         ══════════════════════════════════════════════════ -->
+            <div class="grid-mid">
+
+                <!-- ── ROUTE TIMELINE ── -->
+                <div class="glass-card timeline-card animate-in delay-2" data-skeleton>
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <div class="card-icon"><i class="fas fa-timeline"></i></div>
+                            <span class="card-title">Route Timeline</span>
+                        </div>
+                        <span class="card-badge badge-live">14 STOPS</span>
+                    </div>
+
+                    <div class="timeline-scroll" id="route-timeline">
+                        <!-- Dynamically rendered by track_bus.js → Render.routeTimeline() -->
+                        <div class="skeleton" style="height:60px;margin:0 1.5rem 1rem;"></div>
+                        <div class="skeleton" style="height:60px;margin:0 1.5rem 1rem;"></div>
+                        <div class="skeleton" style="height:60px;margin:0 1.5rem 1rem;"></div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: OCCUPANCY + PASSENGER ACTIONS -->
+                <div style="display:flex;flex-direction:column;gap:1.25rem;">
+
+                    <!-- ── OCCUPANCY CARD ── -->
+                    <div class="glass-card occupancy-card animate-in delay-3" data-skeleton>
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <div class="card-icon"><i class="fas fa-people-group"></i></div>
+                                <span class="card-title">Seat Occupancy</span>
+                            </div>
+                            <span class="card-badge"
+                                style="background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);color:var(--amber);"
+                                id="occ-crowd">Moderate</span>
+                        </div>
+
+                        <div class="occupancy-visual">
+                            <div class="occupancy-ring-section">
+                                <!-- SVG Ring -->
+                                <div class="ring-wrapper">
+                                    <svg class="ring-svg" viewBox="0 0 100 100" width="120" height="120">
+                                        <defs>
+                                            <linearGradient id="occupancyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stop-color="#0ea5e9" />
+                                                <stop offset="100%" stop-color="#38bdf8" />
+                                            </linearGradient>
+                                        </defs>
+                                        <circle class="ring-track" cx="50" cy="50" r="45" />
+                                        <circle class="ring-fill" id="occ-ring-fill" cx="50" cy="50" r="45" />
+                                    </svg>
+                                    <div class="ring-center">
+                                        <span class="ring-percent" id="occ-ring-pct">69%</span>
+                                        <span class="ring-label">Occupied</span>
+                                    </div>
+                                </div>
+
+                                <!-- Stats -->
+                                <div class="occupancy-stats">
+                                    <div class="occ-stat">
+                                        <span class="occ-stat-label">Seats Filled</span>
+                                        <span class="occ-stat-val amber" id="occ-filled">36</span>
+                                        <div class="occ-bar">
+                                            <div class="occ-bar-fill amber" id="occ-bar-filled" style="width:0%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="occ-stat">
+                                        <span class="occ-stat-label">Available Seats</span>
+                                        <span class="occ-stat-val green" id="occ-available">16</span>
+                                    </div>
+                                    <div class="occ-stat">
+                                        <span class="occ-stat-label">Total Capacity</span>
+                                        <span class="occ-stat-val" id="occ-total"
+                                            style="color:var(--text-secondary)">52</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Crowd Level Bar -->
+                            <div class="crowd-level-bar">
+                                <div class="crowd-label-row">
+                                    <span class="crowd-label">Crowd Level</span>
+                                    <span class="crowd-indicator crowd-moderate" id="occ-percent">69%</span>
+                                </div>
+                                <div class="crowd-full-bar">
+                                    <div class="crowd-fill" id="crowd-bar-fill" style="width:0%">
+                                        <div class="crowd-cursor"></div>
+                                    </div>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;margin-top:4px;">
+                                    <span
+                                        style="font-size:0.6rem;color:var(--green-bright);font-family:var(--font-mono)">Empty</span>
+                                    <span
+                                        style="font-size:0.6rem;color:var(--amber);font-family:var(--font-mono)">Moderate</span>
+                                    <span
+                                        style="font-size:0.6rem;color:var(--red);font-family:var(--font-mono)">Full</span>
+                                </div>
+                            </div>
+
+                            <!-- Next stop prediction -->
+                            <div class="tracking-alert success" style="margin:0.75rem 0 0;">
+                                <i class="fas fa-brain"></i>
+                                <span>AI Prediction: <strong id="occ-predicted">78%</strong> occupancy at next
+                                    stop</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── PASSENGER ACTIONS CARD ── -->
+                    <div class="glass-card actions-card animate-in delay-4">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <div class="card-icon"><i class="fas fa-hand-pointer"></i></div>
+                                <span class="card-title">Passenger Actions</span>
+                            </div>
+                        </div>
+
+                        <div class="actions-grid">
+                            <button class="action-btn" id="action-notify" title="Notify when bus arrives">
+                                <i class="fas fa-bell action-icon"></i>
+                                <span class="action-label">Notify<br>On Arrival</span>
+                            </button>
+
+                            <button class="action-btn" id="action-share" title="Share live location">
+                                <i class="fas fa-share-nodes action-icon"></i>
+                                <span class="action-label">Share<br>Location</span>
+                            </button>
+
+                            <button class="action-btn" id="action-save" title="Save this route">
+                                <i class="fas fa-bookmark action-icon"></i>
+                                <span class="action-label">Save<br>Route</span>
+                            </button>
+
+                            <button class="action-btn call" id="action-call" title="Call driver">
+                                <i class="fas fa-phone action-icon"></i>
+                                <span class="action-label">Call<br>Driver</span>
+                            </button>
+
+                            <button class="action-btn emergency" id="action-emergency" style="grid-column:1/-1;"
+                                title="Emergency contact">
+                                <i class="fas fa-triangle-exclamation action-icon"></i>
+                                <span class="action-label">Emergency Contact / Helpline</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div><!-- /right col -->
+            </div><!-- /grid-mid -->
+
+            <!-- ══════════════════════════════════════════════════
+         SMART CITY ANALYTICS KPI CARDS
+         ══════════════════════════════════════════════════ -->
+            <div class="analytics-section-title">
+                <i class="fas fa-city" style="color:var(--neon)"></i>
+                Smart City Analytics — Today's Performance
+            </div>
+
+            <div class="grid-bottom">
+
+                <!-- KPI: Passengers -->
+                <div class="glass-card stat-card animate-in delay-1">
+                    <div class="stat-icon-row">
+                        <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+                        <span class="stat-trend trend-up">↑ 12%</span>
+                    </div>
+                    <div class="stat-value" id="sc-passengers">2847</div>
+                    <div class="stat-label">Today's Passengers</div>
+                    <div class="stat-sparkline">
+                        <svg id="spark-passengers"></svg>
+                    </div>
+                </div>
+
+                <!-- KPI: Trips -->
+                <div class="glass-card stat-card animate-in delay-2">
+                    <div class="stat-icon-row">
+                        <div class="stat-icon green"><i class="fas fa-route"></i></div>
+                        <span class="stat-trend trend-up">↑ 2</span>
+                    </div>
+                    <div class="stat-value" id="sc-trips">18</div>
+                    <div class="stat-label">Trips Completed</div>
+                    <div class="stat-sparkline">
+                        <svg id="spark-trips"></svg>
+                    </div>
+                </div>
+
+                <!-- KPI: Distance -->
+                <div class="glass-card stat-card animate-in delay-3">
+                    <div class="stat-icon-row">
+                        <div class="stat-icon purple"><i class="fas fa-road"></i></div>
+                        <span class="stat-trend trend-up">+62 km</span>
+                    </div>
+                    <div class="stat-value" id="sc-distance">742</div>
+                    <div class="stat-label">Distance (km)</div>
+                    <div class="stat-sparkline">
+                        <svg id="spark-distance"></svg>
+                    </div>
+                </div>
+
+                <!-- KPI: Avg Delay -->
+                <div class="glass-card stat-card animate-in delay-4">
+                    <div class="stat-icon-row">
+                        <div class="stat-icon amber"><i class="fas fa-clock"></i></div>
+                        <span class="stat-trend trend-down">↓ 0.6</span>
+                    </div>
+                    <div class="stat-value" id="sc-delay">4</div>
+                    <div class="stat-label">Avg Delay (min)</div>
+                    <div class="stat-sparkline">
+                        <svg id="spark-delay"></svg>
+                    </div>
+                </div>
+
+            </div><!-- /grid-bottom -->
+
+            <!-- ══════════════════════════════════════════════════
+         AI PREDICTIONS + HEALTH + PERFORMANCE
+         ══════════════════════════════════════════════════ -->
+            <div class="analytics-section-title">
+                <i class="fas fa-microchip" style="color:var(--neon)"></i>
+                Advanced Intelligence &amp; Bus Health
+            </div>
+
+            <div class="grid-analytics">
+
+                <!-- ── AI PREDICTIONS ── -->
+                <div class="glass-card prediction-card animate-in delay-1">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <div class="card-icon"><i class="fas fa-brain"></i></div>
+                            <span class="card-title">AI Predictions</span>
+                        </div>
+                        <span class="card-badge"
+                            style="background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);color:var(--purple)">ML
+                            MODEL</span>
+                    </div>
+
+                    <div class="prediction-items">
+
+                        <div class="pred-item">
+                            <div class="pred-icon-wrap blue"><i class="fas fa-people-group"></i></div>
+                            <div class="pred-content">
+                                <div class="pred-label">Occupancy in 15 min</div>
+                                <div class="pred-bar-wrap">
+                                    <div class="pred-bar blue" id="pred-occ-bar" style="width:0%"></div>
+                                </div>
+                            </div>
+                            <span class="pred-val" id="pred-occ-val" style="color:var(--neon)">82%</span>
+                        </div>
+
+                        <div class="pred-item">
+                            <div class="pred-icon-wrap amber"><i class="fas fa-clock"></i></div>
+                            <div class="pred-content">
+                                <div class="pred-label">Delay Probability</div>
+                                <div class="pred-bar-wrap">
+                                    <div class="pred-bar amber" id="pred-delay-bar" style="width:0%"></div>
+                                </div>
+                            </div>
+                            <span class="pred-val" id="pred-delay-val" style="color:var(--amber)">38%</span>
+                        </div>
+
+                        <div class="pred-item">
+                            <div class="pred-icon-wrap purple"><i class="fas fa-car-burst"></i></div>
+                            <div class="pred-content">
+                                <div class="pred-label">Traffic Severity</div>
+                                <div class="pred-bar-wrap">
+                                    <div class="pred-bar purple" id="pred-traffic-bar" style="width:0%"></div>
+                                </div>
+                            </div>
+                            <span class="pred-val" id="pred-traffic-val" style="color:var(--purple)">65%</span>
+                        </div>
+
+                        <div class="pred-item">
+                            <div class="pred-icon-wrap green"><i class="fas fa-bullseye"></i></div>
+                            <div class="pred-content">
+                                <div class="pred-label">ETA Confidence</div>
+                                <div class="pred-bar-wrap">
+                                    <div class="pred-bar green" id="pred-confidence-bar" style="width:0%"></div>
+                                </div>
+                            </div>
+                            <span class="pred-val" id="pred-confidence-val" style="color:var(--green-bright)">91%</span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ── BUS HEALTH ── -->
+                <div class="glass-card health-card animate-in delay-2">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <div class="card-icon"><i class="fas fa-heart-pulse"></i></div>
+                            <span class="card-title">Bus Health</span>
+                        </div>
+                        <span class="card-badge"
+                            style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);color:var(--green-bright)">HEALTHY</span>
+                    </div>
+
+                    <div class="health-score-hero">
+                        <div>
+                            <div class="health-score-num" id="health-score">91</div>
+                            <div class="health-score-sub">Health Score / 100</div>
+                        </div>
+                        <div style="flex:1">
+                            <div class="occ-bar" style="height:8px;margin-bottom:6px;">
+                                <div class="occ-bar-fill green" style="width:91%"></div>
+                            </div>
+                            <div style="font-size:0.7rem;color:var(--text-muted);font-family:var(--font-mono)">Excellent
+                                Condition</div>
+                        </div>
+                    </div>
+
+                    <div class="health-indicators">
+                        <div class="health-ind">
+                            <div class="health-ind-dot h-green"></div>
+                            <span class="health-ind-name">Engine</span>
+                            <span class="health-ind-val">Good</span>
+                        </div>
+                        <div class="health-ind">
+                            <div class="health-ind-dot h-green"></div>
+                            <span class="health-ind-name">Brakes</span>
+                            <span class="health-ind-val">Good</span>
+                        </div>
+                        <div class="health-ind">
+                            <div class="health-ind-dot h-green"></div>
+                            <span class="health-ind-name">AC System</span>
+                            <span class="health-ind-val">Good</span>
+                        </div>
+                        <div class="health-ind">
+                            <div class="health-ind-dot h-amber"></div>
+                            <span class="health-ind-name">Tires</span>
+                            <span class="health-ind-val">Check Due</span>
+                        </div>
+                        <div class="health-ind">
+                            <div class="health-ind-dot h-green"></div>
+                            <span class="health-ind-name">Fuel Level</span>
+                            <span class="health-ind-val" id="health-fuel">74%</span>
+                        </div>
+
+                        <!-- Fuel Bar -->
+                        <div style="margin-top:4px;">
+                            <div class="occ-bar">
+                                <div class="occ-bar-fill green" id="health-fuel-bar" style="width:0%"></div>
+                            </div>
+                        </div>
+                        <div
+                            style="font-size:0.65rem;color:var(--text-muted);font-family:var(--font-mono);margin-top:2px;">
+                            Last Serviced: 5 days ago
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── ROUTE PERFORMANCE ── -->
+                <div class="glass-card perf-card animate-in delay-3">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                            <span class="card-title">Route Performance</span>
+                        </div>
+                        <span class="card-badge badge-ac">TODAY</span>
+                    </div>
+
+                    <div class="perf-metrics">
+                        <div class="perf-metric">
+                            <div class="perf-val" style="color:var(--neon)" id="sc-efficiency">88%</div>
+                            <div class="perf-label">Efficiency</div>
+                        </div>
+                        <div class="perf-metric">
+                            <div class="perf-val" style="color:var(--green-bright)" id="sc-fuel">12.4L</div>
+                            <div class="perf-label">Fuel Saved</div>
+                        </div>
+                        <div class="perf-metric">
+                            <div class="perf-val" style="color:var(--purple)">76%</div>
+                            <div class="perf-label">On-Time Rate</div>
+                        </div>
+                        <div class="perf-metric">
+                            <div class="perf-val" style="color:var(--amber)">31.6</div>
+                            <div class="perf-label">CO₂ Offset (kg)</div>
+                        </div>
+                    </div>
+
+                    <div style="padding:1rem 1.5rem 0;">
+                        <!-- Route score bar -->
+                        <div style="margin-bottom:0.75rem;">
+                            <div class="crowd-label-row">
+                                <span class="crowd-label">Route Performance Score</span>
+                                <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--neon)">88 /
+                                    100</span>
+                            </div>
+                            <div class="crowd-full-bar">
+                                <div class="crowd-fill"
+                                    style="width:88%;background:linear-gradient(90deg,#0ea5e9,#38bdf8);box-shadow:0 0 8px rgba(56,189,248,0.5);">
+                                    <div class="crowd-cursor"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- On-time rate bar -->
+                        <div>
+                            <div class="crowd-label-row">
+                                <span class="crowd-label">On-Time Arrival Rate</span>
+                                <span
+                                    style="font-family:var(--font-mono);font-size:0.72rem;color:var(--green-bright)">76%</span>
+                            </div>
+                            <div class="crowd-full-bar">
+                                <div class="crowd-fill"
+                                    style="width:76%;background:linear-gradient(90deg,#059669,#10b981);box-shadow:0 0 8px rgba(16,185,129,0.5);">
+                                    <div class="crowd-cursor"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /grid-analytics -->
+
+        </div><!-- /dashboard-grid -->
+    </main><!-- /page-container -->
+
+    <!-- ══════════════════════════════════════════════════════════
+     TOAST NOTIFICATION CONTAINER
+     ══════════════════════════════════════════════════════════ -->
+    <div class="toast-container" id="toast-container" role="region" aria-label="Notifications"></div>
+
+    <!-- ══════════════════════════════════════════════════════════
+     SCRIPTS
+     ══════════════════════════════════════════════════════════ -->
+    <script src="/static/js/track_bus.js"></script>
+
+</body>
+
+</html>
