@@ -410,11 +410,18 @@ def login_user(request: Request, email: str = Form(...), password: str = Form(..
 @app.get("/myrides", response_class=HTMLResponse)
 def myrides_page(request: Request):
     user = request.session.get("user")
+
     if not user:
         return RedirectResponse("/login", status_code=303)
-        
-    return templates.TemplateResponse("myrides.html", {"request": request, "user": user})
 
+    return templates.TemplateResponse(
+        request=request,
+        name="myrides.html",
+        context={
+            "request": request,
+            "user": user
+        }
+    )
 
 @app.get("/api/myrides/{card_id}")
 def myrides(card_id: str):
