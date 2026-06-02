@@ -13,25 +13,25 @@ const CONFIG = {
    STOP COORDINATES (Kolkata)
    ═══════════════════════════════════════════════════ */
 const STOP_COORDS = {
-    'Barasat':       [22.7215, 88.4798],
-    'Madhyamgram':   [22.6984, 88.4627],
-    'Airport':       [22.6547, 88.4469],
-    'Chinar Park':   [22.6205, 88.4717],
-    'Technopolis':   [22.6057, 88.4699],
-    'Sector V':      [22.5958, 88.4311],
-    'Karunamoyee':   [22.5880, 88.4180],
-    'Ultadanga':     [22.6010, 88.3940],
-    'New Town':      [22.5790, 88.4790],
-    'Eco Park':      [22.5820, 88.4900],
-    'Eco Space':     [22.5830, 88.4850],
-    'Sealdah':       [22.5667, 88.3711],
-    'Howrah':        [22.5851, 88.3387],
-    'Esplanade':     [22.5645, 88.3521],
-    'Lake Town':     [22.5850, 88.3920],
-    'Shyambazar':    [22.5940, 88.3660],
-    'Hridaypur':     [22.7100, 88.4500],
-    'Rajarhat':      [22.5850, 88.4850],
-    'Salt Lake':     [22.5800, 88.4100],
+    'Barasat': [22.7215, 88.4798],
+    'Madhyamgram': [22.6984, 88.4627],
+    'Airport': [22.6547, 88.4469],
+    'Chinar Park': [22.6205, 88.4717],
+    'Technopolis': [22.6057, 88.4699],
+    'Sector V': [22.5958, 88.4311],
+    'Karunamoyee': [22.5880, 88.4180],
+    'Ultadanga': [22.6010, 88.3940],
+    'New Town': [22.5790, 88.4790],
+    'Eco Park': [22.5820, 88.4900],
+    'Eco Space': [22.5830, 88.4850],
+    'Sealdah': [22.5667, 88.3711],
+    'Howrah': [22.5851, 88.3387],
+    'Esplanade': [22.5645, 88.3521],
+    'Lake Town': [22.5850, 88.3920],
+    'Shyambazar': [22.5940, 88.3660],
+    'Hridaypur': [22.7100, 88.4500],
+    'Rajarhat': [22.5850, 88.4850],
+    'Salt Lake': [22.5800, 88.4100],
     'Salt Lake Stadium': [22.5716, 88.4100]
 };
 
@@ -61,21 +61,21 @@ async function loadBusesRegistry() {
     } catch {
         console.warn('[Registry] Using built-in fallback');
         State.busesRegistry = [
-            { bus_no: 'DN43',  route: ['Barasat','Madhyamgram','Airport','Chinar Park','Technopolis','Sector V'], eta: '18 mins' },
-            { bus_no: 'DN47',  route: ['Barasat','Madhyamgram','Airport','Chinar Park','Karunamoyee'], eta: '24 mins' },
-            { bus_no: 'S12D',  route: ['Barasat','Madhyamgram','Ultadanga','Karunamoyee','Sector V'], eta: '30 mins' },
-            { bus_no: 'AC12',  route: ['Barasat','Airport','New Town','Eco Park','Sector V'], eta: '20 mins' },
-            { bus_no: 'AC47',  route: ['Barasat','Airport','New Town','Karunamoyee'], eta: '15 mins' },
-            { bus_no: 'VS1',   route: ['Barasat','Madhyamgram','Airport','Salt Lake Stadium','Sector V'], eta: '25 mins' },
-            { bus_no: '215A',  route: ['Barasat','Hridaypur','Madhyamgram','Airport','Ultadanga','Howrah'], eta: '35 mins' },
-            { bus_no: '211',   route: ['Barasat','Madhyamgram','Airport','Lake Town','Shyambazar','Esplanade'], eta: '40 mins' },
-            { bus_no: '78/1',  route: ['Barasat','Airport','Ultadanga','Sealdah'], eta: '28 mins' },
-            { bus_no: 'L238',  route: ['Barasat','Airport','New Town','Eco Space','Sector V'], eta: '22 mins' },
-            { bus_no: 'L20B',  route: ['Barasat','Madhyamgram','Airport','Chinar Park','New Town'], eta: '26 mins' },
-            { bus_no: 'KB16',  route: ['Barasat','Airport','Rajarhat','New Town','Sector V'], eta: '19 mins' },
-            { bus_no: 'KB22',  route: ['Barasat','Airport','Eco Park','Karunamoyee'], eta: '23 mins' },
-            { bus_no: 'ST6',   route: ['Barasat','Madhyamgram','Airport','Salt Lake','Karunamoyee'], eta: '17 mins' },
-            { bus_no: 'WBTC1', route: ['Barasat','Airport','New Town','Eco Space','Sector V','Karunamoyee'], eta: '14 mins' }
+            { bus_no: 'DN43', route: ['Barasat', 'Madhyamgram', 'Airport', 'Chinar Park', 'Technopolis', 'Sector V'], eta: '18 mins' },
+            { bus_no: 'DN47', route: ['Barasat', 'Madhyamgram', 'Airport', 'Chinar Park', 'Karunamoyee'], eta: '24 mins' },
+            { bus_no: 'S12D', route: ['Barasat', 'Madhyamgram', 'Ultadanga', 'Karunamoyee', 'Sector V'], eta: '30 mins' },
+            { bus_no: 'AC12', route: ['Barasat', 'Airport', 'New Town', 'Eco Park', 'Sector V'], eta: '20 mins' },
+            { bus_no: 'AC47', route: ['Barasat', 'Airport', 'New Town', 'Karunamoyee'], eta: '15 mins' },
+            { bus_no: 'VS1', route: ['Barasat', 'Madhyamgram', 'Airport', 'Salt Lake Stadium', 'Sector V'], eta: '25 mins' },
+            { bus_no: '215A', route: ['Barasat', 'Hridaypur', 'Madhyamgram', 'Airport', 'Ultadanga', 'Howrah'], eta: '35 mins' },
+            { bus_no: '211', route: ['Barasat', 'Madhyamgram', 'Airport', 'Lake Town', 'Shyambazar', 'Esplanade'], eta: '40 mins' },
+            { bus_no: '78/1', route: ['Barasat', 'Airport', 'Ultadanga', 'Sealdah'], eta: '28 mins' },
+            { bus_no: 'L238', route: ['Barasat', 'Airport', 'New Town', 'Eco Space', 'Sector V'], eta: '22 mins' },
+            { bus_no: 'L20B', route: ['Barasat', 'Madhyamgram', 'Airport', 'Chinar Park', 'New Town'], eta: '26 mins' },
+            { bus_no: 'KB16', route: ['Barasat', 'Airport', 'Rajarhat', 'New Town', 'Sector V'], eta: '19 mins' },
+            { bus_no: 'KB22', route: ['Barasat', 'Airport', 'Eco Park', 'Karunamoyee'], eta: '23 mins' },
+            { bus_no: 'ST6', route: ['Barasat', 'Madhyamgram', 'Airport', 'Salt Lake', 'Karunamoyee'], eta: '17 mins' },
+            { bus_no: 'WBTC1', route: ['Barasat', 'Airport', 'New Town', 'Eco Space', 'Sector V', 'Karunamoyee'], eta: '14 mins' }
         ];
     }
     console.log(`[Registry] ${State.busesRegistry.length} buses loaded`);
@@ -252,7 +252,7 @@ const Render = {
         if (trafficEl) {
             trafficEl.style.color =
                 data.traffic === 'Heavy' ? 'var(--red)' :
-                data.traffic === 'Moderate' ? 'var(--amber)' : 'var(--green-bright)';
+                    data.traffic === 'Moderate' ? 'var(--amber)' : 'var(--green-bright)';
         }
 
         // Alert message
@@ -324,14 +324,48 @@ const Render = {
             } else {
                 statusClass = 'tl-upcoming';
                 icon = `<span style="font-size:0.6rem;color:var(--text-muted)">${i + 1}</span>`;
-                const mins = (i - currentIdx) * 7;
+                const perStopMinutes =
+                    Math.round(
+                        (State.busData?.eta_minutes || 90) /
+                        (stops.length - 1)
+                    );
+
+                const mins =
+                    (i - currentIdx) * perStopMinutes;
                 pillHTML = `<span class="tl-eta-pill pill-eta">~${mins} min</span>`;
             }
 
-            const baseHour = 8;
-            const totalMins = baseHour * 60 + i * 12;
-            const hh = String(Math.floor(totalMins / 60)).padStart(2, '0');
-            const mm = String(totalMins % 60).padStart(2, '0');
+            // const baseHour = 8;
+            // const totalMins = baseHour * 60 + i * 12;
+            // const hh = String(Math.floor(totalMins / 60)).padStart(2, '0');
+            // const mm = String(totalMins % 60).padStart(2, '0');
+
+            const now = new Date();
+
+            const totalJourneyMinutes =
+                State.busData?.eta_minutes || 90;
+
+            const perStopMinutes =
+                Math.round(
+                    totalJourneyMinutes /
+                    (stops.length - 1)
+                );
+
+            const stopTime = new Date(
+                now.getTime() +
+                (i * perStopMinutes * 60000)
+            );
+
+            const hh = String(
+                stopTime.getHours()
+            ).padStart(2, "0");
+
+            const mm = String(
+                stopTime.getMinutes()
+            ).padStart(2, "0");
+
+            // const hh = String(stopTime.getHours()).padStart(2, "0");
+            // const mm = String(stopTime.getMinutes()).padStart(2, "0");
 
             return `
                 <div class="timeline-item ${statusClass}" id="tl-stop-${i}">
@@ -353,9 +387,9 @@ const Render = {
     /* ── AI PREDICTIONS ── */
     predictions(data) {
         const preds = {
-            'pred-occ':        Math.min(99, Math.round((data.filled / data.capacity) * 100) + 10),
-            'pred-delay':      data.delay > 3 ? 65 : 30,
-            'pred-traffic':    data.traffic === 'Heavy' ? 80 : data.traffic === 'Moderate' ? 55 : 25,
+            'pred-occ': Math.min(99, Math.round((data.filled / data.capacity) * 100) + 10),
+            'pred-delay': data.delay > 3 ? 65 : 30,
+            'pred-traffic': data.traffic === 'Heavy' ? 80 : data.traffic === 'Moderate' ? 55 : 25,
             'pred-confidence': data.traffic === 'Smooth' ? 92 : 78
         };
 
@@ -577,7 +611,7 @@ function setupSearch() {
                         🚌 ${b.bus_no}
                     </div>
                     <div style="font-size:11px;color:var(--text-muted);margin-top:2px">
-                        ${b.route[0]} → ${b.route[b.route.length-1]}
+                        ${b.route[0]} → ${b.route[b.route.length - 1]}
                     </div>
                 </div>
                 <div style="
