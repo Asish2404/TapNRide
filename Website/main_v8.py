@@ -1451,27 +1451,36 @@ def search_bus_page(request: Request):
         context={"request": request, "user": request.session.get("user")},
     )
 
-
 @app.get("/api/bus/{bus_no}/location")
 async def get_bus_location(bus_no: str):
+
+    db = get_db()
+    cursor = db.cursor(pymysql.cursors.DictCursor)
 
     cursor.execute(
         """
         SELECT *
         FROM bus_locations
         WHERE bus_no=%s
-    """,
-        (bus_no,),
+        """,
+        (bus_no,)
     )
 
     row = cursor.fetchone()
 
-    return row
+    cursor.close()
+    db.close()
 
+    return row
 
 @app.get("/track-bus")
 async def track_bus(request: Request):
 
     return templates.TemplateResponse(
-        "track_bus.html", {"request": request, "user": request.session.get("user")}
+        request=request,
+        name="track_bus.html",
+        context={
+            "request": request,
+            "user": request.session.get("user")
+        }
     )

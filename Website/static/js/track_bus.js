@@ -5,7 +5,7 @@
    ═══════════════════════════════════════════════════ */
 const CONFIG = {
     MOVEMENT_SPEED: 600000,
-    BUSES_JSON_PATH: '/static/json/buses.json',
+    BUSES_JSON_PATH: '/static/data/buses.json',
     DEFAULT_BUS_ID: 'DN43'
 };
 
